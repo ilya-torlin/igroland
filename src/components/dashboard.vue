@@ -1,6 +1,6 @@
-<!--Регистрация пользователя-->
+<!--Доска-->
 <template>
-    <!--signUp.vue-->
+    <!--dashboard.vue-->
     <div class="container">
         <div class="row">
             <div class="col">
@@ -17,7 +17,7 @@
         name: 'app',
         data () {
             return {
-                msg: 'TopKek'
+                msg: 'Dashboard'
             }
         }
     }

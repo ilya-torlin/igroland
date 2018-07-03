@@ -1,5 +1,7 @@
+<!--Вход пользователя-->
 <template>
     <div class="container">
+        <!--login.vue-->
         <div class="row">
             <div class="col">
                 <label for="login-e">

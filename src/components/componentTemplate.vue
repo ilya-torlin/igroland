@@ -1,6 +1,6 @@
-<!--Регистрация пользователя-->
+<!--Шаблонный компонент-->
 <template>
-    <!--signUp.vue-->
+    <!--componentTemplate.vue-->
     <div class="container">
         <div class="row">
             <div class="col">
@@ -17,7 +17,7 @@
         name: 'app',
         data () {
             return {
-                msg: 'TopKek'
+                msg: 'template'
             }
         }
     }

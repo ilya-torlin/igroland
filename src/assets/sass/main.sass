@@ -58,12 +58,59 @@ body
 	height: auto
 
 h1
-	color: $accent
-	background: rebeccapurple
+	color: $dark
+	//background: rebeccapurple
 	display: flex
 	justify-content: center
 	align-items: center
-	background-image: url("./assets/img/logo.png")
+	//background-image: url("./assets/img/logo.png")
+
+body
+	background: $grey-l
+
+.vue-fade-enter-active, .vue-fade-leave-active
+	transition: opacity .3s
+.vue-fade-enter, .vue-fade-leave-to
+	opacity: 0
 
 
-//@import "media" // Всегда в конце
+.header
+	background: #FFFFFF
+	margin-bottom: 15px
+
+.menu-header
+	display: flex
+	.logo-c
+		display: flex
+		align-items: center
+		justify-content: center
+		padding: 0 50px
+		img
+			max-width: 50px
+.header-r
+	align-items: center
+
+.menu-ul
+	list-style: none
+	padding: 0px
+	display: flex
+	margin-bottom: 0px
+	height: 100px
+	li
+		margin-right: 35px
+		display: flex
+		align-items: center
+		&:last-child
+			margin-right: 0px
+		a
+			color: #8393a7
+			display: flex
+			align-items: center
+			height: 100%
+			position: relative
+			border-bottom: solid 2px transparent
+			text-decoration: none!important
+			&.router-link-active
+				color: $blue
+				border-color: $blue
+@import "media" // Всегда в конце

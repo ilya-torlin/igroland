@@ -1,6 +1,6 @@
-<!--Регистрация пользователя-->
+<!--Каталог с папками (панель слева)-->
 <template>
-    <!--signUp.vue-->
+    <!--catalogFolders.vue-->
     <div class="container">
         <div class="row">
             <div class="col">
@@ -17,7 +17,7 @@
         name: 'app',
         data () {
             return {
-                msg: 'TopKek'
+                msg: 'catalogFolders'
             }
         }
     }
