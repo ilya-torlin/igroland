@@ -1,6 +1,6 @@
-<!--Пользователи-->
+<!--Профиль клиента-->
 <template>
-    <!--users.vue-->
+    <!--profileConfig.vue-->
     <div class="container">
         <div class="row">
             <div class="col">
@@ -17,7 +17,7 @@
         name: 'app',
         data () {
             return {
-                msg: 'users'
+                msg: 'profileConfig'
             }
         }
     }
