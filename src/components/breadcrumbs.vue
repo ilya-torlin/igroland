@@ -30,17 +30,17 @@
                     </div>
                 </div>
 
-                <select name="" id="">
-                    <option value="">
+                <select name="" id="" ref="selCompanyList">
+                    <option value="Игроленд">
                         Игроленд
                     </option>
-                    <option value="">
+                    <option value="РС Восток">
                         РС Восток
                     </option>
-                    <option value="">
+                    <option value="Гала Центр">
                         Гала Центр
                     </option>
-                    <option value="">
+                    <option value="Союз игрушка">
                         Союз игрушка
                     </option>
                 </select>
@@ -51,27 +51,32 @@
 </template>
 
 <script>
-
-    import styler from 'jquery-form-styler'
-
-
+    // import $ from '../../node_modules/jquery';
+    import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.min';
     export default {
         name: 'breadcrumbs',
         data () {
             return {
-                msg: 'breadcrumbs',
-                switcherActive: true
+              msg: 'breadcrumbs',
+              switcherActive: true,
+              selCompanyList: ''
             }
         },
         mounted(){
-            $(function () {
-                $('[data-toggle="tooltip"]').tooltip();
-                $('select, input[type="number"], input[type="file"]').styler();
-            });
+          $('[data-toggle="tooltip"]').tooltip();
+
+          $('select, input[type="number"], input[type="file"]').styler();
+
+          $(this.$refs.selCompanyList).on('change', () => {
+            this.selCompanyList = this.$refs.selCompanyList.value;
+          });
         }
     }
 </script>
 
 <style lang="sass">
-    /*@import 'assets/sass/main.sass';*/
+  /*@import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.css'*/
+  /*@import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.theme.css'*/
+
+  /*@import 'assets/sass/main.sass';*/
 </style>

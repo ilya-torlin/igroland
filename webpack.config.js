@@ -36,6 +36,13 @@ module.exports = {
         ],
       },
       {
+        test: /\.(ttf|eot|woff|woff2)$/,
+        loader: "file-loader",
+        options: {
+          name: "dist/fonts/[name].[ext]"
+        }
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -58,7 +65,7 @@ module.exports = {
           postcss: [autoprefixer]
           // other vue-loader options go here
         }
-      }, 
+      },
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -92,7 +99,7 @@ module.exports = {
       Tab: "exports-loader?Tab!bootstrap/js/dist/tab",
       Tooltip: "exports-loader?Tooltip!bootstrap/js/dist/tooltip",
       Util: "exports-loader?Util!bootstrap/js/dist/util",
-      Styler: "styler"
+      // styler: "exports-loader?Styler!jquery-form-styler/dist/jquery.formstyler.min.js"
     })
     // new webpack.LoaderOptionsPlugin({ options: { postcss: [ autoprefixer ]  } })
   ],

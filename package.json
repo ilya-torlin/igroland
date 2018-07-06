@@ -12,6 +12,7 @@
   "dependencies": {
     "bootstrap": "^4.1.1",
     "bootstrap-loader": "^3.0.0",
+    "expose-loader": "^0.7.5",
     "form": "^0.2.4",
     "jquery": "^3.3.1",
     "jquery-form-styler": "^2.0.2",
