@@ -4,33 +4,34 @@
 
 *
 	outline: none!important
+	font-weight: 500
 
 *::-webkit-input-placeholder
-	color: #989898
+	color: inherit
 	opacity: 1
-	font-size: 18px
-	font-weight: 300
+	font-size: inherit
+	font-weight: inherit
 	font-family: $default-font
 
 *:-moz-placeholder
-	color: #989898
+	color: inherit
 	opacity: 1
-	font-size: 18px
-	font-weight: 300
+	font-size: inherit
+	font-weight: inherit
 	font-family: $default-font
 
 *::-moz-placeholder
-	color: #989898
+	color: inherit
 	opacity: 1
-	font-size: 18px
-	font-weight: 300
+	font-size: inherit
+	font-weight: inherit
 	font-family: $default-font
 
 *:-ms-input-placeholder
-	color: #989898
+	color: inherit
 	opacity: 1
-	font-size: 18px
-	font-weight: 300
+	font-size: inherit
+	font-weight: inherit
 	font-family: $default-font
 
 body input:focus:required:invalid,
@@ -222,6 +223,9 @@ button
 	align-items: center
 	justify-content: center
 
+.folder-c
+	//padding: 0 20px
+	//padding-right: 30px
 .folder-h
 	font-size: 17px
 	font-weight: 500
@@ -233,7 +237,6 @@ button
 	padding: 30px
 	border-bottom: solid 2px $gray-300
 .folder-b
-	padding: 15px 0px
 	.folder-controls-c
 		min-width: 80px
 		.btn-icon-tr
@@ -245,18 +248,159 @@ button
 	list-style: none
 	margin: 0px
 	padding: 0px
+	&:not(.folder-list-main)
+		//background: $grey-bg
 	.folder-title
 		display: flex
 		justify-content: space-between
 	li
-		padding: 15px 30px
 		&:last-child
 			margin-bottom: 0px
+		.folder-title
+			padding: 16px 15px
+			padding-right: 30px
+		&.is-active
+			background: $grey-bg
+			&>.folder-list
+				border-left: 2px solid $blue
+			&>.folder-title
+				&>.folder-controls-c
+					&>.btn-icon-tr
+						transform: rotate(90deg)
+						position: relative
+						top: -3px
+						left: 6px
+	.context-open
+		background: $yellow
 .folder-controls-c
 	display: flex
 	align-items: center
 	justify-content: space-between
 
+.folder-list-main
+	&>li
+		padding: 0px
+		&>.folder-title
+			padding: 16px 30px
+.folder-f
+	padding: 25px 30px
+.last-change-f
+	display: flex
+	align-items: center
+	.discr-txt
+		color: $gray-600
+		margin-left: 9px
 
+.context-menu-custom
+	border: solid 2px $gray-400
+	border-radius: 10px 
+	overflow: hidden
+	position: fixed
+	min-width: 165px
+	display: none
+	left: 323px
+	top: 224px
+	&.is-active
+		display: block
+	ul
+		list-style: none
+		padding: 0px
+		margin: 0px
+		li
+			background: $grey-bg
+			border-bottom: solid 2px $gray-400
+			transition: all .3s ease
+			&:hover
+				background: $gray-600
+				a
+					color: #FFFFFF
+			&:last-child
+				border-bottom: none
+			a
+				color: $gray-600
+				padding: 15px
+				font-weight: 400
+				font-size: 15px
+				text-transform: uppercase
+				text-align: center
+				display: block
+				text-decoration: none!important
+.breadcrumb-r
+	background: #FFFFFF
+.breadcrumb
+	background: #FFFFFF
+	padding: 10px 10px
+	margin-bottom: 0px
+	.form-group
+		margin-bottom: 0px
+		input
+			border-radius: 5px!important
+			width: 190px
+			margin-right: 15px
+		.btn
+			font-weight: 700
+			border-radius:  5px
+			width: 38px
+			height: 38px
+	.breadcrumb-item
+		font-size: 15px
+		display: flex
+		align-items: center
+		margin: 10px 0px
+		a
+			color: $gray-600
+		&.active
+			color: $gray-400
+			font-style: italic
+			font-weight: 400
+	input
+		border-color: $gray-400
+		color: $gray-400
+		font-style: italic
+		font-weight: 400
+		background: #FFFFFF
+.breadcrumb-item + .breadcrumb-item::before
+	content: ''
+	width: 40px
+	height: 17px
+	//border: solid 1px $blue
+	background-image: url("./assets/img/rightArrow.png")
+	background-position: center
+	background-repeat: no-repeat
 
+.control-panel-filter
+	height: 100%
+	display: flex
+	align-items: center
+	justify-content: flex-end
+.switcher-c
+	display: flex
+	align-items: center
+	cursor: pointer
+	transition: all .3s ease
+	.switcher-i
+		width: 45px
+		height: 25px
+		border-radius: 300px
+		position: relative
+		background: $gray-500
+		transition: all .3s ease
+		&:after
+			content: ''
+			position: absolute 
+			top: 2px
+			width: 21px
+			height: 21px
+			background: #FFFFFF
+			border-radius: 100px
+			transition: all .3s ease
+			left: 2px
+	&.is-active
+		.switcher-i
+			background: $green
+			&:after
+				left: 22px
+	.txt-sw
+		color: $gray-600
+		margin-left: 15px
 @import "media" // Всегда в конце

@@ -58,7 +58,7 @@ module.exports = {
           postcss: [autoprefixer]
           // other vue-loader options go here
         }
-      },
+      }, 
       {
         test: /\.js$/,
         loader: 'babel-loader',
@@ -92,6 +92,7 @@ module.exports = {
       Tab: "exports-loader?Tab!bootstrap/js/dist/tab",
       Tooltip: "exports-loader?Tooltip!bootstrap/js/dist/tooltip",
       Util: "exports-loader?Util!bootstrap/js/dist/util",
+      Styler: "styler"
     })
     // new webpack.LoaderOptionsPlugin({ options: { postcss: [ autoprefixer ]  } })
   ],

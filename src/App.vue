@@ -121,6 +121,7 @@
       //init bootstrap tooltips
       $(function () {
         $('[data-toggle="tooltip"]').tooltip();
+        $('select, input[type="number"], input[type="file"]').styler();
       });
     }
   }
@@ -128,4 +129,5 @@
 
 <style lang="sass">
   @import 'assets/sass/main.sass';
+  @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&subset=cyrillic,cyrillic-ext');
 </style>

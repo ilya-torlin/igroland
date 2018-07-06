@@ -7,6 +7,9 @@
                 <appCatalogFolders>
                 </appCatalogFolders>
             </div>
+            <div class="col-9">
+                <appBreadcrumbs></appBreadcrumbs>
+            </div>
         </div>
     </div>
 </template>
@@ -17,6 +20,9 @@
 
     import appCatalogFolders from './catalogFolders.vue'
     Vue.component('appCatalogFolders', appCatalogFolders);
+
+    import appBreadcrumbs from './breadcrumbs.vue'
+    Vue.component('appBreadcrumbs', appBreadcrumbs);
 
     export default {
         name: 'app',
