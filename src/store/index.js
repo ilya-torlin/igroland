@@ -5,11 +5,16 @@ Vue.use(Vuex);
 
 //!!! Добавлять все изменения в googleDocs
 
+/**
+* @param {boolean} showHeader
+*
+* */
+
 export const store = new Vuex.Store({
   state: {
     //при добавлении нового атрибута прописать getters and mutations
-    showHeader: true, // вынести в vueEx
-    logedIn: true,
+    showHeader: false, // вынести в vueEx
+    logedIn: false,
     config: { //Конфигурация приложения, роуты
       loginRoute: '/dashboard' // на какую страницу перенаправлять, после авторизации
     }
