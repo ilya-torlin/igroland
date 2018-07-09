@@ -1,11 +1,20 @@
-<!--Шаблонный компонент-->
+<!--Окно авторизации-->
 <template>
-  <!--componentTemplate.vue-->
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <appLogin></appLogin>
-        <!--<appSignup></appSignup>-->
+  <!--auth.vue-->
+  <div class="login-cc" v-if="!logedIn">
+    <div class="login-c" v-if="!authComplete">
+      <div class="logo-c">
+        <img src="../assets/img/logo.png" alt="">
+        <div class="txt-c">
+          analyze-it
+        </div>
+      </div>
+      <div class="form-c">
+        <transition name="vue-fade" mode="out-in" >
+          <appLogin v-if="authStatus == 'login'" @changeStatus="changeStatus"></appLogin>
+          <appSignup v-if="authStatus == 'signUp'" @changeStatus="changeStatus"></appSignup>
+          <appForgotPwd v-if="authStatus == 'forgotPwd'" @changeStatus="changeStatus"></appForgotPwd>
+        </transition>
       </div>
     </div>
   </div>
@@ -18,21 +27,42 @@
 
   import appLogin from './login.vue'
   import appSignup from './SignUp.vue'
+  import appForgotPwd from './forgotPwd.vue'
 
-  Vue.component('appLogin', appLogin);//
-  Vue.component('appSignup', appSignup);//
+  import {mapGetters} from 'vuex';
+
 
   export default {
     name: 'auth',
     data () {
       return {
-        msg: 'auth'
+        authStatus: 'login', // login, forgotPwd, signUp
+        authComplete: false // пользователь авторизован
       }
+    },
+    methods:{
+      changeStatus(status){
+        console.log('status', status);
+        this.authStatus = status.authStatus;
+      }
+    },
+    components:{
+      appLogin,
+      appSignup,
+      appForgotPwd
+    },
+    computed: {
+      ...mapGetters([
+        'logedIn'
+      ])
+    },
+    mounted(){
+
     }
   }
 </script>
 
 <style lang="sass">
-  
+
   /*@import 'assets/sass/main.sass';*/
 </style>
