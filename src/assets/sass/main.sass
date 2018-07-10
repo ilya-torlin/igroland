@@ -83,7 +83,7 @@ body
   opacity: 0
 .header
   background: #FFFFFF
-  margin-bottom: 15px
+  margin-bottom: 30px
 
 .menu-header
   display: flex
@@ -625,4 +625,59 @@ button
       bottom:  10px
     .form-control
       margin-bottom: 30px
+
+.dashboar-c
+  display: flex
+  margin-bottom: 30px
+  .dashboar-i
+    background: #ffffff
+    border-radius: 5px
+    min-width: 270px
+    min-height: 220px
+    padding: 30px
+    width: 100%
+  .compName
+    display: flex
+    align-items: center
+    justify-content: space-between
+    .txt
+      text-transform: uppercase
+      color: $gray-600
+      font-size: 14px
+  .arr-trigger
+    display: flex
+    align-items: center
+    button
+      background: transparent
+      border: none
+      display: flex
+      align-items: center
+      justify-content: center
+      .svg-c
+        display: flex
+        align-items: center
+        justify-content: center
+.goods-amoun
+  display: flex
+  align-items: center
+  justify-content: space-between
+  margin-top: 30px
+  .num-v
+    display: flex
+    flex-direction: column
+    b
+      color: $gray-600
+      font-size: 18px
+    small
+      color: $gray-600
+
+.percent-b
+  background: $green
+  border-radius: 5px
+  display: inline-block
+  color: #ffffff
+  padding: 10px
+  font-size: 14px
+  &.pb-danger
+    background: $red
 @import "media" // Всегда в конце
