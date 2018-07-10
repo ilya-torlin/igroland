@@ -45,8 +45,8 @@
  *
  * */
   export default {
-    name: 'input',
-    props: ['validFeedback', 'invalidFeedback', 'placeholder', 'required', 'pattern', 'value', 'type'],
+    name: 'inputValid',
+    props: ['validFeedback', 'invalidFeedback', 'placeholder', 'required', 'pattern', 'value', 'type', 'isValid', 'showError'],
     data () {
       return {
         activated: this.value != '' // если пользователь что-то вводил
@@ -55,7 +55,7 @@
     computed: {
       validClass(){
         if(this.activated){
-          return this.pattern.test(this.value) ?
+          return this.pattern.test(this.value) && !this.showError ?
             'valid-group' :
             'invalid-group';
         }else {

@@ -1,8 +1,8 @@
 <!--Окно авторизации-->
 <template>
   <!--auth.vue-->
-  <div class="login-cc" v-if="!logedIn">
-    <div class="login-c" v-if="!authComplete">
+  <div class="login-cc custom-valid-s">
+    <div class="login-c">
       <div class="logo-c">
         <img src="../assets/img/logo.png" alt="">
         <div class="txt-c">
@@ -23,22 +23,17 @@
 
 <script>
 
-  import Vue from 'vue'
-  import VueRouter from 'vue-router'
-
   import appLogin from './login.vue'
   import appSignup from './SignUp.vue'
   import appForgotPwd from './forgotPwd.vue'
 
   import {mapGetters} from 'vuex';
 
-
   export default {
     name: 'auth',
     data () {
       return {
         authStatus: 'login', // login, forgotPwd, signUp
-        authComplete: false // пользователь авторизован
       }
     },
     methods:{
@@ -53,9 +48,7 @@
       appForgotPwd
     },
     computed: {
-      ...mapGetters([
-        'logedIn'
-      ])
+
     },
     mounted(){
 

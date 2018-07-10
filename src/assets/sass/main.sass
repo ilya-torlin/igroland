@@ -121,10 +121,12 @@ body
       position: relative
       border-bottom: solid 2px transparent
       text-decoration: none!important
-      &.router-link-active
+    &.router-link-active
+      a
         color: $blue
         border-color: $blue
-      &:hover
+    &:hover
+      a
         color: $red
         border-color: $red
 
@@ -578,6 +580,7 @@ button
   .invalid-feedback
     display: block
     font-weight: 400
+    animation: fadeEffect .3s ease
 
 .valid-group
   .form-control
@@ -585,5 +588,41 @@ button
   .valid-feedback
     display: block
     font-weight: 400
+    animation: fadeEffect .3s ease
 
+.modal-header
+  border: none
+
+.modal-title
+  display: flex
+  align-items: center
+  .txt
+    font-size: 18px
+    font-weight: 400
+  .svg-c
+    display: flex
+    align-items: center
+    margin-right: 10px
+
+.modal-body
+  font-weight: 400
+  line-height: 1.75
+  font-size: 16px
+.warning-modal
+  .modal-title
+    .svg-c
+      svg
+        path
+          fill: $orange
+.modal-footer
+  border: none
+.custom-valid-s
+  .input-group
+    margin-bottom: 0px!important
+    position: relative
+    .invalid-feedback, .valid-feedback
+      position: absolute
+      bottom:  10px
+    .form-control
+      margin-bottom: 30px
 @import "media" // Всегда в конце

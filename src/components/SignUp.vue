@@ -3,58 +3,23 @@
   <!--signUp.vue-->
   <div class="row">
     <div class="col-md-12 mb-3">
-      <div class="input-group">
-        <!--<div class="input-group-prepend">-->
-        <!--<span class="input-group-text">@</span>-->
-        <!--</div>-->
-        <input type="email" class="form-control" placeholder="email *" value="" required="">
-        <div class="valid-feedback">
-          Отлично!
-        </div>
-        <div class="invalid-feedback">
-          Пароль введён неверно
-        </div>
-      </div>
-    </div>
-    <div class="col-md-12 mb-3">
-      <div class="input-group">
-        <!--<div class="input-group-prepend">-->
-        <!--<span class="input-group-text">@</span>-->
-        <!--</div>-->
-        <input type="text" class="form-control" placeholder="логин" value="">
-        <div class="valid-feedback">
-          Отлично!
-        </div>
-        <div class="invalid-feedback">
-          Логин введён неверно
-        </div>
-      </div>
-    </div>
-    <div class="col-md-12 mb-3">
-      <div class="input-group">
-        <input type="password" class="form-control" id="userPwd" placeholder="пароль *" value="" required="">
-        <div class="valid-feedback">
-          Отлично!
-        </div>
-        <div class="invalid-feedback">
-          Пароль введён неверно
-        </div>
-      </div>
-    </div>
-    <div class="col-md-12 mb-3">
-      <div class="input-group">
-        <input type="password" class="form-control" placeholder="подтвердите пароль *" value="" required="">
-        <div class="valid-feedback">
-          Отлично!
-        </div>
-        <div class="invalid-feedback">
-          Пароли не совпадают
-        </div>
-      </div>
+      <appInput v-for="(elem, index) in inputsArr" :key="index"
+                :validFeedback="elem.validFeedback"
+                :invalidFeedback="elem.invalidFeedback"
+                :placeholder="elem.placeholder"
+                :required="elem.required"
+                :pattern="elem.pattern"
+                :type="elem.type"
+                :value="elem.value"
+                :isValid="elem.isValid"
+                :showError="elem.showError"
+                @changedata="onChangeData(index, $event)"
+      >
+      </appInput>
     </div>
     <div class="col-12">
       <div class="btn-c">
-        <button type="button" class="btn btn-success">Зарегистрироваться</button>
+        <button type="button" class="btn btn-success" @click="getSignUp">Зарегистрироваться</button>
       </div>
     </div>
     <div class="col-12">
@@ -70,12 +35,113 @@
 </template>
 
 <script>
+  import appInput from './inputValid'
     export default {
         name: 'SignUp',
         data () {
             return {
-                msg: 'SignUp'
+              inputsArr:[
+                {
+                  validFeedback: "",
+                  invalidFeedback: "Email введён неверно",
+                  placeholder: "Email",
+                  type: "text",
+                  required: "true",
+                  pattern: /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
+                  value: '',
+                  isValid: false,
+                  showError: false
+                },
+                {
+                  validFeedback: "",
+                  invalidFeedback: "Логин введён неверно",
+                  placeholder: "Логин",
+                  type: "text",
+                  required: "true",
+                  pattern: /^[a-zA-Z0-9_@.]{6,30}$/,
+                  value: '',
+                  isValid: false,
+                  showError: false
+                },
+                {
+                  id: 'pwd',
+                  validFeedback: "",
+                  invalidFeedback: "Пароль введён неверно",
+                  placeholder: "Пароль",
+                  type: "password",
+                  required: "true",
+                  pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
+                  value: '',
+                  isValid: false,
+                  showError: false
+                },
+                {
+                  id: 'cfpwd',
+                  validFeedback: "",
+                  invalidFeedback: "Пароли не совпадают",
+                  placeholder: "Подтвердите пароль",
+                  type: "password",
+                  required: "true",
+                  pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
+                  value: '',
+                  isValid: false,
+                  showError: false
+                }
+              ]
             }
+        },
+        components:{
+          appInput
+        },
+        computed: {
+          formValid(){
+            let isValid = this.inputsArr[0].isValid;
+            for(let item of this.inputsArr){
+              isValid = isValid && item.isValid;
+            }
+            return isValid;
+          }
+        },
+        methods: {
+          getSignUp(){
+
+            let pwdVal, confirmVal, samePwd = false;
+
+            for(let item of this.inputsArr){
+
+              if(item.id === 'pwd'){
+                pwdVal = item;
+              }
+              if(item.id === 'cfpwd'){
+                confirmVal = item;
+              }
+
+              if(!item.isValid){
+                item.showError = true;
+              }
+            }
+
+            if(pwdVal.value === confirmVal.value){
+              samePwd = true;
+            }
+
+            if(!samePwd){
+              confirmVal.showError = true;
+            }
+
+            if(this.formValid && samePwd){
+              alert('Зарегался');
+            }else{
+              alert('Ошибка в форме');
+            }
+          },
+          onChangeData(index, data){ // для компонента input
+            this.inputsArr[index].value = data.value;
+            this.inputsArr[index].isValid = data.valid;
+            if(data.valid){
+              this.inputsArr[index].showError = false;
+            }
+          }
         }
     }
 </script>

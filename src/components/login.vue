@@ -11,17 +11,16 @@
         :pattern="elem.pattern"
         :type="elem.type"
         :value="elem.value"
+        :isValid="elem.isValid"
         @changedata="onChangeData(index, $event)"
       >
       </appInput>
     </div>
-
     <div class="col-12">
       <div class="btn-c">
         <button type="button" class="btn btn-success" @click="getLogIn">Войти</button>
       </div>
     </div>
-
     <div class="col-12">
       <p class="login-quest">
         У вас нет аккаунта? <a href="" @click.prevent="$emit('changeStatus', {authStatus: 'signUp'})">Зарегистрируйтесь!</a>
@@ -31,17 +30,14 @@
         </a>
       </p>
     </div>
-
   </div>
-
-  <!--todo: добавить регистрацию, и восстановление пароля-->
 </template>
 
 <script>
   import {mapGetters} from 'vuex';
   import {mapMutations} from 'vuex';
 
-  import appInput from './input';
+  import appInput from './inputValid';
 
   export default {
     name: 'login',
@@ -54,8 +50,9 @@
             placeholder: "Логин",
             type: "text",
             required: "true",
-            pattern: /^[a-zA-Z0-9_]{6,30}$/,
-            value: ''
+            pattern: /^[a-zA-Z0-9_@.]{6,30}$/,
+            value: '',
+            isValid: false
           },
           {
             validFeedback: "",
@@ -64,31 +61,39 @@
             type: "password",
             required: "true",
             pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
-            value: ''
+            value: '',
+            isValid: false
           }
         ]
       }
     },
     computed:{
-      ...mapGetters([
-        'price'
-      ]),
+      formValid(){
+        let isValid = this.inputsArr[0].isValid;
+        for(let item of this.inputsArr){
+          isValid = isValid && item.isValid;
+        }
+        return isValid;
+      }
     },
     components:{
       appInput
     },
     methods: {
-      ...mapMutations([
-        'setHeaderStatus',
-        'setlogedIn'
-      ]),
       getLogIn(){
-        this.$store.commit('setHeaderStatus', true);
-        this.$store.commit('setlogedIn', true);
+        if(this.formValid){
+          alert('Зарегался');
+          this.$store.commit('config/setHeaderStatus', true);
+          // this.$router.push({ path: '', redirect: {name: 'catalog'}});
+          this.$router.push({name: 'catalog'})
 
+        }else{
+          alert('Ошибка в форме');
+        }
       },
       onChangeData(index, data){ // для компонента input
         this.inputsArr[index].value = data.value;
+        this.inputsArr[index].isValid = data.valid;
       }
     }
   }
