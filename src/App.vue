@@ -34,15 +34,15 @@
       }
     },
     methods:{
-      authRedirect(){ // редирект при разном статусе авторизации пользователя
-        if(this.logedIn){
-          this.$router.push({name: 'catalog'});
-          this.$store.commit('config/setHeaderStatus', true);
-        }else{
-          this.$router.push({name: 'auth'});
-          this.$store.commit('config/setHeaderStatus', false);
-        }
-      }
+      // authRedirect(){ // редирект при разном статусе авторизации пользователя
+      //   if(this.logedIn){
+      //     this.$router.push({name: 'catalog'});
+      //     this.$store.commit('config/setHeaderStatus', true);
+      //   }else{
+      //     this.$router.push({name: 'auth'});
+      //     this.$store.commit('config/setHeaderStatus', false);
+      //   }
+      // }
     },
     components:{
       appHeader
@@ -53,7 +53,7 @@
       }),
     },
     mounted(){
-      this.authRedirect();
+      // this.authRedirect();
     }
   }
 

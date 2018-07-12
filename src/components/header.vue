@@ -1,3 +1,4 @@
+
 <template>
   <transition name="vue-fade" mode="out-in">
     <section v-if="showHeader" class="header">
@@ -123,7 +124,7 @@
 <script>
   import {mapGetters} from 'vuex';
   import {mapMutations} from  'vuex';
-
+  import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT } from '../store/actions/auth'
 	export default {
 		name: "headerMenu",
     data () {
@@ -153,9 +154,14 @@
         logOutUser: 'logOut'
       }),
       logOut(){
-        this.logOutUser();
-        this.$router.push({name: 'auth'});
-        this.$store.commit('config/setHeaderStatus', false);
+        console.log('this.$store = ', this.$store);
+        this.$store.dispatch(`${AUTH_LOGOUT}`)
+        .then(() => {
+          this.logOutUser(); //Возможно предётся удалить, перенести всю логику в модуль авторизации
+          this.$store.commit('config/setHeaderStatus', false);
+          this.$router.push({name: 'auth'});
+        });
+
       }
     }
 	}

@@ -15,6 +15,7 @@ import appUiKit from './components/ui-kit.vue'
 import appProfileConfig from './components/profileConfig.vue'
 import appAuth from './components/auth.vue'
 import E404 from './components/E404'
+import {store} from './store/index.js'
 
 // Vue.component('appLogin', appLogin);//авторизация пользователя
 // Vue.component('appSignup', appSignup);//регистрация пользователя
@@ -26,16 +27,39 @@ import E404 from './components/E404'
 // Vue.component('appProfileConfig', appProfileConfig);// ui-kit
 // Vue.component('appAuth', appAuth);// Авторизация
 
-//todo: сделать редирект на /dashboard после авторизации
+
+//Для модуля авторизации
+const ifNotAuthenticated = (to, from, next) => {
+  console.log('---->NotAuthenticated');
+  if (!store.getters.isAuthenticated) {
+    store.commit('config/setHeaderStatus', false);
+    next();
+    return
+  }
+  next({name: 'auth'})
+};
+
+const ifAuthenticated = (to, from, next) => {
+  console.log('---->Authenticated', store.getters.isAuthenticated);
+  if (store.getters.isAuthenticated) {
+    store.commit('config/setHeaderStatus', true); // что бы была видна шапка для авторизованных пользователей
+    next();
+    return
+  }
+  next({name: 'auth'});
+};
+
+
+
 //Определяем маршруты
 const routes = [
-  { path: '/login', component: appLogin, name: 'login' },
-  { path: '/dashboard', component: appDashboard, name: 'dashboard'},
-  { path: '/catalog', component: appCatalog, name: 'catalog'},
-  { path: '/provider', component: appProvider, name: 'provider'},
-  { path: '/attachments', component: appAttachments, name: 'attachments'},
-  { path: '/profileconfig', component: appProfileConfig, name: 'profileconfig'},
-  { path: '/auth', component: appAuth, name: 'auth'},
+  // { path: '/login', component: appLogin, name: 'login' },
+  { path: '/dashboard', component: appDashboard, name: 'dashboard', beforeEnter: ifAuthenticated},
+  { path: '/catalog', component: appCatalog, name: 'catalog', beforeEnter: ifAuthenticated},
+  { path: '/provider', component: appProvider, name: 'provider', beforeEnter: ifAuthenticated},
+  { path: '/attachments', component: appAttachments, name: 'attachments', beforeEnter: ifAuthenticated},
+  { path: '/profileconfig', component: appProfileConfig, name: 'profileconfig', beforeEnter: ifAuthenticated},
+  { path: '/auth', component: appAuth, name: 'auth', beforeEnter: ifNotAuthenticated},
   { path: '*', component: E404},
   { path: '', redirect: {name: 'auth'}}
 ];

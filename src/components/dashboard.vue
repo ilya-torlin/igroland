@@ -1,4 +1,12 @@
 <!--Доска-->
+
+<!--todo: Вместо товаров, рубли-->
+<!--todo: Добавить разряды к числам-->
+<!--todo: Добавить tooltips-->
+<!--todo: Сделать обработчик для стрелок-->
+<!--todo: Натянуть всё на VUE-->
+
+
 <template>
     <!--dashboard.vue-->
     <div class="container">
@@ -416,4 +424,5 @@
 
 <style lang="sass">
     /*@import 'assets/sass/main.sass';*/
+
 </style>

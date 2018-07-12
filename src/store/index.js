@@ -12,7 +12,9 @@ Vue.use(Vuex);
 import menu from './modules/menu'
 import config from './modules/config'
 import user from './modules/user'
-//todo: разделить склад на модули!
+import auth from './modules/auth'
+
+//Header set Access-Control-Allow-Origin *
 
 export const store = new Vuex.Store({
   //при добавлении нового атрибута в модулях, прописать getters and mutations
@@ -24,7 +26,8 @@ export const store = new Vuex.Store({
   modules:{
     menu, // меню
     config,//конфиги приложения
-    user // Информация о пользователе
+    user, // Информация о пользователе
+    auth
   },
   strict: process.env.NODE_ENV !== 'production' // строгий режим, только для режима разработки, отслеживает, что бы state не изменялся напрямую, т.е. state можно менять только при помощи мутаций
 });

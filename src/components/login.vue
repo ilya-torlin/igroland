@@ -2,7 +2,6 @@
 <template>
   <div class="row">
     <div class="col-md-12 ">
-
       <appInput v-for="(elem, index) in inputsArr" :key="index"
         :validFeedback="elem.validFeedback"
         :invalidFeedback="elem.invalidFeedback"
@@ -30,6 +29,42 @@
         </a>
       </p>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade warning-modal" id="errorLoginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">
+              <div class="svg-c">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  width="23px" height="23px">
+                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
+                        d="M11.500,23.000 C5.149,23.000 0.000,17.851 0.000,11.500 C0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM11.500,5.000 C10.672,5.000 10.000,5.671 10.000,6.500 C10.000,7.328 10.672,8.000 11.500,8.000 C12.328,8.000 13.000,7.328 13.000,6.500 C13.000,5.671 12.328,5.000 11.500,5.000 ZM13.000,10.500 C13.000,9.671 12.328,9.000 11.500,9.000 C10.672,9.000 10.000,9.671 10.000,10.500 L10.000,16.500 C10.000,17.328 10.672,18.000 11.500,18.000 C12.328,18.000 13.000,17.328 13.000,16.500 L13.000,10.500 Z"/>
+                </svg>
+              </div>
+              <div class="txt">
+                Внимание
+              </div>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            {{errorText}}
+          </div>
+          <div class="modal-footer">
+            <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
+            <button type="button" class="btn btn-success" data-dismiss="modal" @click="$emit('changeStatus', {authStatus: 'login'});">Спасибо</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </template>
 
@@ -38,6 +73,7 @@
   import {mapMutations} from 'vuex';
 
   import appInput from './inputValid';
+  import {AUTH_REQUEST} from '../store/actions/auth' //Если не получиться поменять путь
 
   export default {
     name: 'login',
@@ -64,7 +100,8 @@
             value: '',
             isValid: false
           }
-        ]
+        ],
+        errorText: ''
       }
     },
     computed:{
@@ -82,10 +119,19 @@
     methods: {
       getLogIn(){
         if(this.formValid){
-          alert('Зарегался');
-          this.$store.commit('config/setHeaderStatus', true);
-          // this.$router.push({ path: '', redirect: {name: 'catalog'}});
-          this.$router.push({name: 'catalog'})
+          let username = this.inputsArr[0].value;
+          let password = this.inputsArr[1].value;
+          const loginData = { email: username, password: password };
+          //Action в Vuex возвращает Promise
+          this.$store.dispatch(AUTH_REQUEST, loginData).then(promSucces => {
+            this.$store.commit('config/setHeaderStatus', true);
+            this.$router.push({name: 'catalog'})
+            console.log('pushTo Catalog');
+          }, promError => {
+            this.errorText = promError.data.msgClient;
+            $('#errorLoginModal').modal();
+            console.error('Login err', promError);
+          });
 
         }else{
           alert('Ошибка в форме');

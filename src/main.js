@@ -7,12 +7,20 @@ import {store} from './store'
 import 'bootstrap/dist/js/bootstrap.js'
 
 import {router} from "./routes";
-
+import axios from 'axios'
 /* libs:
 * 1. Drag&Drop files
-* 2. Context menu?
+* 2.
 * 3.
 * */
+
+// Аутентификация пользователя в axios, если в localstorage есть токкен
+const token = localStorage.getItem('user-token');
+if (token) {
+  axios.defaults.headers.common['Authorization'] = token;
+  console.log('axios = ', axios.defaults.headers);
+}
+
 new Vue({
   el: '#app',
   router,
