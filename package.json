@@ -19,6 +19,7 @@
     "jquery-form-styler": "^2.0.2",
     "popper.js": "^1.14.3",
     "vue": "^2.5.11",
+    "vue-multiselect": "^2.1.0",
     "vuex": "^3.0.1"
   },
   "browserslist": [

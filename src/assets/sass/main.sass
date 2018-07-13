@@ -680,4 +680,48 @@ button
   font-size: 14px
   &.pb-danger
     background: $red
+
+.container.standart-c
+  max-width: 1200px
+.alert
+  font-weight: 400
+  display: flex
+  align-items: center
+  padding: 15px 15px
+  border: solid 2px transparent
+  border-radius: 5px
+  .svg-c
+    margin-right: 10px
+  &.alert-success
+    border-color: $green
+    svg
+      path
+        fill: $green
+
+.catalog-list-r
+  .catalog-list-c
+    .catalog-list-i
+      background: #ffffff
+      border-radius: 5px
+      margin-bottom: 30px
+    .catalog-h
+      display: flex
+      justify-content: space-between
+      padding: 30px
+      .title-cat
+        font-weight: 400
+        color: $gray-700
+  .conf-panel
+    display: flex
+    align-items: center
+    .item
+      display: flex
+      align-items: center
+      justify-content: center
+      .svg-c
+        display: flex
+        align-items: center
+      button
+        background: transparent
+        border: none
 @import "media" // Всегда в конце

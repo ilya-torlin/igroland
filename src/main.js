@@ -8,6 +8,9 @@ import 'bootstrap/dist/js/bootstrap.js'
 
 import {router} from "./routes";
 import axios from 'axios'
+
+import {AUTH_TOKEN_HEADER} from './store/actions/auth'
+
 /* libs:
 * 1. Drag&Drop files
 * 2.
@@ -17,7 +20,7 @@ import axios from 'axios'
 // Аутентификация пользователя в axios, если в localstorage есть токкен
 const token = localStorage.getItem('user-token');
 if (token) {
-  axios.defaults.headers.common['Authorization'] = token;
+  axios.defaults.headers.common[AUTH_TOKEN_HEADER] = token;
   console.log('axios = ', axios.defaults.headers);
 }
 

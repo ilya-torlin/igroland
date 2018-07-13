@@ -5,10 +5,12 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
 
+
 import appLogin from './components/login.vue'
 import appSignup from './components/SignUp.vue'
 import appDashboard from './components/dashboard.vue'
-import appCatalog from './components/catalog.vue'
+import appCatalog from './components/catalogconfig.vue'
+import appCatalogList from './components/catalogList'
 import appProvider from './components/provider.vue'
 import appAttachments from './components/attachments.vue'
 import appUiKit from './components/ui-kit.vue'
@@ -36,11 +38,12 @@ const ifNotAuthenticated = (to, from, next) => {
     next();
     return
   }
-  next({name: 'auth'})
+  next('/')
 };
 
 const ifAuthenticated = (to, from, next) => {
   console.log('---->Authenticated', store.getters.isAuthenticated);
+  $('[data-toggle="tooltip"]').tooltip();
   if (store.getters.isAuthenticated) {
     store.commit('config/setHeaderStatus', true); // что бы была видна шапка для авторизованных пользователей
     next();
@@ -55,13 +58,14 @@ const ifAuthenticated = (to, from, next) => {
 const routes = [
   // { path: '/login', component: appLogin, name: 'login' },
   { path: '/dashboard', component: appDashboard, name: 'dashboard', beforeEnter: ifAuthenticated},
-  { path: '/catalog', component: appCatalog, name: 'catalog', beforeEnter: ifAuthenticated},
+  { path: '/catalogconfig', component: appCatalog, name: 'catalogconfig', beforeEnter: ifAuthenticated},
+  { path: '/catalog', component: appCatalogList, name: 'catalog', beforeEnter: ifAuthenticated},
   { path: '/provider', component: appProvider, name: 'provider', beforeEnter: ifAuthenticated},
   { path: '/attachments', component: appAttachments, name: 'attachments', beforeEnter: ifAuthenticated},
   { path: '/profileconfig', component: appProfileConfig, name: 'profileconfig', beforeEnter: ifAuthenticated},
   { path: '/auth', component: appAuth, name: 'auth', beforeEnter: ifNotAuthenticated},
   { path: '*', component: E404},
-  { path: '', redirect: {name: 'auth'}}
+  { path: '/', redirect: {name: 'catalog'}}
 ];
 
 //Создаём экземпляр маршрутизатора и передаём маршруты в опции `routes`

@@ -1,6 +1,7 @@
 /* eslint-disable promise/param-names */
-import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT } from '../actions/auth'
+import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT, AUTH_TOKEN_HEADER } from '../actions/auth'
 import { USER_REQUEST } from '../actions/user'
+import {API_URL} from '../../constants'
 
 import axios from 'axios'
 
@@ -15,10 +16,9 @@ const actions = {
   [AUTH_REQUEST]: ({commit, dispatch}, user) => {
     return new Promise((resolve, reject) => {
       commit(AUTH_REQUEST);
-      axios({url: 'http://igroland-api.praweb.ru/login', data: user, method: 'POST' })
+      axios({url: API_URL + '/login', data: user, method: 'POST' })
         .then(resp => {
           const error = resp.data.error;
-          console.log('Lol kek', resp);
           if(error){
             commit(AUTH_ERROR, resp.data);
             localStorage.removeItem('user-token'); // if the request fails, remove any possible user token if possible
@@ -42,9 +42,22 @@ const actions = {
   },
   [AUTH_LOGOUT]: ({commit, dispatch}) => {
     return new Promise((resolve, reject) => {
-      commit(AUTH_LOGOUT);
-      localStorage.removeItem('user-token');
-      resolve();
+      axios({url: API_URL + '/login/logout', data: {}, method: 'POST' })
+        .then(resp => {
+          commit(AUTH_LOGOUT);
+          localStorage.removeItem('user-token');
+          resolve();
+        })
+        .catch(err => {
+          // commit(AUTH_ERROR, err);
+          localStorage.removeItem('user-token'); // if the request fails, remove any possible user token if possible
+          commit(AUTH_LOGOUT);
+          console.log('logout ERR');
+          //todo: переделать, axios возвращает reject
+          // Request header field token is not allowed by Access-Control-Allow-Headers in preflight response
+          resolve();
+          // reject(err);
+        });
     })
   }
 };
@@ -56,6 +69,7 @@ const mutations = {
   [AUTH_SUCCESS]: (state, resp) => {
     state.status = 'success';
     state.token = resp;
+    axios.defaults.headers.common[AUTH_TOKEN_HEADER] = resp;
     state.hasLoadedOnce = true;
   },
   [AUTH_ERROR]: (state) => {

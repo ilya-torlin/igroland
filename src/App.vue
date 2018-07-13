@@ -53,7 +53,7 @@
       }),
     },
     mounted(){
-      // this.authRedirect();
+      $('[data-toggle="tooltip"]').tooltip();
     }
   }
 

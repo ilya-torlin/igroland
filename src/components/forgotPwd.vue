@@ -55,7 +55,7 @@
             </button>
           </div>
           <div class="modal-body">
-            Письмо для восстановления пароля отправленно на указанный Email
+            {{modalText}}
           </div>
           <div class="modal-footer">
             <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
@@ -64,14 +64,17 @@
         </div>
       </div>
     </div>
-
   </div>
-
-
 </template>
+
+
 
 <script>
   import appInput from './inputValid'
+  import axios from 'axios'
+  import {API_URL} from '../constants'
+
+
   export default {
     name: 'forgotPwd',
     data () {
@@ -88,7 +91,8 @@
             isValid: false,
             showError: false
           }
-        ]
+        ],
+        modalText: 'Письмо для восстановления пароля отправленно на указанный Email'
       }
     },
     components:{
@@ -97,9 +101,6 @@
     computed:{
       formValid(){
         let isValid = this.inputsArr[0].isValid;
-        for(let item of this.inputsArr){
-          isValid = isValid && item.isValid;
-        }
         return isValid;
       }
     },
@@ -107,11 +108,18 @@
       getRefreshPwd(){
         if(this.formValid){
           $('#sendEmailModal').modal();
-          alert('Зарегался');
           // this.$router.push({ path: '', redirect: {name: 'catalog'}});
 
-        }else{
-          alert('Ошибка в форме');
+          let restorePromise = axios({url: API_URL + '/login/restore', data: {email: this.inputsArr[0].value}, method: 'POST' })
+            .then(resp => {
+              const error = resp.data.error;
+              if(error){
+                console.log('resp.data = ', resp.data);
+                this.modalText = resp.data.data.msgClient;
+              }else {
+                this.modalText = 'Письмо для восстановления пароля отправленно на указанный Email';
+              }
+            });
         }
       },
       onChangeData(index, data){ // для компонента input

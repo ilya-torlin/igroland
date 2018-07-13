@@ -11,6 +11,7 @@
         :type="elem.type"
         :value="elem.value"
         :isValid="elem.isValid"
+        :showError="elem.showError"
         @changedata="onChangeData(index, $event)"
       >
       </appInput>
@@ -58,7 +59,7 @@
           </div>
           <div class="modal-footer">
             <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>-->
-            <button type="button" class="btn btn-success" data-dismiss="modal" @click="$emit('changeStatus', {authStatus: 'login'});">Спасибо</button>
+            <button type="button" class="btn btn-success" data-dismiss="modal" @click="$emit('changeStatus', {authStatus: 'login'});">ОК</button>
           </div>
         </div>
       </div>
@@ -81,6 +82,8 @@
       return {
         inputsArr:[
           {
+            id: 'login-i',
+            showError: '',
             validFeedback: "",
             invalidFeedback: "Логин введён неверно",
             placeholder: "Логин",
@@ -91,6 +94,8 @@
             isValid: false
           },
           {
+            id: 'pwd-i',
+            showError: '',
             validFeedback: "",
             invalidFeedback: "Пароль введён неверно",
             placeholder: "Пароль",
@@ -101,7 +106,7 @@
             isValid: false
           }
         ],
-        errorText: ''
+        errorText: 'Произошла ошибка при заполнении формы'
       }
     },
     computed:{
@@ -125,16 +130,28 @@
           //Action в Vuex возвращает Promise
           this.$store.dispatch(AUTH_REQUEST, loginData).then(promSucces => {
             this.$store.commit('config/setHeaderStatus', true);
-            this.$router.push({name: 'catalog'})
-            console.log('pushTo Catalog');
+            this.$router.push({name: 'catalog'});
           }, promError => {
             this.errorText = promError.data.msgClient;
+
+            // for(let item of this.inputsArr){
+            //   item.showError = true;
+            // }
+
             $('#errorLoginModal').modal();
             console.error('Login err', promError);
           });
-
         }else{
-          alert('Ошибка в форме');
+          let index = 0;
+          for(let item of this.inputsArr){
+            item.valid = item.isValid;
+            this.onChangeData(index, item);
+            if(!item.isValid){
+               item.showError = true;
+            }
+            index++;
+
+          }
         }
       },
       onChangeData(index, data){ // для компонента input

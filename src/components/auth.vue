@@ -14,7 +14,6 @@
           <appLogin v-if="authStatus == 'login'" @changeStatus="changeStatus"></appLogin>
           <appSignup v-if="authStatus == 'signUp'" @changeStatus="changeStatus"></appSignup>
           <appForgotPwd v-if="authStatus == 'forgotPwd'" @changeStatus="changeStatus"></appForgotPwd>
-          <!--todo: внедрить компонент input во все формы/компоненты, вместо инпатов-->
         </transition>
       </div>
     </div>
