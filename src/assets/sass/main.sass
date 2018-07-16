@@ -709,8 +709,12 @@ button
       justify-content: space-between
       padding: 30px
       .title-cat
-        font-weight: 400
-        color: $gray-700
+        display: flex
+        align-items: center
+        .title
+          font-weight: 400
+          color: $gray-700
+          padding-left: 15px
   .conf-panel
     display: flex
     align-items: center
@@ -724,4 +728,129 @@ button
       button
         background: transparent
         border: none
+
+textarea
+  background: $gray-200
+  width: 100%
+  font-weight: 400
+  color: $gray-700
+  border-color: transparent
+  resize: none
+  border-radius: 5px
+  padding: 15px
+  font-style: normal
+  &:focus
+    background: #ffffff
+    border-color: $gray-400
+.catalog-b
+  padding: 30px
+  border-top: solid 1px $gray-400
+  animation-duration: .3s!important
+  .item-b
+    height: 100%
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    .user-txt
+      color: $gray-600
+      line-height: 38px
+      margin-bottom: 7px
+    .multiselect__tags
+      padding-top: 10px
+      border-color: $gray-400
+      height: 38px
+    .multiselect__input, .multiselect__single
+      color: $gray-600
+    .multiselect__tag
+      background: $green
+    .multiselect__option--selected.multiselect__option--highlight, .multiselect__option--selected.multiselect__option--highlight:after
+      background: $red
+    .multiselect__option--highlight
+      background: $green
+    .multiselect__option--highlight:after
+      background: $green
+    .switcher-c
+      margin-top: 5px
+      height: 38px
+    .upload-btn
+      display: flex
+      flex-direction: column
+      justify-content: space-between
+      height: 100%
+      button
+        width: 100%
+
+
+.photo-input-c
+  position: relative
+  width: 50px
+  height: 50px
+  max-width: 50px
+  max-height: 50px
+  display: flex
+  align-items: center
+  border-radius: 5px
+  &:hover
+    .svg-c
+      opacity: 1
+  &.ava-c
+    width: 300px
+    img
+      pointer-events: none
+      left: 25px
+      max-width: 100%
+      border-radius: 100px
+      object-fit: contain
+    &:before, &:after
+      pointer-events: none
+  label
+    width: 50px
+    height: 50px
+    min-width: 50px
+    min-height: 50px
+    left: -25px
+    position: relative
+    display: flex
+    cursor: pointer
+  input
+    display: none
+  .svg-c
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    pointer-events: none
+    z-index: 122
+    width: 50px
+    height: 50px
+    display: flex
+    align-items: center
+    justify-content: center
+    transition: opacity .3s ease
+    background: rgba($gray-700, 0.7)
+    border-radius: 300px
+    pointer-events: none
+    opacity: 0
+    svg
+      path
+        fill: $gray-300
+  label
+    width: 100%
+    margin-bottom: 0px
+  .txt
+    color: #ffffff
+    padding-left: 37px
+.pagination
+  justify-content: center
+  .page-item
+    &.is-active
+      .page-link
+        color: $green
+.page-link
+  border-color: transparent
+  color: $gray-600
+  font-size: 16px
+  font-weight: 500
+.dots-pag
+  pointer-events: none!important
 @import "media" // Всегда в конце

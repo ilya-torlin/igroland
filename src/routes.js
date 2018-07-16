@@ -59,7 +59,7 @@ const routes = [
   // { path: '/login', component: appLogin, name: 'login' },
   { path: '/dashboard', component: appDashboard, name: 'dashboard', beforeEnter: ifAuthenticated},
   { path: '/catalogconfig', component: appCatalog, name: 'catalogconfig', beforeEnter: ifAuthenticated},
-  { path: '/catalog', component: appCatalogList, name: 'catalog', beforeEnter: ifAuthenticated},
+  { path: '/catalog/:page?', component: appCatalogList, name: 'catalog', beforeEnter: ifAuthenticated},
   { path: '/provider', component: appProvider, name: 'provider', beforeEnter: ifAuthenticated},
   { path: '/attachments', component: appAttachments, name: 'attachments', beforeEnter: ifAuthenticated},
   { path: '/profileconfig', component: appProfileConfig, name: 'profileconfig', beforeEnter: ifAuthenticated},
@@ -71,5 +71,6 @@ const routes = [
 //Создаём экземпляр маршрутизатора и передаём маршруты в опции `routes`
 export const router = new VueRouter({
   routes: routes,
-  mode: 'history'
+  // mode: 'history',
+  // base: __dirname
 });

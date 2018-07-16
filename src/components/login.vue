@@ -150,7 +150,6 @@
                item.showError = true;
             }
             index++;
-
           }
         }
       },

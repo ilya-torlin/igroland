@@ -65,4 +65,7 @@
 
   @import 'assets/sass/main.sass'
   @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&subset=cyrillic,cyrillic-ext')
+
+  @import "../node_modules/animate.css/animate.min.css"
+
 </style>

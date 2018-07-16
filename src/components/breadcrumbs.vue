@@ -21,14 +21,12 @@
         </div>
         <div class="col-6">
             <div class="control-panel-filter">
-                <div class="switcher-c" :class="{'is-active':switcherActive}" @click="switcherActive = !switcherActive">
-                    <div class="switcher-i">
 
-                    </div>
-                    <div class="txt-sw">
-                        Скрыть не в наличии
-                    </div>
-                </div>
+                <appSwitcher  txt="Скрыть не в наличии"
+                              :switcherActive="switcherActive"
+                              @switchToogle="switcherActive = $event.switcherActive">
+                </appSwitcher>
+
 
                 <select name="" id="" ref="selCompanyList">
                     <option value="Игроленд">
@@ -53,6 +51,7 @@
 <script>
     // import $ from '../../node_modules/jquery';
     import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.min';
+    import appSwitcher from './switcher'
     export default {
         name: 'breadcrumbs',
         data () {
@@ -61,6 +60,9 @@
               switcherActive: true,
               selCompanyList: ''
             }
+        },
+        components:{
+          appSwitcher
         },
         mounted(){
           $('[data-toggle="tooltip"]').tooltip();
