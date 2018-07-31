@@ -730,6 +730,18 @@ button
           font-weight: 400
           color: $gray-700
           padding-left: 15px
+        .user-info
+          display: flex
+          flex-direction: column
+          justify-content: center
+          margin-left: 30px
+          .h-user-name
+            color: $gray-800
+            font-size: 17px
+            font-weight: 700
+          .h-user-role
+            color: $gray-600
+            font-weight: 500
   .conf-panel
     display: flex
     align-items: center
@@ -743,6 +755,13 @@ button
       button
         background: transparent
         border: none
+        display: flex
+      .time-txt
+        color: $gray-600
+        display: inline-block
+        margin: 0 10px
+      .time-btn
+        margin-right: 15px
 
 textarea
   background: $gray-200
@@ -879,5 +898,30 @@ textarea
     svg path
       fill: $red
       transition: all .3s
-
+.white-block-r
+  display: flex
+  justify-content: space-between
+  padding: 30px
+  background: #FFFFFF
+  margin-bottom: 30px
+  border-radius: 5px
+  &>.row
+    width: 100%
+.input-group
+  .input-group-append
+    button
+      display: flex
+      align-items: center
+      justify-content: center
+      border-color: $gray-400
+      border-left-color: $gray-200
+      background: $gray-200
+      box-shadow: none!important
+      &:hover, &:active, &:focus
+        background: $gray-400!important
+        border-color: $gray-400!important
+.find-b
+  margin-right: -30px
+  .input-group
+    max-width: 500px
 @import "media" // Всегда в конце

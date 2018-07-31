@@ -4,8 +4,6 @@ import Vue from "vue";
 import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
-
-
 import appLogin from './components/login.vue'
 import appSignup from './components/SignUp.vue'
 import appDashboard from './components/dashboard.vue'
@@ -16,6 +14,7 @@ import appAttachments from './components/attachments.vue'
 import appUiKit from './components/ui-kit.vue'
 import appProfileConfig from './components/profileConfig.vue'
 import appAuth from './components/auth.vue'
+import appUsersList from './components/usersList'
 import E404 from './components/E404'
 import {store} from './store/index.js'
 
@@ -62,8 +61,9 @@ const routes = [
   { path: '/catalog/:page?', component: appCatalogList, name: 'catalog', beforeEnter: ifAuthenticated},
   { path: '/provider', component: appProvider, name: 'provider', beforeEnter: ifAuthenticated},
   { path: '/attachments', component: appAttachments, name: 'attachments', beforeEnter: ifAuthenticated},
-  { path: '/profileconfig', component: appProfileConfig, name: 'profileconfig', beforeEnter: ifAuthenticated},
+  { path: '/profileconfig/:id?', component: appProfileConfig, name: 'profileconfig', beforeEnter: ifAuthenticated},
   { path: '/auth', component: appAuth, name: 'auth', beforeEnter: ifNotAuthenticated},
+  { path: '/users/:page?', component: appUsersList, name: 'catalog', beforeEnter: ifAuthenticated},
   { path: '*', component: E404},
   { path: '/', redirect: {name: 'catalog'}}
 ];
