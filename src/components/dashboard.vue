@@ -413,7 +413,7 @@
 
 <script>
     export default {
-        name: 'app',
+        name: 'Dashboard',
         data () {
             return {
                 msg: 'Dashboard'

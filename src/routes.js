@@ -58,7 +58,7 @@ const ifAuthenticated = (to, from, next) => {
 const routes = [
   // { path: '/login', component: appLogin, name: 'login' },
   { path: '/dashboard', component: appDashboard, name: 'dashboard', beforeEnter: ifAuthenticated},
-  { path: '/catalogconfig', component: appCatalog, name: 'catalogconfig', beforeEnter: ifAuthenticated},
+  { path: '/catalogconfig/:id?', component: appCatalog, name: 'catalogconfig', beforeEnter: ifAuthenticated},
   { path: '/catalog/:page?', component: appCatalogList, name: 'catalog', beforeEnter: ifAuthenticated},
   { path: '/provider', component: appProvider, name: 'provider', beforeEnter: ifAuthenticated},
   { path: '/attachments', component: appAttachments, name: 'attachments', beforeEnter: ifAuthenticated},

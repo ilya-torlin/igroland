@@ -690,6 +690,7 @@ button
   padding: 15px 15px
   border: solid 2px transparent
   border-radius: 5px
+  min-width: 300px
   .svg-c
     margin-right: 10px
   &.alert-success
@@ -697,6 +698,20 @@ button
     svg
       path
         fill: $green
+  &.alert-danger
+    border-color: $red
+    svg
+      path
+        fill: $red
+.alert-dismissible
+  padding-right: 52px
+  .close
+    height: 100%
+.fixed-alert-c
+  position: fixed
+  bottom: 0px
+  z-index: 1000
+  right: 41px
 
 .catalog-list-r
   .catalog-list-c
@@ -853,4 +868,16 @@ textarea
   font-weight: 500
 .dots-pag
   pointer-events: none!important
+
+.trIsOnB
+  &.isOnTr
+    .svg-c
+      svg path
+        fill: $green
+        transition: all .3s
+  .svg-c
+    svg path
+      fill: $red
+      transition: all .3s
+
 @import "media" // Всегда в конце

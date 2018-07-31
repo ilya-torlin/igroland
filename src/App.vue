@@ -17,6 +17,8 @@
         </div>
       </div>
     </div>
+    <!--alerts-->
+    <appAlerts></appAlerts>
   </div>
 </template>
 
@@ -25,12 +27,13 @@
   import {mapGetters} from 'vuex'; // Теперь можно писать {{getterNameFromStore}}, Предварительно передать mapGetters в computed
 
   import appHeader from './components/header'
+  import appAlerts from './components/alerts'
 
   export default {
     name: 'app',
     data () {
       return {
-        msg: 'TopKek',
+        msg: 'mainApp'
       }
     },
     methods:{
@@ -45,7 +48,8 @@
       // }
     },
     components:{
-      appHeader
+      appHeader,
+      appAlerts
     },
     computed: {
       ...mapGetters('user', {

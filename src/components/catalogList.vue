@@ -1,42 +1,37 @@
 <!--Список всех каталогов-->
+
+<!--todo: API - Скопировать каталог-->
+<!--todo: API - Сохранить каталог-->
+<!--todo: API - Удалить каталог-->
+<!--todo: API - Добавить каталог-->
+
 <template>
   <!--catalogList.vue-->
   <div class="catalogComp">
     <div class="row">
       <div class="col-12">
         <div class="btn-c">
-          <button type="button" class="btn btn-outline-secondary">Новый каталог</button>
+          <button @click="addNewCatalog" type="button" class="btn btn-outline-secondary">Новый каталог</button>
         </div>
       </div>
       <div class="col-12 mt-3">
-        <div class="alert alert-success" role="alert">
-          <div class="svg-c">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              width="23px" height="23px">
-              <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                    d="M11.500,23.000 C5.149,23.000 -0.000,17.851 -0.000,11.500 C-0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM17.557,7.414 C16.968,6.849 16.014,6.849 15.425,7.414 L10.064,12.505 L8.533,11.080 C7.944,10.516 6.990,10.516 6.401,11.080 C5.812,11.646 5.812,12.561 6.401,13.126 L8.998,15.573 C9.587,16.138 10.541,16.138 11.130,15.573 L17.557,9.460 C18.145,8.895 18.145,7.979 17.557,7.414 Z"/>
-            </svg>
-          </div>
-          Каталог добавлен!
-        </div>
+
       </div>
     </div>
     <!--todo: вынести в отдельный компонент-->
 
-      <template v-for="(catalogItem, index) in catalogList">
-        {{catalogItem.switcherActive}} {{index}} // <br>
-      </template>
+      <!--<template v-for="(catalogItem, index) in catalogList">-->
+        <!--{{catalogItem.switcherActive}} {{index}} // <br>-->
+      <!--</template>-->
 
-      <!--todo: Сделать функционал для: кнопки включения/отключения,
-          todo: Список выделенных пользователей в селекте
-          todo: Кнопки 'скопировать', 'сохранить', 'удалить'
-          todo: Добавить ссылку на название каталога
-          todo: кнопка "новый каталог"
+      <!--
           todo: Доделать пагинацию
           todo: Сделать заглушку, если нет каталогов
+          todo: Загрузка фото
+          todo: Добавить редактирование имени каталога, справа от названия добавить кнопку с карандашиком. при нажатии на кнопку, заменять название на инпат(???)
+          todo: добавить массив со страницами в состояние
       -->
+
       <appCatalogItem v-for="(catalogItem, index) in catalogList"
         :key="index"
         :selected="catalogItem.selected"
@@ -48,15 +43,20 @@
         :isActive="catalogItem.isActive"
         :isOn="catalogItem.isOn"
         :description="catalogItem.description"
+        :selectedUsers="catalogItem.selectedUsers"
         @configToogle = "onConfigToogle(index)"
         @switchToogle = "onSwitchToogle(index)"
-        @changeDescr = "onChangeDescr(index, $event)">
+        @isOnToogle = "onIsOnToogle(index)"
+        @changeDescr = "onChangeDescr(index, $event)"
+        @copyCatalog = "onCopyCatalog(index)"
+        @saveCatalog = "onSaveCatalog(index)"
+        @changeSelect = "onChangeSelect(index)"
+        @removeCatalog = "onRemoveCatalog(index)">
       </appCatalogItem>
 
 
     <div class="row">
       <div class="col-12">
-        <!--todo: добавить массив со страницамив состояние-->
         <nav aria-label="Page navigation example">
           <ul class="pagination">
             <li class="page-item">
@@ -82,12 +82,65 @@
         </nav>
       </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade warning-modal" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalCenterTitle">
+              <div class="svg-c">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  width="23px" height="23px">
+                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
+                        d="M11.500,23.000 C5.149,23.000 0.000,17.851 0.000,11.500 C0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM11.500,5.000 C10.672,5.000 10.000,5.671 10.000,6.500 C10.000,7.328 10.672,8.000 11.500,8.000 C12.328,8.000 13.000,7.328 13.000,6.500 C13.000,5.671 12.328,5.000 11.500,5.000 ZM13.000,10.500 C13.000,9.671 12.328,9.000 11.500,9.000 C10.672,9.000 10.000,9.671 10.000,10.500 L10.000,16.500 C10.000,17.328 10.672,18.000 11.500,18.000 C12.328,18.000 13.000,17.328 13.000,16.500 L13.000,10.500 Z"/>
+                </svg>
+              </div>
+              <div class="txt">
+                Подтвердите удаление каталога
+              </div>
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <appInput v-for="(elem, index) in inputsArr" :key="index"
+                      :validFeedback="elem.validFeedback"
+                      :invalidFeedback="elem.invalidFeedback"
+                      :placeholder="elem.placeholder"
+                      :required="elem.required"
+                      :pattern="elem.pattern"
+                      :type="elem.type"
+                      :value="elem.value"
+                      :isValid="elem.isValid"
+                      :showError="elem.showError"
+                      @changedata="onChangeData(index, $event)">
+            </appInput>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="removeCatalog(removeCatalogIndex)">Удалить каталог</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
 
   import appCatalogItem from './catalogItem'
+  import appInput from './inputValid';
+  import {API_URL} from '../constants'
+  import axios from 'axios'
+
+  import {mapGetters} from 'vuex';
+  import {mapMutations} from 'vuex';
+
   export default {
     name: 'catalogList',
     data () {
@@ -96,17 +149,21 @@
         catalogList: { // ассоциативный массив объектов
             123: { // Идентификатор каталога
               selected: null, // выбранные элементы в селекте
-              switcherActive: false, // активность переключателя
-              showConfig: true, // Тригер для отображения параметров переключателя
+              switcherActive: false, // активность переключателя (Доступен для всех)
+              showConfig: true, // Тригер для отображения параметров переключателя(шестерёнка)
               catalogName: 'Игрушки', // Наименование каталога
               isActive: true, // каталог активен(значёе молнии), один или несколько пользователей используют его
-              isOn: false, // Тригер для включения/отключения каталога, если каталог отключён, то пользователи его не видят
+              isOn: true, // Тригер для включения/отключения каталога, если каталог отключён, то пользователи его не видят
               description: 'Краткое описание каталога', // краткое описание каталога
               catalogImg: '', // Изображение каталога
+              catalogSaved: true,//каталог сохранён, при внесении изменений или копирывании каталога ставим в false... если каталог не сохранён, то его нельзя скопировать и выводится ошибка(предупреждение) для пользователя
               userList: [ // пользователи для селекта
-                {name: 'user@gmail.com'},
-                {name: 'goner@gmail.com'},
-                {name: '2user2@gmail.com'}
+                {name: 'user@gmail.com', id: '1234'},
+                {name: 'goner@gmail.com', id: '4453'},
+                {name: '2user2@gmail.com', id: '8489'}
+              ],
+              selectedUsers: [ // выбранные пользователи в селекте
+                {name: 'user@gmail.com', id: '1234'},
               ]
             },
             1232: { // Идентификатор каталога
@@ -118,6 +175,7 @@
               isOn: false, // Тригер для включения/отключения каталога, если каталог отключён, то пользователи его не видят
               description: '', // краткое описание каталога
               catalogImg: '', // Изображение каталога
+              catalogSaved: true,//каталог сохранён, при внесении изменений или копирывании каталога ставим в false... если каталог не сохранён, то его нельзя скопировать и выводится ошибка(предупреждение) для пользователя
               userList: [ // пользователи для селекта
                 {name: 'user@gmail.com'},
                 {name: 'goner@gmail.com'},
@@ -126,31 +184,170 @@
             }
         },
         //pagination, при переключении страницы, делаем запрос к серверу
+        inputsArr:[
+          {
+            id: 'confirmDelete',
+            showError: '',
+            validFeedback: "",
+            invalidFeedback: "Имя введено неверно",
+            placeholder: "Введите имя каталога, который хотите удалить",
+            type: "text",
+            required: "true",
+            pattern: /[^]*/,
+            value: '',
+            isValid: false
+          }
+        ],
         countPage: 12, // колличество страниц
-      }
-    },
-    methods: {
-      onConfigToogle(index){
-        this.catalogList[index].showConfig = !this.catalogList[index].showConfig;
-      },
-      onSwitchToogle(index){
-        this.catalogList[index].switcherActive = !this.catalogList[index].switcherActive;
-      },
-      onChangeDescr(index, e){
-        console.log('e.value = ', e.value);
-        this.catalogList[index].description = e.value;
+        removeCatalogIndex: 0 // индекс каталога, который надо удалить,
       }
     },
     computed: {
+      ...mapGetters('alerts',
+        {
+          succesAlert: 'succesAlert',
+          errorAlert: 'errorAlert'
+        }),
       currentPage(){ // текущая страница, передаётся в url в качестве параметра
         return this.$route.params.page || 1;
+      }
+    },
+    methods: {
+      ...mapMutations('alerts',{
+        setSuccesAlertShow: 'setSuccesAlertShow',
+        setErrorAlertShow: 'setErrorAlertShow',
+        setSuccesAlertMsg: 'setSuccesAlertMsg',
+        setErrorAlertMsg: 'setErrorAlertMsg'
+      }),
+      falseCatalogSave(index){//переключение каталога в режим не сохранён
+        this.catalogList[index].catalogSaved = false;
       },
-      catalogList123(){
-        return this.catalogList[0]["123"];
+      onConfigToogle(index){ // переключение шестерёнки (настройки каталога)
+        this.catalogList[index].showConfig = !this.catalogList[index].showConfig;
+      },
+      onIsOnToogle(index){  // включение/отключение каталога
+        this.catalogList[index].isOn = !this.catalogList[index].isOn;
+        this.falseCatalogSave(index);
+      },
+      onSwitchToogle(index){// переключение "Доступен для всех"
+        this.catalogList[index].switcherActive = !this.catalogList[index].switcherActive;
+        this.falseCatalogSave(index);
+      },
+      onChangeDescr(index, e){ // изменение описания
+        this.catalogList[index].description = e.value;
+        this.falseCatalogSave(index);
+      },
+      onCopyCatalog(index){ // копирование каталога
+        //копируем, создаём новый каталог на основе существующего, на стороне клиента
+        //далее, только при нажатии на кнопку 'сохранить' отправляем этот каталог на сервер, на сервере каталогу присвается новый ид, этот ид приходит в ответе на операцию сохранения
+
+        let indRand = (new Date).getTime();//unixtime in mileseconds
+        this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
+
+        $("html, body").animate({ scrollTop: $('.pagination').offset().top - 120}, 600);
+
+        // this.catalogList.splice(indRand, 1, this.catalogList[indRand]);
+
+        this.catalogList[indRand].catalogName = this.catalogList[index].catalogName + ' (копия)';
+        this.falseCatalogSave(indRand);
+      },
+      onSaveCatalog(index){ // сохранение каталога
+        if(this.catalogList[index].catalogSaved){
+          this.setSuccesAlertShow(true);
+          this.setSuccesAlertMsg('Каталог сохранён');
+        }else {
+          let payload = this.catalogList[index];
+          axios({url: API_URL + '/login', data: payload, method: 'POST' })
+            .then(resp => {
+              const error = resp.data.error;
+              if(error){
+                let errorTxt = resp.data.data.msgClient;
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при сохранении каталога: ' + errorTxt);
+              }else {
+                this.catalogList[index].catalogSaved = true;
+                this.setSuccesAlertShow(true);
+                this.setSuccesAlertMsg('Каталог сохранён');
+              }
+            })
+            .catch(err => {
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Ошибка при сохранении каталога');
+              console.log(err);
+            });
+        }
+
+        // let indRand = (new Date).getTime();//unixtime in mileseconds
+        // this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
+        // this.catalogList[indRand].catalogName = this.catalogList[index].catalogName + ' (копия)';
+
+      },
+      onRemoveCatalog(index){ // удаление каталога, открытие окна подтверждения
+        this.removeCatalogIndex = index;
+        $('#confirmDeleteModal').modal();
+      },
+      removeCatalog(index){ // удаление каталога
+
+        if(this.inputsArr[0].value === this.catalogList[index].catalogName){
+          let payload = this.catalogList[index];
+          axios({url: API_URL + '/login', data: payload, method: 'POST' })
+            .then(resp => {
+              const error = resp.data.error;
+              if(error){
+                let errorTxt = resp.data.data.msgClient;
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при удалении каталога: ' + errorTxt);
+              }else{
+                this.$delete(this.catalogList, index, this.catalogList[index]);
+                this.setSuccesAlertShow(true);
+                this.setSuccesAlertMsg('Каталог удалён');
+              }
+            })
+            .catch(err => {
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Ошибка при удалении каталога ');
+              console.log(err);
+            });
+        }else{
+          this.setErrorAlertShow(true);
+          this.setErrorAlertMsg('Ошибка при удалении каталога: имена не совпадают');
+        }
+      },
+      onChangeSelect(index){ // изменение селекта
+        //Делать запрос на сервер для копирования?
+        console.log('onChangeSelect');
+        this.falseCatalogSave(index);
+      },
+      onChangeData(index, data){ // для компонента input
+        this.inputsArr[index].value = data.value;
+        this.inputsArr[index].isValid = data.valid;
+      },
+      addNewCatalog(){
+        let payload = {};
+        axios({url: API_URL + '/addCatalog', data: payload, method: 'POST' })
+          .then(resp => {
+            const error = resp.data.error;
+            if(error){
+              let errorTxt = resp.data.data.msgClient;
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Ошибка при добавлении каталога: ' + errorTxt);
+            }else{
+              this.$delete(this.catalogList, index, this.catalogList[index]);
+              this.setSuccesAlertShow(true);
+              this.setSuccesAlertMsg('Каталог добавлен');
+            }
+          })
+          .catch(err => {
+            this.setErrorAlertShow(true);
+            this.setErrorAlertMsg('Ошибка при добавлении каталога ');
+            console.log(err);
+          });
+
       }
     },
     components: {
-      appCatalogItem
+      appCatalogItem,
+      appInput
     },
     mounted(){
       $('[data-toggle="tooltip"]').tooltip();
