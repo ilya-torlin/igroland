@@ -78,8 +78,8 @@
     name: 'login',
     data () {
       return {
-        inputsArr:[
-          {
+        inputsArr:[//используется в profileConfig.vue
+          { //
             id: 'login-i',
             showError: '',
             validFeedback: "",

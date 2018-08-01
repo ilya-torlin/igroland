@@ -273,7 +273,42 @@ body
     max-width: 100%
     position: relative
     z-index: 2
-
+    border-radius: 1000px
+.ava-big-c
+  width: 74px
+  height: 74px
+  display: flex
+  align-items: center
+  justify-content: center
+  position: relative
+  border-radius: 3000px
+  background-color: #FFFFFF
+  &:after
+    content: ''
+    position: absolute
+    background-image: linear-gradient(to right, #f3d930, #37d660)
+    width: 78px
+    height: 78px
+    left: -2px
+    top: -2px
+    border-radius: 100%
+    z-index: 0
+  &:before
+    content: ''
+    position: absolute
+    background-image: linear-gradient(to right, #f3d930, #37d660)
+    width: 74px
+    height: 74px
+    left: 0px
+    top: 0px
+    border-radius: 100%
+    background: #FFFFFF
+    z-index: 1
+  img
+    max-width: 100%
+    position: relative
+    z-index: 2
+    order-radius: 1000px
 .flex-center
   align-content: center
   justify-content: center
@@ -907,6 +942,14 @@ textarea
   border-radius: 5px
   &>.row
     width: 100%
+
+.white-block-r22
+  padding: 30px
+  background: #FFFFFF
+  margin-bottom: 30px
+  border-radius: 5px
+  h4
+    color: $gray-700
 .input-group
   .input-group-append
     button
@@ -924,4 +967,75 @@ textarea
   margin-right: -30px
   .input-group
     max-width: 500px
+
+.progress-axios
+  height: 3px
+  position: fixed
+  top: 0px
+  width: 0%
+  background: $green
+  transition: all 1s ease
+  visibility: hidden
+  &.isActive
+    visibility: visible
+
+.profileUser-c
+  .white-block-r
+    justify-content: flex-start
+  .user-info
+    margin-left: 20px
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    height: 90px
+    .user-name
+      font-size: 17px
+  .title-user
+    display: flex
+    align-items: center
+  .user-contacts
+    display: flex
+    align-items: center
+    .c-i
+      margin-right: 20px
+      color: $gray-600
+      position: relative
+      &:not(:first-child):before
+        content: ''
+        width: 4px
+        height: 4px
+        position: absolute
+        border-radius: 1000px
+        background: $gray-600
+        left: -12px
+        top: 50%
+        transform: translate(0, -50%)
+      &:nth-child(even)
+        color: $gray-700
+      &:last-child
+        margin-right: 0px
+  .white-block-r22
+    h4
+      margin-bottom: 30px
+.uploadProfileAva
+  margin-bottom: 0px
+  cursor: pointer
+  border: solid 2px $gray-400
+  border-radius: 5px
+  padding: 5px 10px
+  color: $gray-600
+  font-weight: 500
+  display: inline-flex
+  input
+    display: none
+.appInputLabel
+  padding-top: 25px
+  position: relative
+  &:before
+    content: attr(cont)
+    font-size: 14px
+    color: $gray-600
+    position: absolute
+    top: 0px
+    left: 0px
 @import "media" // Всегда в конце

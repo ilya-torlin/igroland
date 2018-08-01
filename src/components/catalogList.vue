@@ -27,13 +27,22 @@
 
       <!--
           todo: Доделать пагинацию
-          todo: Сделать заглушку, если нет каталогов
           todo: Загрузка фото
           todo: Добавить редактирование имени каталога, справа от названия добавить кнопку с карандашиком. при нажатии на кнопку, заменять название на инпат(???)
           todo: добавить массив со страницами в состояние
       -->
 
-      <appCatalogItem v-for="(catalogItem, index) in catalogList"
+      <div class="row" v-if="Object.keys(catalogList).length == 0">
+        <div class="col-12">
+          <div class="white-block-r ">
+            <h4 class="mb-0">
+              Список каталогов пуст, для создания нового каталога, используйте кнопку "Новый каталог"
+            </h4>
+          </div>
+        </div>
+      </div>
+
+      <appCatalogItem v-else v-for="(catalogItem, index) in catalogList"
         :key="index"
         :selected="catalogItem.selected"
         :switcherActive="catalogItem.switcherActive"
@@ -55,34 +64,38 @@
         @removeCatalog = "onRemoveCatalog(index)">
       </appCatalogItem>
 
+    <appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
+    @pageChange = "onPageChange()">
 
-    <div class="row">
-      <div class="col-12">
-        <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Предыдущая</span>
-              </a>
-            </li>
-            <li class="page-item is-active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item dots-pag"><a class="page-link" href="#">...</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">4</a></li>
-            <li class="page-item dots-pag"><a class="page-link" href="#">...</a></li>
-            <li class="page-item"><a class="page-link" href="#">15</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Следующая</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </div>
+    </appPagination>
+
+    <!--<div class="row">-->
+      <!--<div class="col-12">-->
+        <!--<nav aria-label="Page navigation example">-->
+          <!--<ul class="pagination">-->
+            <!--<li class="page-item">-->
+              <!--<a class="page-link" href="#" aria-label="Previous">-->
+                <!--<span aria-hidden="true">&laquo;</span>-->
+                <!--<span class="sr-only">Предыдущая</span>-->
+              <!--</a>-->
+            <!--</li>-->
+            <!--<li class="page-item is-active"><a class="page-link" href="#">1</a></li>-->
+            <!--<li class="page-item dots-pag"><a class="page-link" href="#">...</a></li>-->
+            <!--<li class="page-item"><a class="page-link" href="#">2</a></li>-->
+            <!--<li class="page-item"><a class="page-link" href="#">3</a></li>-->
+            <!--<li class="page-item"><a class="page-link" href="#">4</a></li>-->
+            <!--<li class="page-item dots-pag"><a class="page-link" href="#">...</a></li>-->
+            <!--<li class="page-item"><a class="page-link" href="#">15</a></li>-->
+            <!--<li class="page-item">-->
+              <!--<a class="page-link" href="#" aria-label="Next">-->
+                <!--<span aria-hidden="true">&raquo;</span>-->
+                <!--<span class="sr-only">Следующая</span>-->
+              <!--</a>-->
+            <!--</li>-->
+          <!--</ul>-->
+        <!--</nav>-->
+      <!--</div>-->
+    <!--</div>-->
 
     <!-- Modal -->
     <div class="modal fade warning-modal" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -136,6 +149,7 @@
 
   import appCatalogItem from './catalogItem'
   import appInput from './inputValid';
+  import appPagination from './pagination'
   import {API_URL} from '../constants'
   import axios from 'axios'
 
@@ -184,7 +198,6 @@
               ]
             }
         },
-        //pagination, при переключении страницы, делаем запрос к серверу
         inputsArr:[
           {
             id: 'confirmDelete',
@@ -199,8 +212,12 @@
             isValid: false
           }
         ],
-        countPage: 12, // колличество страниц
-        removeCatalogIndex: 0 // индекс каталога, который надо удалить,
+        removeCatalogIndex: 0, // индекс каталога, который надо удалить,
+        //pagination, при переключении страницы, делаем запрос к серверу
+        pagination:{
+          countPage: 12, // общее колличество страниц, делаем запрос к базе
+          countItemsPage: 12 // колличество элементов на странице
+        },
       }
     },
     computed: {
@@ -209,9 +226,10 @@
           succesAlert: 'succesAlert',
           errorAlert: 'errorAlert'
         }),
-      currentPage(){ // текущая страница, передаётся в url в качестве параметра
-        return this.$route.params.page || 1;
-      }
+      ...mapGetters('progress', {
+        progStateWidth: 'progStateWidth',
+        progShow: 'progShow'
+      })
     },
     methods: {
       ...mapMutations('alerts',{
@@ -219,6 +237,13 @@
         setErrorAlertShow: 'setErrorAlertShow',
         setSuccesAlertMsg: 'setSuccesAlertMsg',
         setErrorAlertMsg: 'setErrorAlertMsg'
+      }),
+      ...mapMutations('progress',{
+        setProgStateWidth: 'setProgStateWidth',
+        setProgShow: 'setProgShow',
+        stepOneActive: 'stepOneActive',
+        stepTwoActive: 'stepTwoActive',
+        stepLastActive: 'stepLastActive',
       }),
       falseCatalogSave(index){//переключение каталога в режим не сохранён
         this.catalogList[index].catalogSaved = false;
@@ -258,9 +283,11 @@
           this.setSuccesAlertMsg('Каталог сохранён');
         }else {
           let payload = this.catalogList[index];
+          this.stepOneActive(); // прогрессбар
           axios({url: API_URL + '/login', data: payload, method: 'POST' })
             .then(resp => {
               const error = resp.data.error;
+              this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
                 this.setErrorAlertShow(true);
@@ -274,6 +301,7 @@
             .catch(err => {
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при сохранении каталога');
+              this.stepLastActive(); // прогрессбар
               console.log(err);
             });
         }
@@ -287,13 +315,23 @@
         this.removeCatalogIndex = index;
         $('#confirmDeleteModal').modal();
       },
+      onPageChange(){
+        console.log('onPageChange');
+        console.log('onPageChange');
+        console.log('onPageChange');
+        console.log('onPageChange');
+        console.log('onPageChange');
+        console.log('onPageChange');
+      },
       removeCatalog(index){ // удаление каталога
 
         if(this.inputsArr[0].value === this.catalogList[index].catalogName){
           let payload = this.catalogList[index];
+          this.stepOneActive(); // прогрессбар
           axios({url: API_URL + '/login', data: payload, method: 'POST' })
             .then(resp => {
               const error = resp.data.error;
+              this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
                 this.setErrorAlertShow(true);
@@ -307,6 +345,7 @@
             .catch(err => {
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при удалении каталога ');
+              this.stepLastActive(); // прогрессбар
               console.log(err);
             });
         }else{
@@ -325,9 +364,11 @@
       },
       addNewCatalog(){
         let payload = {};
+        this.stepOneActive(); // прогрессбар
         axios({url: API_URL + '/addCatalog', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
+            this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
@@ -341,6 +382,7 @@
           .catch(err => {
             this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при добавлении каталога ');
+            this.stepLastActive(); // прогрессбар
             console.log(err);
           });
 
@@ -348,7 +390,8 @@
     },
     components: {
       appCatalogItem,
-      appInput
+      appInput,
+      appPagination
     },
     mounted(){
       $('[data-toggle="tooltip"]').tooltip();

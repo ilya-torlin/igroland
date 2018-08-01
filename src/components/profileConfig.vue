@@ -1,24 +1,194 @@
 <!--Профиль клиента-->
 <template>
     <!--profileConfig.vue-->
-    <div class="container">
+    <div class="container profileUser-c">
         <div class="row">
-            <div class="col">
-                <h1>
-                    ComponentTemplate {{msg}}
-                </h1>
+            <div class="col-12">
+              <div class="white-block-r">
+                <div class="title-user">
+                  <div class="ava-big-c">
+                    <img :src="avatar" alt="">
+                  </div>
+                </div>
+                <div class="user-info">
+                  <div class="user-name">
+                    {{ userName + ' ' + profile.surname}}
+                  </div>
+                  <div class="user-contacts">
+                    <div class="c-i">
+                      {{profile.email}}
+                    </div>
+                    <div class="c-i">
+                      {{profile.site}}
+                    </div>
+                    <div class="c-i">
+                      {{profile.phone}}
+                    </div>
+                  </div>
+                  <div class="label-c">
+                    <label for="uploadAva" class="uploadProfileAva">
+                      Обновить фото
+                      <input type="file" id="uploadAva">
+                    </label>
+                  </div>
+                </div>
+              </div>
             </div>
         </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="white-block-r22">
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    ПРОФИЛЬ
+                  </h4>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4 " v-for="(elem, index) in inputsArr" >
+                  <appInput class="appInputLabel"
+                            :key="index"
+                            :validFeedback="elem.validFeedback"
+                            :invalidFeedback="elem.invalidFeedback"
+                            :placeholder="elem.placeholder"
+                            :required="elem.required"
+                            :pattern="elem.pattern"
+                            :type="elem.type"
+                            :value="elem.value"
+                            :isValid="elem.isValid"
+                            :showError="elem.showError"
+                            @changedata="onChangeData(index, $event)"
+                  >
+                  </appInput>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <!--todo: написать функцию для обновления-->
+                  <button type="button" class="btn btn-success">Обновить</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
     </div>
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
+    import {mapMutations} from  'vuex';
+    import appInput from './inputValid'
     export default {
-        name: 'app',
+        name: 'profileConfig',
         data () {
             return {
-                msg: 'profileConfig'
+                msg: 'profileConfig',
+                inputsArr:{ // Редактируемые поля профиля -- Ассоциативный массив для быстрого доступа к элементов
+                  'surname-i':{
+                    id: 'surname-i',
+                    showError: '',
+                    validFeedback: "",
+                    invalidFeedback: "Фамилия введена неверно",
+                    placeholder: "Фамилия",
+                    type: "text",
+                    required: "false",
+                    pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
+                    value: '',
+                    isValid: false
+                  },
+                  'name-i':{
+                    id: 'name-i',
+                    showError: '',
+                    validFeedback: "",
+                    invalidFeedback: "Имя введено неверно",
+                    placeholder: "Имя",
+                    type: "text",
+                    required: "false",
+                    pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
+                    value: '',
+                    isValid: false
+                  },
+                  'lastName-i':{
+                    id: 'lastName-i',
+                    showError: '',
+                    validFeedback: "",
+                    invalidFeedback: "Отчество введено неверно",
+                    placeholder: "Отчество",
+                    type: "text",
+                    required: "false",
+                    pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
+                    value: '',
+                    isValid: false
+                  },
+                  'login-i':{
+                    id: 'login-i',
+                    showError: '',
+                    validFeedback: "",
+                    invalidFeedback: "Логин введён неверно",
+                    placeholder: "Логин",
+                    type: "text",
+                    required: "true",
+                    pattern: /^[a-zA-Z0-9_@.]{6,30}$/,
+                    value: '',
+                    isValid: false
+                  },
+                  //todo: добавить маску для телефона
+                  'phone-i':{
+                    id: 'phone-i',
+                    showError: '',
+                    validFeedback: "",
+                    invalidFeedback: "Телефон введен неверно",
+                    placeholder: "Телефон",
+                    type: "tel",
+                    required: "false",
+                    pattern: /^[0-9()\-+]{1,11}$/,
+                    value: '',
+                    isValid: false
+                  },
+                  'site-i':{
+                    id: 'site-i',
+                    showError: '',
+                    validFeedback: "",
+                    invalidFeedback: "Сайт введен неверно",
+                    placeholder: "Сайт",
+                    type: "text",
+                    required: "false",
+                    pattern: /^[а-яА-Яa-zA-Z0-9_.\/#:]{5,100}$/,
+                    value: '',
+                    isValid: false
+                  },
+              },
             }
+        },
+        computed: {
+          ...mapGetters('user',
+            {
+              avatar: 'avatar',
+              userName: 'name',
+              userRole: 'role',
+              profile: 'profile'
+            }),
+        },
+        components: {
+          appInput
+        },
+        methods:{
+          onChangeData(index, data){ // для компонента input
+            this.inputsArr[index].value = data.value;
+            this.inputsArr[index].isValid = data.valid;
+          }
+        },
+        mounted(){
+          //Задаём начальные значения
+          this.inputsArr['surname-i'].value = this.profile.surname;
+          this.inputsArr['name-i'].value = this.userName;
+          this.inputsArr['lastName-i'].value = this.profile.lastName;
+          this.inputsArr['login-i'].value = this.profile.login;
+          this.inputsArr['phone-i'].value = this.profile.phone;
+          this.inputsArr['site-i'].value = this.profile.site;
         }
     }
 </script>

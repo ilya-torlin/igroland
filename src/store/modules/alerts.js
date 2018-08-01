@@ -1,5 +1,7 @@
 import Vue from 'vue'
 
+//todo: Сделать массив аллертов
+
 const state = {
   succesAlert: {
     msg: 'Всё хорошо',

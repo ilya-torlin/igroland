@@ -4,7 +4,7 @@
   invalid-group - ошибка
   valid-group - всё норм
   -->
-  <div class="input-group mb-3 " :class="validClass">
+  <div class="input-group mb-3 " :class="validClass" :cont="placeholder">
     <input  class="form-control"
             :type="type"
             :placeholder="placeholder"

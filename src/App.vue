@@ -1,6 +1,8 @@
 <template>
   <div id="app">
+    <div class="progress-axios" :style="{'width' : progStateWidth + '%'}" :class="{'isActive': progShow}" >
 
+    </div>
     <appHeader></appHeader>
 
     <div class="container">
@@ -24,19 +26,24 @@
 
 <script>
 
-  import {mapGetters} from 'vuex'; // Теперь можно писать {{getterNameFromStore}}, Предварительно передать mapGetters в computed
+  import {mapGetters} from 'vuex';
+  import {mapMutations} from 'vuex';
 
   import appHeader from './components/header'
   import appAlerts from './components/alerts'
 
   export default {
-    name: 'app',
+    name: 'appSPA',
     data () {
       return {
-        msg: 'mainApp'
+        msg: 'mainSPA'
       }
     },
     methods:{
+      ...mapMutations('progress',{
+        setProgStateWidth: 'setProgStateWidth',
+        setProgShow: 'setProgShow'
+      })
       // authRedirect(){ // редирект при разном статусе авторизации пользователя
       //   if(this.logedIn){
       //     this.$router.push({name: 'catalog'});
@@ -52,8 +59,9 @@
       appAlerts
     },
     computed: {
-      ...mapGetters('user', {
-        logedIn: 'logedIn'
+      ...mapGetters('progress', {
+        progStateWidth: 'progStateWidth',
+        progShow: 'progShow'
       }),
     },
     mounted(){

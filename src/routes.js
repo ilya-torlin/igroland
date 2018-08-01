@@ -63,7 +63,7 @@ const routes = [
   { path: '/attachments', component: appAttachments, name: 'attachments', beforeEnter: ifAuthenticated},
   { path: '/profileconfig/:id?', component: appProfileConfig, name: 'profileconfig', beforeEnter: ifAuthenticated},
   { path: '/auth', component: appAuth, name: 'auth', beforeEnter: ifNotAuthenticated},
-  { path: '/users/:page?', component: appUsersList, name: 'catalog', beforeEnter: ifAuthenticated},
+  { path: '/users/:page?', component: appUsersList, name: 'users', beforeEnter: ifAuthenticated},
   { path: '*', component: E404},
   { path: '/', redirect: {name: 'catalog'}}
 ];

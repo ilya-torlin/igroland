@@ -25,7 +25,7 @@
         <div class="col-6">
           <div class="find-b justify-content-end d-flex">
             <div class="input-group ">
-              <input v-model.lazy="findUserStr"  type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">
+              <input v-model.lazy="findUserStr" v-on:keyup.enter="findUser" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="button" @click="findUser">
                   <svg
@@ -120,11 +120,14 @@
       }
     },
     computed: {
-      ...mapGetters('alerts',
-        {
-          succesAlert: 'succesAlert',
-          errorAlert: 'errorAlert'
-        }),
+      ...mapGetters('alerts', {
+        succesAlert: 'succesAlert',
+        errorAlert: 'errorAlert'
+      }),
+      ...mapGetters('progress', {
+        progStateWidth: 'progStateWidth',
+        progShow: 'progShow'
+      }),
       currentPage(){ // текущая страница, передаётся в url в качестве параметра
         return this.$route.params.page || 1;
       }
@@ -139,18 +142,33 @@
         setSuccesAlertMsg: 'setSuccesAlertMsg',
         setErrorAlertMsg: 'setErrorAlertMsg'
       }),
+      ...mapMutations('progress',{
+        setProgStateWidth: 'setProgStateWidth',
+        setProgShow: 'setProgShow',
+        stepOneActive: 'stepOneActive',
+        stepTwoActive: 'stepTwoActive',
+        stepLastActive: 'stepLastActive',
+      }),
       onSwitchToogle(){// переключение "Все пользователи"
-        this.switcherActive = !this.switcherActive;
 
         let payload = this.switcherActive;
+
+        this.stepOneActive(); // прогрессбар
+
         axios({url: API_URL + '/user/userlist', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
+            this.stepLastActive(); // прогрессбар
             if(error){
+              this.setProgStateWidth(100);
+              this.setProgShow(false);
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при фильтрации пользователей: ' + errorTxt);
             }else {
+              this.setProgStateWidth(100);
+              this.setProgShow(false);
+              this.switcherActive = !this.switcherActive;
               this.usersList[index].blocked = !this.usersList[index].blocked;
               this.setSuccesAlertShow(true);
               this.setSuccesAlertMsg('Пользователи отфильтрованы');
@@ -160,13 +178,18 @@
             this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при фильтрации пользователей');
             console.log(err);
+            this.stepLastActive();
           });
       },
       isOnToogle(index){ // заблокировать/разблокировать пользователя
         let payload = this.usersList[index];
+
+        this.stepOneActive(); // прогрессбар
+
         axios({url: API_URL + '/blockuser', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
+            this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
@@ -180,15 +203,20 @@
           .catch(err => {
             this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при блокировке пользователя');
+            this.stepLastActive(); // прогрессбар
             console.log(err);
           });
 
       },
       findUser(){
         let payload = this.findUserStr;
+
+        this.stepOneActive(); // прогрессбар
+
         axios({url: API_URL + '/user/finduser', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
+            this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
@@ -201,6 +229,7 @@
           .catch(err => {
             this.setErrorAlertShow(true);
             this.setErrorAlertMsg(`Ошибка при поиске пользователя по запросу '${this.findUserStr}'`);
+            this.stepLastActive(); // прогрессбар
             console.log(err);
           });
       }

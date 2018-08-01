@@ -14,6 +14,7 @@ import config from './modules/config'
 import user from './modules/user'
 import auth from './modules/auth'
 import alerts from './modules/alerts'
+import progress from './modules/progress'
 
 
 //Header set Access-Control-Allow-Origin *
@@ -30,7 +31,8 @@ export const store = new Vuex.Store({
     config,//конфиги приложения
     user, // Информация о пользователе
     auth, // авторизация
-    alerts // сообщения для пользователя
+    alerts, // сообщения для пользователя
+    progress, //прогрессбар, состояние загрузки страницы
   },
   // strict: process.env.NODE_ENV !== 'production' // строгий режим, только для режима разработки, отслеживает, что бы state не изменялся напрямую, т.е. state можно менять только при помощи мутаций
 });

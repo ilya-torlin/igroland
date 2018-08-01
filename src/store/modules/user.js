@@ -9,8 +9,17 @@ const state = {
   name: 'MrAmiD', // Имя пользователя
   role: 'Ninja',//'права' пользователя
   avatar: 'src/assets/img/avatar.png',//аватарка
+  id: 123, // id
   status: '',
-  profile: {}
+  profile: {
+    email: 'someMail@gmail.com', // email
+    site: 'https://site.ru', //какой-то сайт
+    phone: '+7(953)345-34-54', // телефон
+    surname: 'Surname', // фамилия
+    lastName: 'lastName', // отчество
+    login: 'someMail@gmail.com', // login
+    blocked: false, // заблокирован
+  },
 };
 
 const getters = {
@@ -18,8 +27,8 @@ const getters = {
   name: state => state.name,
   role: state => state.role,
   avatar: state => state.avatar,
-  getProfile: state => state.profile,
-  isProfileLoaded: state => !!state.profile.name,
+  profile: state => state.profile,
+  isProfileLoaded: state => !!state.profile.email,
 };
 
 const mutations = {
