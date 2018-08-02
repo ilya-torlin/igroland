@@ -28,6 +28,7 @@ const actions = {
             localStorage.setItem('user-token', token); // store the token in localstorage
             commit(AUTH_SUCCESS, token);
             // you have your token, now log in your user :)
+            dispatch(`user/${USER_REQUEST}`);
 
             // dispatch( `user/${USER_REQUEST}`);
             resolve(resp);
@@ -69,7 +70,7 @@ const mutations = {
   [AUTH_SUCCESS]: (state, resp) => {
     state.status = 'success';
     state.token = resp;
-    axios.defaults.headers.common[AUTH_TOKEN_HEADER] = resp;
+    axios.defaults.headers.common[AUTH_TOKEN_HEADER] = 'Bearer ' + resp;
     state.hasLoadedOnce = true;
   },
   [AUTH_ERROR]: (state) => {

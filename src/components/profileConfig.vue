@@ -1,6 +1,9 @@
 <!--Профиль клиента-->
 <template>
     <!--profileConfig.vue-->
+
+    <!--
+      todo: -->
     <div class="container profileUser-c">
         <div class="row">
             <div class="col-12">
@@ -67,7 +70,7 @@
               <div class="row">
                 <div class="col-12">
                   <!--todo: написать функцию для обновления-->
-                  <button type="button" class="btn btn-success">Обновить</button>
+                  <button @click="updateUserProfile" type="button" class="btn btn-success" >Обновить</button>
                 </div>
               </div>
             </div>
@@ -81,6 +84,8 @@
     import {mapGetters} from 'vuex';
     import {mapMutations} from  'vuex';
     import appInput from './inputValid'
+    import {API_URL} from '../constants';
+    import axios from 'axios';
     export default {
         name: 'profileConfig',
         data () {
@@ -169,13 +174,65 @@
               avatar: 'avatar',
               userName: 'name',
               userRole: 'role',
-              profile: 'profile'
+              profile: 'profile',
+              id: 'id'
             }),
         },
         components: {
           appInput
         },
         methods:{
+          ...mapMutations('progress',{
+            setProgStateWidth: 'setProgStateWidth',
+            setProgShow: 'setProgShow',
+            stepOneActive: 'stepOneActive',
+            stepTwoActive: 'stepTwoActive',
+            stepLastActive: 'stepLastActive',
+          }),
+          ...mapMutations('alerts',{
+            setSuccesAlertShow: 'setSuccesAlertShow',
+            setErrorAlertShow: 'setErrorAlertShow',
+            setSuccesAlertMsg: 'setSuccesAlertMsg',
+            setErrorAlertMsg: 'setErrorAlertMsg'
+          }),
+          updateUserProfile(){ 
+            let payload = {
+              profile:{
+                surname: this.inputsArr['surname-i'].value,
+                lastName: this.inputsArr['lastName-i'].value,
+                login: this.inputsArr['login-i'].value,
+                phone: this.inputsArr['phone-i'].value,
+                site: this.inputsArr['site-i'].value
+              },
+              userName: this.inputsArr['name-i'].value = this.userName,
+              id: this.id
+            };
+            //
+            this.stepOneActive(); // прогрессбар
+            axios({url: API_URL + '/login', data: payload, method: 'POST' })
+              .then(resp => {
+                const error = resp.data.error;
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  this.stepLastActive();
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при обновлении профиля: ' + errorTxt);
+                }else {
+                  this.stepLastActive();
+                  this.switcherActive = !this.switcherActive;
+                  this.usersList[index].blocked = !this.usersList[index].blocked;
+                  this.setSuccesAlertShow(true);
+                  this.setSuccesAlertMsg('Профиль обновлён');
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при обновлении профиля');
+                console.log(err);
+                this.stepLastActive();
+              });
+          },
           onChangeData(index, data){ // для компонента input
             this.inputsArr[index].value = data.value;
             this.inputsArr[index].isValid = data.valid;

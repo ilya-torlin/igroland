@@ -11,16 +11,11 @@ import axios from 'axios'
 
 import {AUTH_TOKEN_HEADER} from './store/actions/auth'
 
-/* libs:
-* 1. Drag&Drop files
-* 2.
-* 3.
-* */
 
 // Аутентификация пользователя в axios, если в localstorage есть токкен
 const token = localStorage.getItem('user-token');
 if (token) {
-  axios.defaults.headers.common[AUTH_TOKEN_HEADER] = token;
+  axios.defaults.headers.common[AUTH_TOKEN_HEADER] = 'Bearer ' + token;
   console.log('axios = ', axios.defaults.headers);
 }
 

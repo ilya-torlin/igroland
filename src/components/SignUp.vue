@@ -36,6 +36,12 @@
 
 <script>
   import appInput from './inputValid'
+  import axios from 'axios';
+  import {mapGetters} from 'vuex';
+  import {mapMutations} from  'vuex';
+  import {API_URL} from '../constants';
+  import {AUTH_REQUEST} from '../store/actions/auth' //Если не получиться поменять путь
+
     export default {
         name: 'SignUp',
         data () {
@@ -103,34 +109,83 @@
           }
         },
         methods: {
+          ...mapMutations('progress',{
+            setProgStateWidth: 'setProgStateWidth',
+            setProgShow: 'setProgShow',
+            stepOneActive: 'stepOneActive',
+            stepTwoActive: 'stepTwoActive',
+            stepLastActive: 'stepLastActive',
+          }),
+          ...mapMutations('alerts',{
+            setSuccesAlertShow: 'setSuccesAlertShow',
+            setErrorAlertShow: 'setErrorAlertShow',
+            setSuccesAlertMsg: 'setSuccesAlertMsg',
+            setErrorAlertMsg: 'setErrorAlertMsg'
+          }),
           getSignUp(){
-
             let pwdVal, confirmVal, samePwd = false;
-
             for(let item of this.inputsArr){
-
               if(item.id === 'pwd'){
                 pwdVal = item;
               }
               if(item.id === 'cfpwd'){
                 confirmVal = item;
               }
-
               if(!item.isValid){
                 item.showError = true;
               }
             }
-
             if(pwdVal.value === confirmVal.value){
               samePwd = true;
             }
-
             if(!samePwd){
               confirmVal.showError = true;
             }
-
             if(this.formValid && samePwd){
-              alert('Зарегался');
+              let payload = {
+                email: this.inputsArr[0].value,
+                login: this.inputsArr[1].value,
+                password: pwdVal.value,
+              };
+              this.stepOneActive(); // прогрессбар
+              //Форма заполненна правильно, сделать запрос на сервер для регистрации
+              axios({url: API_URL + '/login/registration', data: payload, method: 'POST' })
+                .then(resp => {
+                  const error = resp.data.error;
+                  this.stepLastActive(); // прогрессбар
+                  if(error){
+                    this.stepLastActive();
+                    let errorTxt = resp.data.data.msgClient;
+                    this.setErrorAlertShow(true);
+                    this.setErrorAlertMsg('Ошибка при регистрации пользователя: ' + errorTxt);
+                  }else {
+                    this.stepLastActive();
+                    this.setSuccesAlertShow(true);
+                    this.setSuccesAlertMsg('Пользователь зарегистрирован');
+                    //авторизуем пользователя
+                    // let username = payload.email;
+                    // let password = payload.password;
+                    // const loginData = { email: username, password: password };
+                    //Action в Vuex возвращает Promise
+                      this.$store.dispatch(AUTH_REQUEST, payload).then(promSucces => {
+                      this.$store.commit('config/setHeaderStatus', true);
+                      this.$router.push({name: 'catalog'});
+                      console.log('Авторизовался');
+                    }, promError => {
+                      let errorTxt = promError.data.msgClient;
+                      this.setErrorAlertShow(true);
+                      this.setErrorAlertMsg('Ошибка при авторизации пользователя пользователя: ' + errorTxt);
+                      console.error('Login err', promError);
+                    });
+
+                  }
+                })
+                .catch(err => {
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при регистрации пользователя');
+                  console.log(err);
+                  this.stepLastActive();
+                });
             }else{
               alert('Ошибка в форме');
             }

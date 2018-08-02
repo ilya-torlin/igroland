@@ -66,6 +66,8 @@
     },
     mounted(){
       $('[data-toggle="tooltip"]').tooltip();
+      //вызываем метод для запроса информации о пользователе
+      this.$store.dispatch('user/USER_REQUEST');
     }
   }
 

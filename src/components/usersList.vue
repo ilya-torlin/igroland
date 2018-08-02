@@ -160,14 +160,12 @@
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
             if(error){
-              this.setProgStateWidth(100);
-              this.setProgShow(false);
+              this.stepLastActive();
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при фильтрации пользователей: ' + errorTxt);
             }else {
-              this.setProgStateWidth(100);
-              this.setProgShow(false);
+              this.stepLastActive();
               this.switcherActive = !this.switcherActive;
               this.usersList[index].blocked = !this.usersList[index].blocked;
               this.setSuccesAlertShow(true);
