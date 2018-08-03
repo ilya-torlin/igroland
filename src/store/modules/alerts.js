@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-//todo: Сделать массив аллертов
+//todo: Сделать массив аллертов (очередь)
 
 const state = {
   succesAlert: {

@@ -3,7 +3,10 @@
     <!--profileConfig.vue-->
 
     <!--
-      todo: -->
+      todo: API - обновить профиль
+      todo: API - заменить пароль на новый
+      todo: API - включение/отключение уведомлений
+    -->
     <div class="container profileUser-c">
         <div class="row">
             <div class="col-12">
@@ -18,13 +21,13 @@
                     {{ userName + ' ' + profile.surname}}
                   </div>
                   <div class="user-contacts">
-                    <div class="c-i">
+                    <div class="c-i" v-if="profile.email">
                       {{profile.email}}
                     </div>
-                    <div class="c-i">
+                    <div class="c-i" v-if="profile.site">
                       {{profile.site}}
                     </div>
-                    <div class="c-i">
+                    <div class="c-i" v-if="profile.phone">
                       {{profile.phone}}
                     </div>
                   </div>
@@ -50,7 +53,7 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-4 " v-for="(elem, index) in inputsArr" >
+                <div class="col-3 " v-for="(elem, index) in inputsArr" >
                   <appInput class="appInputLabel"
                             :key="index"
                             :validFeedback="elem.validFeedback"
@@ -69,7 +72,6 @@
               </div>
               <div class="row">
                 <div class="col-12">
-                  <!--todo: написать функцию для обновления-->
                   <button @click="updateUserProfile" type="button" class="btn btn-success" >Обновить</button>
                 </div>
               </div>
@@ -77,6 +79,69 @@
           </div>
         </div>
 
+        <div class="row">
+          <div class="col-12">
+            <div class="white-block-r22">
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    ЗАМЕНА ПАРОЛЯ
+                  </h4>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3" v-for="(elem, index) in acountArr" >
+                  <appInput class="appInputLabel"
+                            :key="index"
+                            :validFeedback="elem.validFeedback"
+                            :invalidFeedback="elem.invalidFeedback"
+                            :placeholder="elem.placeholder"
+                            :required="elem.required"
+                            :pattern="elem.pattern"
+                            :type="elem.type"
+                            :value="elem.value"
+                            :isValid="elem.isValid"
+                            :showError="elem.showError"
+                            @changedata="onChangeDataAccaount(index, $event)"
+                  >
+                  </appInput>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <button @click="updateUserPwd" type="button" class="btn btn-success" >Обновить</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="white-block-r22">
+              <div class="row">
+                <div class="col-12">
+                  <h4>
+                    УВЕДОМЛЕНИЯ
+                  </h4>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                  <div class="fewSwitches">
+                    <appSwitcher  v-for="(item, index) in notifications"
+                                  :key = "index"
+                                  :txt="item.txt"
+                                  :switcherActive="item.switched"
+                                  @switchToogle="onSwitchToogle(index)">
+                    </appSwitcher>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
 </template>
 
@@ -86,6 +151,7 @@
     import appInput from './inputValid'
     import {API_URL} from '../constants';
     import axios from 'axios';
+    import appSwitcher from './switcher'
     export default {
         name: 'profileConfig',
         data () {
@@ -94,7 +160,7 @@
                 inputsArr:{ // Редактируемые поля профиля -- Ассоциативный массив для быстрого доступа к элементов
                   'surname-i':{
                     id: 'surname-i',
-                    showError: '',
+                    showError: false,
                     validFeedback: "",
                     invalidFeedback: "Фамилия введена неверно",
                     placeholder: "Фамилия",
@@ -106,7 +172,7 @@
                   },
                   'name-i':{
                     id: 'name-i',
-                    showError: '',
+                    showError: false,
                     validFeedback: "",
                     invalidFeedback: "Имя введено неверно",
                     placeholder: "Имя",
@@ -118,7 +184,7 @@
                   },
                   'lastName-i':{
                     id: 'lastName-i',
-                    showError: '',
+                    showError: false,
                     validFeedback: "",
                     invalidFeedback: "Отчество введено неверно",
                     placeholder: "Отчество",
@@ -130,7 +196,7 @@
                   },
                   'login-i':{
                     id: 'login-i',
-                    showError: '',
+                    showError: false,
                     validFeedback: "",
                     invalidFeedback: "Логин введён неверно",
                     placeholder: "Логин",
@@ -140,10 +206,22 @@
                     value: '',
                     isValid: false
                   },
+                  'email-i':{
+                    id: 'email-i',
+                    showError: false,
+                    validFeedback: "",
+                    invalidFeedback: "Email введён неверно",
+                    placeholder: "Email",
+                    type: "text",
+                    required: "true",
+                    pattern: /^[a-zA-Z0-9_@.]{6,30}$/,
+                    value: '',
+                    isValid: false
+                  },
                   //todo: добавить маску для телефона
                   'phone-i':{
                     id: 'phone-i',
-                    showError: '',
+                    showError: false,
                     validFeedback: "",
                     invalidFeedback: "Телефон введен неверно",
                     placeholder: "Телефон",
@@ -155,7 +233,7 @@
                   },
                   'site-i':{
                     id: 'site-i',
-                    showError: '',
+                    showError: false,
                     validFeedback: "",
                     invalidFeedback: "Сайт введен неверно",
                     placeholder: "Сайт",
@@ -165,7 +243,59 @@
                     value: '',
                     isValid: false
                   },
-              },
+                },
+                acountArr:{ // Редактируемые поля профиля -- Ассоциативный массив для быстрого доступа к элементов
+                  'oldpass-i':{
+                    id: 'oldpass-i',
+                    showError: false,
+                    validFeedback: "",
+                    invalidFeedback: "Пароль введен неверно",
+                    placeholder: "Старый пароль",
+                    type: "text",
+                    required: "true",
+                    pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
+                    value: '',
+                    isValid: false
+                  },
+                  'newpass-i':{
+                    id: 'newpass-i',
+                    showError: false,
+                    validFeedback: "",
+                    invalidFeedback: "Пароль введен неверно",
+                    placeholder: "Новый пароль",
+                    type: "password",
+                    required: "true",
+                    pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
+                    value: '',
+                    isValid: false
+                  },
+                  'newpassrepeat-i':{
+                    id: 'newpassrepeat-i',
+                    showError: false,
+                    validFeedback: "",
+                    invalidFeedback: "Пароли не совпадают",
+                    placeholder: "Повторите новый пароль",
+                    type: "password",
+                    required: "true",
+                    pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
+                    value: '',
+                    isValid: false
+                  },
+                },
+                notifications: {
+                  'newFeatures': {
+                    txt: 'Уведомлять меня о новых возможностях сервиса',
+                    switched: false,
+                  },
+                  'newCatalog': {
+                    txt: 'Уведомлять меня о новых каталогах',
+                    switched: false,
+                  },
+                  'newNews': {
+                    txt: 'Держать меня в курсе новостей сервиса',
+                    switched: false,
+                  },
+                }
             }
         },
         computed: {
@@ -177,9 +307,16 @@
               profile: 'profile',
               id: 'id'
             }),
+          profileFormValid(){
+            return this.FormValid(this.inputsArr, 'email-i');
+          },
+          acountFormValid(){
+            return this.FormValid(this.acountArr, 'oldpass-i');
+          }
         },
         components: {
-          appInput
+          appInput,
+          appSwitcher
         },
         methods:{
           ...mapMutations('progress',{
@@ -195,15 +332,26 @@
             setSuccesAlertMsg: 'setSuccesAlertMsg',
             setErrorAlertMsg: 'setErrorAlertMsg'
           }),
-          updateUserProfile(){ 
+          //form valid func
+          FormValid(objectArr, firstKey){
+            //objectArr - массив инпатов(форма, которую надо проверить на валидацию)
+            //firstKey - любой ключ в массиве инпатов
+            let isValid = objectArr[firstKey].isValid;
+            // todo: разрешить ошибку
+            //error during evaluation
+            for(let key in objectArr){
+              isValid = isValid && objectArr[key].isValid;
+            }
+            return isValid;
+          },
+          updateUserProfile(){
             let payload = {
-              profile:{
-                surname: this.inputsArr['surname-i'].value,
-                lastName: this.inputsArr['lastName-i'].value,
-                login: this.inputsArr['login-i'].value,
-                phone: this.inputsArr['phone-i'].value,
-                site: this.inputsArr['site-i'].value
-              },
+              surname: this.inputsArr['surname-i'].value,
+              lastName: this.inputsArr['lastName-i'].value,
+              login: this.inputsArr['login-i'].value,
+              email: this.inputsArr['email-i'].value,
+              phone: this.inputsArr['phone-i'].value,
+              site: this.inputsArr['site-i'].value ,
               userName: this.inputsArr['name-i'].value = this.userName,
               id: this.id
             };
@@ -233,17 +381,74 @@
                 this.stepLastActive();
               });
           },
+          updateUserPwd(){
+            let payload = {
+              oldpass: this.acountArr['oldpass-i'].value,
+              newpass: this.acountArr['newpass-i'].value,
+              newpassrepeat: this.acountArr['newpassrepeat-i'].value,
+            }, samePwd = false;//флаг совпадения паролей
+
+            // for(let key in this.acountArr){
+            //   if(!this.acountArr[key].isValid){
+            //     this.acountArr[key].showError = true;
+            //   }
+            // }
+
+            if(this.acountArr['newpass-i'].value === this.acountArr['newpassrepeat-i'].value){
+              samePwd = true;
+            }
+
+            this.stepOneActive(); // прогрессбар
+            if(samePwd === true && this.acountFormValid === true){ // проверяем корректность заполнения полей
+              axios({url: API_URL + '/user/changepasss', data: payload, method: 'POST' })
+                .then(resp => {
+                  const error = resp.data.error;
+                  this.stepLastActive(); // прогрессбар
+                  if(error){
+                    this.stepLastActive();
+                    let errorTxt = resp.data.data.msgClient;
+                    this.setErrorAlertShow(true);
+                    this.setErrorAlertMsg('Ошибка при обновлении профиля: ' + errorTxt);
+                  }else {
+                    this.stepLastActive();
+                    this.setSuccesAlertShow(true);
+                    this.setSuccesAlertMsg('Профиль обновлён');
+                  }
+                })
+                .catch(err => {
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при обновлении профиля');
+                  console.log(err);
+                  this.stepLastActive();
+                });
+            }else{
+              this.setErrorAlertShow(true);
+              let errorTxt = !samePwd ? ': пароли не совпадают' : '';
+              this.setErrorAlertMsg(`Форма заполненна некорректно ${errorTxt}`);
+              this.stepLastActive();
+            }
+          },
           onChangeData(index, data){ // для компонента input
             this.inputsArr[index].value = data.value;
             this.inputsArr[index].isValid = data.valid;
+          },
+          onChangeDataAccaount(index, data){ // для компонента input
+            this.acountArr[index].value = data.value;
+            this.acountArr[index].isValid = data.valid;
+          },
+          onSwitchToogle(key){
+            console.log('switched = ', key);
+            this.notifications[key].switched = !this.notifications[key].switched;
           }
         },
         mounted(){
           //Задаём начальные значения
+          //todo: задать задержку, или вызывать requestUser
           this.inputsArr['surname-i'].value = this.profile.surname;
           this.inputsArr['name-i'].value = this.userName;
           this.inputsArr['lastName-i'].value = this.profile.lastName;
           this.inputsArr['login-i'].value = this.profile.login;
+          this.inputsArr['email-i'].value = this.profile.email;
           this.inputsArr['phone-i'].value = this.profile.phone;
           this.inputsArr['site-i'].value = this.profile.site;
         }

@@ -84,6 +84,7 @@ const mutations = {
 const actions = {
   //запрос информации о пользователе, вызывать при перезагрузке страницы и после авторизации пользователя
   [USER_REQUEST]: ({commit, dispatch}) => {
+    //todo: сделать проверку, если сервер вернёт что пользователь не авторизован
     return new Promise((resolve, reject) => {
       commit(USER_REQUEST, 'USER_REQUEST');
       axios({url: API_URL + '/user/me', data: {}, method: 'GET' })
@@ -103,11 +104,11 @@ const actions = {
                   phone: userData.phone ? userData.phone : '', // телефон
                   surname: userData.surname ? userData.surname : '', // фамилия
                   lastName: userData.lastName ? userData.lastName : '', // отчество
-                  login: userData.login ? userData.login : emailData, // login
+                  login: userData.login ? userData.login : '', // login
                   blocked: userData.active !== 1, // заблокирован
                 };
 
-            commit('setName', userData.name ? userData.name : emailData,); // !!! .name
+            commit('setName', userData.name ? userData.name : '',); // !!! .name
             commit('setRole', userData.role.name);
             commit('setAvatar', userData.photo ? userData.photo : 'src/assets/img/avatar.png'); //
             commit('setId', userData.id);
@@ -126,17 +127,6 @@ const actions = {
           reject(err);
         });
     })
-
-
-    // apiCall({url: 'user/me'})
-    //   .then(resp => {
-    //     commit(USER_SUCCESS, resp)
-    //   })
-    //   .catch(resp => {
-    //     commit(USER_ERROR)
-    //     // if resp is unauthorized, logout, to
-    //     dispatch(AUTH_LOGOUT)
-    //   })
   },
 }
 

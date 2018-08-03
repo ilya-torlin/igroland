@@ -169,7 +169,7 @@
                     //Action в Vuex возвращает Promise
                       this.$store.dispatch(AUTH_REQUEST, payload).then(promSucces => {
                       this.$store.commit('config/setHeaderStatus', true);
-                      this.$router.push({name: 'catalog'});
+                      this.$router.push({name: 'profileconfig'});
                       console.log('Авторизовался');
                     }, promError => {
                       let errorTxt = promError.data.msgClient;
