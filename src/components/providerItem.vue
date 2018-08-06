@@ -10,11 +10,9 @@
           <div class="catalog-h">
             <div class="title-cat">
               <div class="title">
-                <router-link class="" :to="'/providerconfig/'+id">
-                  <div class="txt-link">
-                    {{name}}
-                  </div>
-                </router-link>
+                <div class="txt-link">
+                  {{name}}
+                </div>
               </div>
             </div>
             <div class="conf-panel">
@@ -80,41 +78,60 @@
                       leave-active-class="animated fadeOut">
             <div v-show="showConfig" class="catalog-b">
               <div class="row">
-                <div class="col-md-5">
-                  <div class="item-b">
-                    <textarea  @change="$emit('changeDescr', {'value': $event.target.value})" name="" id="discr1" placeholder="Описание" cols="30" rows="5">{{description}}</textarea>
+                <div class="col-4 " v-for="(elem, index) in inputsArr" >
+                  <appInput class="appInputLabel"
+                            :key="index"
+                            :validFeedback="elem.validFeedback"
+                            :invalidFeedback="elem.invalidFeedback"
+                            :placeholder="elem.placeholder"
+                            :required="elem.required"
+                            :pattern="elem.pattern"
+                            :type="elem.type"
+                            :value="elem.value"
+                            :isValid="elem.isValid"
+                            :showError="elem.showError"
+                            @changedata="onChangeData(index, $event)"
+                  >
+                  </appInput>
+                </div>
+              </div>
+              <div class="row align-items-end provider-config-r">
+                <div class="col-6">
+                  <div class="upload-t">
+                    <div class="upload-i">
+                      <div class="txt-lbl">
+                        Частота обновления
+                      </div>
+                      <div class="btn-group" role="group" aria-label="update buttons">
+                        <button v-for="(btn, index) in uploadBtnArr"
+                                @click="$emit('uploadTime', {'value': btn.value, 'id': id})"
+                                :class="{'active': btn.value === uploadTime}"
+                                type="button" class="btn btn-outline-secondary">
+                          {{btn.btnTxt}}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-5">
-                  <div class="item-b justify-content-start">
-                    <div class="user-txt">
-                      Доступен для пользователей
-                    </div>
-                    <multiselect
-                      v-model="selectedUsers"
-                      :options="userList"
-                      :multiple="true"
-                      :close-on-select="true"
-                      placeholder="Пользователи"
-                      label="name"
-                      track-by="name"
-                      selectLabel="Выбрать"
-                      deselectLabel="Убрать из списка"
-                      @input = "$emit('changeSelect')">
-                    </multiselect>
-                    <appSwitcher  txt="Доступен для всех"
-                                  :switcherActive="switcherActive"
-                                  @switchToogle="$emit('switchToogle')">
-                    </appSwitcher>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="item-b">
-                    <div class=" upload-btn">
-                      <button @click="$emit('copyCatalog', {})" type="button" class="btn btn-outline-secondary">Скопировать</button>
-                      <button @click="$emit('saveCatalog', {})" type="button" class="btn btn-success">Сохранить</button>
-                      <button @click="$emit('removeCatalog', {})" type="button" class="btn btn-danger">Удалить</button>
-                    </div>
+                <div class="col-6">
+                  <div class="btn-c">
+                    <button v-if="catalogFileUrl" type="button" class="btn btn-outline-secondary">
+                      <a :href="catalogFileUrl" target="_blank">
+                        <span class="svg-c">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="25px" height="19px">
+                            <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
+                                  d="M19.315,18.507 C19.314,18.507 19.313,18.507 19.312,18.507 L19.312,18.507 L12.847,18.507 C13.118,18.511 13.390,18.424 13.596,18.217 L16.496,15.306 C16.903,14.899 16.903,14.237 16.496,13.829 C16.089,13.421 15.431,13.421 15.024,13.829 L13.796,15.062 L13.796,9.507 L11.803,9.507 L11.803,15.062 L10.575,13.829 C10.169,13.421 9.510,13.421 9.104,13.829 C8.697,14.237 8.697,14.899 9.104,15.306 L12.003,18.217 C12.213,18.428 12.490,18.515 12.763,18.507 L7.312,18.507 L7.312,18.507 C3.724,18.505 0.815,15.596 0.815,12.007 C0.815,8.742 3.230,6.065 6.367,5.603 C7.531,2.622 10.422,0.507 13.815,0.507 C18.104,0.507 21.595,3.884 21.796,8.124 C23.580,9.033 24.815,10.867 24.815,13.007 C24.815,16.045 22.353,18.507 19.315,18.507 Z"/>
+                          </svg>
+                        </span>
+                        Скачать
+                      </a>
+                    </button>
+                    <button @click="$emit('saveProvider')" type="button" class="btn btn-success">
+                      Сохранить
+                    </button>
                   </div>
                 </div>
               </div>
@@ -128,11 +145,12 @@
 
 <script>
   import appSwitcher from './switcher'
+  import appInput from './inputValid'
 	export default {
 		name: "providerItem",
     data () {
       return {
-        msg: 'catalogItem'
+        msg: 'providerItem'
       }
     },
     props: [
@@ -141,9 +159,23 @@
       'showConfig',// Тригер для отображения параметров переключателя(шестерёнка)
       'isOn', // Тригер для включения/отключения провайдера, если каталог отключён, то пользователи его не видят
       'id', //идентификатор
+      'inputsArr', // массив инпатов
+      'uploadTime', // частота обновления
+      'uploadBtnArr', // массив кнопок (частота обновления)
+      'catalogFileUrl', // файл для скачивания
     ],
     components: {
-      appSwitcher
+      appSwitcher,
+      appInput
+    },
+    methods: {
+      onChangeData(index, data){ // для компонента input
+        data.id = this.id;
+        data.inputIndex = index;
+        this.$emit('changeData', data);
+        // this.inputsArr[index].value = data.value;
+        // this.inputsArr[index].isValid = data.valid;
+      }
     }
 	}
 </script>

@@ -141,7 +141,6 @@ body
   box-shadow: none!important
 //bootstrap style remastering end
 
-
 .user-control-menu
   position: absolute
   left: 0
@@ -199,8 +198,8 @@ body
   justify-content: flex-end
   .h-user-profile
     display: flex
-    justify-content: space-between
-    min-width: 300px
+    justify-content: flex-end
+    //min-width: 300px
     position: relative
     .user-discr
       padding: 10px 0px
@@ -1043,4 +1042,50 @@ textarea
     position: absolute
     top: 0px
     left: 0px
+
+
+
+.upload-t
+  .upload-i
+    .txt-lbl
+      font-size: 14px
+      color: #6c757d
+      margin-bottom: 10px
+    .btn-group
+      button
+        &.active
+          background: $green
+          border-color: $green
+
+.provider-config-r
+  button
+    padding: 10px 24px
+    box-shadow: none!important
+    display: flex
+    align-items: center
+    text-transform: uppercase
+    &:hover
+      svg
+        path
+          fill: #FFFFFF
+      a
+        color: #FFFFFF
+    .svg-c
+      display: flex
+      align-items: center
+      margin-right: 10px
+    a
+      display: flex
+      align-items: center
+      color: $gray-600
+      text-decoration: none!important
+      font-weight: 400
+  .btn-c
+    display: flex
+    align-items: center
+    justify-content: flex-end
+    button
+      margin-right: 10px
+      &:last-child
+        margin-right: 0px
 @import "media" // Всегда в конце

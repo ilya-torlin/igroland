@@ -7,7 +7,7 @@
       todo: API - заменить пароль на новый
       todo: API - включение/отключение уведомлений
     -->
-    <div class="container profileUser-c">
+    <div class="profileUser-c">
         <div class="row">
             <div class="col-12">
               <div class="white-block-r">

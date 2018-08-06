@@ -23,15 +23,13 @@
           <div class="col-12 col-md-4">
             <div class="h-user-c">
               <div class="h-user-info">
-                <!--todo: Заменить на колокольчик-->
                 <div class="btn-c">
-                  <button type="button" class="round-inf" data-toggle="tooltip" data-placement="bottom" data-original-title="Какая-то инфа">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      width="23px" height="23px">
-                      <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                            d="M11.500,23.000 C5.149,23.000 0.000,17.851 0.000,11.500 C0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM11.500,5.000 C10.672,5.000 10.000,5.671 10.000,6.500 C10.000,7.328 10.672,8.000 11.500,8.000 C12.328,8.000 13.000,7.328 13.000,6.500 C13.000,5.671 12.328,5.000 11.500,5.000 ZM13.000,10.500 C13.000,9.671 12.328,9.000 11.500,9.000 C10.672,9.000 10.000,9.671 10.000,10.500 L10.000,16.500 C10.000,17.328 10.672,18.000 11.500,18.000 C12.328,18.000 13.000,17.328 13.000,16.500 L13.000,10.500 Z"/>
+                  <button type="button" class="round-inf" data-toggle="tooltip" data-placement="bottom" data-original-title="Уведомления">
+                    <svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+                        <g transform="matrix(0.046875,0,0,0.046875,0,0)">
+                            <path d="M256,512C285.013,512 308.513,488.501 308.513,459.487L203.488,459.487C203.487,488.501 226.987,512 256,512Z" style="fill:rgb(108,117,125);fill-rule:nonzero;"/>
+                            <path d="M413.538,354.462L413.538,223.179C413.538,142.441 370.609,75.093 295.385,57.238L295.385,39.385C295.385,17.591 277.793,0 256,0C234.207,0 216.615,17.591 216.615,39.385L216.615,57.239C141.391,75.094 98.462,142.442 98.462,223.18L98.462,354.462L45.948,406.975L45.948,433.231L466.05,433.231L466.05,406.975L413.538,354.462Z" style="fill:rgb(108,117,125);fill-rule:nonzero;"/>
+                        </g>
                     </svg>
                   </button>
                 </div>
