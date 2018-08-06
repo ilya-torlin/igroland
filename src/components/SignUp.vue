@@ -19,7 +19,14 @@
     </div>
     <div class="col-12">
       <div class="btn-c">
-        <button type="button" class="btn btn-success" @click="getSignUp">Зарегистрироваться</button>
+        <button type="button" class="btn btn-success" @click="getSignUp">
+          <span v-if="regBtnTxt">
+            {{regBtnTxt}}
+          </span>
+          <span v-else>
+            Зарегистрироваться
+          </span>
+        </button>
       </div>
     </div>
     <div class="col-12">
@@ -96,6 +103,9 @@
               ]
             }
         },
+        props: [
+          'regBtnTxt' //Текст кнопки регистрации
+        ],
         components:{
           appInput
         },
@@ -158,6 +168,7 @@
                     let errorTxt = resp.data.data.msgClient;
                     this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при регистрации пользователя: ' + errorTxt);
+
                   }else {
                     this.stepLastActive();
                     this.setSuccesAlertShow(true);
@@ -177,7 +188,6 @@
                       this.setErrorAlertMsg('Ошибка при авторизации пользователя пользователя: ' + errorTxt);
                       console.error('Login err', promError);
                     });
-
                   }
                 })
                 .catch(err => {
@@ -187,7 +197,10 @@
                   this.stepLastActive();
                 });
             }else{
-              alert('Ошибка в форме');
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Ошибка в форме');
+              this.stepLastActive();
+
             }
           },
           onChangeData(index, data){ // для компонента input
