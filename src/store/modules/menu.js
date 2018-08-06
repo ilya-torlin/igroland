@@ -19,7 +19,7 @@ export default {
         text: 'Пользователи'
       },
       {
-        url: '/attachments',
+        url: '/application',
         text: 'Приложения'
       }
     ]

@@ -1,15 +1,16 @@
 <!--Список пользователей-->
 <template>
-  <!--usersList.vue-->
+  <!--applications.vue-->
 
-  <!--todo: API - блокировка пользователя
-      todo: API - список незаблокированных пользователей
-      todo: API - список всех пользователей (заблокированные и активные)
-      todo: API - список активных пользователей
-      todo: API - поиск пользователей по подстроке
+  <!--todo: API - блокировка приложения
+      todo: API - список незаблокированных приложений
+      todo: API - список всех приложений (заблокированные и активные)
+      todo: API - список активных приложений
+      todo: API - поиск приложений по подстроке
   -->
 
   <!--
+   todo: Добавить ссылку на новое приложение
   -->
 
   <div class="container">
@@ -17,22 +18,21 @@
       <div class="row align-items-center">
         <div class="col-6">
           <div class="user-cntr-bar">
-            <appSwitcher  txt="Все пользователи"
+            <appSwitcher  txt="Все приложения"
                           :switcherActive="switcherActive"
                           @switchToogle="onSwitchToogle">
             </appSwitcher>
             <div class="new-usr-i" >
-              <button type="button" @click="showRegPanel(true)" class="btn btn-outline-secondary" v-if="!showSignup">Новый пользователь</button>
-              <button type="button" @click="showRegPanel(false)" class="btn btn-outline-secondary" v-else>Скрыть панель регистрации</button>
+              <button type="button" @click="" class="btn btn-outline-secondary" >Новое приложение</button>
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="find-b justify-content-end d-flex">
             <div class="input-group ">
-              <input v-model.lazy="findUserStr" v-on:keyup.enter="findUser" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">
+              <input v-model.lazy="findAppStr" v-on:keyup.enter="findApp" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's application" aria-describedby="button-addon2">
               <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" @click="findUser">
+                <button class="btn btn-outline-secondary" type="button" @click="findApp">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -48,21 +48,7 @@
       </div>
     </div>
 
-    <transition name="vue-fade" mode="out-in"
-                enter-active-class="animated fadeIn"
-                leave-active-class="animated fadeOut">
-      <div class="row" v-if="showSignup" >
-          <div class="col-4">
-            <div class="white-block-r">
-              <div class="hideRegQuest">
-                <appSignup :regBtnTxt="regBtnTxt"></appSignup>
-              </div>
-            </div>
-          </div>
-      </div>
-    </transition>
-
-    <template v-for="(userItem, index) in usersList">
+    <template v-for="(userItem, index) in applicationList">
       <transition name="vue-fade" mode="out-in"
                   enter-active-class="animated zoomIn"
                   leave-active-class="animated zoomOut">
@@ -76,10 +62,18 @@
                   </div>
                   <div class="user-info">
                     <div class="h-user-name">
-                      {{userItem.name + ' ' + userItem.surname}}
+                      <router-link class="" :to="'/singleapp/'+userItem.id">
+                        <div class="txt-link">
+                          {{userItem.name}}
+                        </div>
+                      </router-link>
+
                     </div>
-                    <div class="h-user-role">
-                      {{userItem.email}}
+
+
+
+                    <div class="h-user-role" v-if="userItem.API">
+                      API: {{userItem.API}}
                     </div>
                   </div>
                 </div>
@@ -134,7 +128,7 @@
                 </svg>
               </div>
               <div class="txt">
-                Подтвердите удаление пользователя
+                Подтвердите удаление приложения
               </div>
             </h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -157,11 +151,12 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="deleteUser(removeUserIndex)">Удалить пользователя</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="deleteApplication(removeUserIndex)">Удалить приложение</button>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -174,34 +169,29 @@
   import appInput from './inputValid';
   import appSignup from './SignUp.vue';
   export default {
-    name: 'usersList',
+    name: 'applicationList',
     data () {
       return {
-        usersList: {
+        applicationList: {
           123: {
-            name: 'MrAmiD', // Имя пользователя
+            name: 'sitename.ru', // Имя приложения
             role: 'Ninja',//'права' пользователя
-            avatar: 'src/assets/img/avatar.png',//аватарка
-            email: 'someMail@gmail.com', // email
-            site: 'site.ru', //какой-то сайт
-            phone: '+7(953)345-34-54', // телефон
-            surname: 'Surname', // фамилия
-            lastName: 'lastName', // отчество
-            login: 'someMail@gmail.com', // login
+            avatar: 'src/assets/img/app.png',//аватарка
+            API: 'asliudjaw23eidpk2wk3dw-03o2kwe',
             id: 123, // id
             blocked: false // заблокирован
           }
         },
         switcherActive: true, // все пользователи
-        findUserStr: '', // Подстрока для поиска пользователя
+        findAppStr: '', // Подстрока для поиска пользователя
         removeUserIndex: '', // Ид пользователя для удаления
         inputsArr:[
           {
             id: 'confirmDelete',
             showError: '',
             validFeedback: "",
-            invalidFeedback: "Email введен неверно",
-            placeholder: "Введите Email пользователя, которого хотите удалить",
+            invalidFeedback: "Имя приложения введено неверно",
+            placeholder: "Введите имя приложения, которое хотите удалить",
             type: "text",
             required: "true",
             pattern: /[^]*/,
@@ -209,8 +199,6 @@
             isValid: false
           }
         ],
-        regBtnTxt: 'Зарегистрировать нового пользователя',// текст кнопки регистрации
-        showSignup: false, // показывать окно для регистрации нового пользователя
       }
     },
     computed: {
@@ -250,7 +238,7 @@
         let payload = this.switcherActive;
         this.stepOneActive(); // прогрессбар
 
-        axios({url: API_URL + '/user/userlist', data: payload, method: 'POST' })
+        axios({url: API_URL + '/application/applicationlist', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
@@ -258,102 +246,101 @@
               this.stepLastActive();
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
-              this.setErrorAlertMsg('Ошибка при фильтрации пользователей: ' + errorTxt);
+              this.setErrorAlertMsg('Ошибка при фильтрации приложений: ' + errorTxt);
             }else {
               this.stepLastActive();
               this.switcherActive = !this.switcherActive;
-              this.usersList[index].blocked = !this.usersList[index].blocked;
+              this.applicationList[index].blocked = !this.applicationList[index].blocked;
               this.setSuccesAlertShow(true);
               this.setSuccesAlertMsg('Пользователи отфильтрованы');
             }
           })
           .catch(err => {
             this.setErrorAlertShow(true);
-            this.setErrorAlertMsg('Ошибка при фильтрации пользователей');
+            this.setErrorAlertMsg('Ошибка при фильтрации приложений');
             console.log(err);
             this.stepLastActive();
           });
       },
-      isOnToogle(index){ // заблокировать/разблокировать пользователя
-        let payload = this.usersList[index];
+      isOnToogle(index){ // заблокировать/разблокировать приложение
+        let payload = this.applicationList[index];
 
         this.stepOneActive(); // прогрессбар
 
-        axios({url: API_URL + '/blockuser', data: payload, method: 'POST' })
+        axios({url: API_URL + '/application/block', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
-              this.setErrorAlertMsg('Ошибка при блокировке пользователя: ' + errorTxt);
+              this.setErrorAlertMsg('Ошибка при блокировке приложения: ' + errorTxt);
             }else {
-              this.usersList[index].blocked = !this.usersList[index].blocked;
+              this.applicationList[index].blocked = !this.applicationList[index].blocked;
               this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Пользователь заблокирован');
+              this.setSuccesAlertMsg('Приложение заблокировано');
             }
           })
           .catch(err => {
             this.setErrorAlertShow(true);
-            this.setErrorAlertMsg('Ошибка при блокировке пользователя');
+            this.setErrorAlertMsg('Ошибка при блокировке приложения');
             this.stepLastActive(); // прогрессбар
             console.log(err);
           });
 
       },
-      findUser(){
-        let payload = this.findUserStr;
+      findApp(){ // поиск приложения по подстроке
+        let payload = this.findAppStr;
 
         this.stepOneActive(); // прогрессбар
 
-        axios({url: API_URL + '/user/finduser', data: payload, method: 'POST' })
+        axios({url: API_URL + '/application/findApp', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
-              this.setErrorAlertMsg(`Ошибка при поиске пользователя по запросу '${this.findUserStr}'; ${errorTxt}`);
+              this.setErrorAlertMsg(`Ошибка при поиске приложения по запросу '${this.findAppStr}'; ${errorTxt}`);
             }else {
               this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg(`Пользователи по запросу '${this.findUserStr}'`);
+              this.setSuccesAlertMsg(`Пользователи по запросу '${this.findAppStr}'`);
             }
           })
           .catch(err => {
             this.setErrorAlertShow(true);
-            this.setErrorAlertMsg(`Ошибка при поиске пользователя по запросу '${this.findUserStr}'`);
+            this.setErrorAlertMsg(`Ошибка при поиске приложения по запросу '${this.findAppStr}'`);
             this.stepLastActive(); // прогрессбар
             console.log(err);
           });
       },
-      deleteUser(index){
-        console.log('delete user', index);
-        if(this.inputsArr[0].value === this.usersList[index].email){
-          let payload = this.usersList[index];
+      deleteApplication(index){ // Удалить приложение
+        if(this.inputsArr[0].value === this.applicationList[index].name){
+          let payload = this.applicationList[index];
           this.stepOneActive(); // прогрессбар
-          axios({url: API_URL + '/login', data: payload, method: 'POST' })
+          axios({url: API_URL + '/application/remove', data: payload, method: 'POST' })
             .then(resp => {
               const error = resp.data.error;
               this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
                 this.setErrorAlertShow(true);
-                this.setErrorAlertMsg('Ошибка при удалении пользователя: ' + errorTxt);
+                this.setErrorAlertMsg('Ошибка при удалении приложения: ' + errorTxt);
               }else{
-                this.$delete(this.usersList, index, this.usersList[index]);
+                this.$delete(this.applicationList, index, this.applicationList[index]);
                 this.setSuccesAlertShow(true);
-                this.setSuccesAlertMsg('Пользователь удалён');
+                this.setSuccesAlertMsg('Приложение удалёно');
               }
             })
             .catch(err => {
               this.setErrorAlertShow(true);
-              this.setErrorAlertMsg('Ошибка при удалении пользователя ');
+              this.setErrorAlertMsg('Ошибка при удалении приложения ');
               this.stepLastActive(); // прогрессбар
               console.log(err);
             });
         }else{
           this.setErrorAlertShow(true);
-          this.setErrorAlertMsg('Ошибка при удалении пользователя: имена не совпадают');
+          this.setErrorAlertMsg('Ошибка при удалении приложения: имена не совпадают');
         }
       },
       openRemoveModal(index){ // открытие окна подтверждения для удаления пользователя
@@ -364,9 +351,6 @@
         this.inputsArr[index].value = data.value;
         this.inputsArr[index].isValid = data.valid;
       },
-      showRegPanel(showPanel){
-        this.showSignup = showPanel;
-      }
     }
   }
 </script>

@@ -10,7 +10,8 @@ import appDashboard from './components/dashboard.vue'
 import appCatalog from './components/catalogconfig.vue'
 import appCatalogList from './components/catalogList'
 import appProvider from './components/provider.vue'
-import appAttachments from './components/attachments.vue'
+import appApplication from './components/applications.vue'
+import appSingleApp from './components/singleApp'
 import appUiKit from './components/ui-kit.vue'
 import appProfileConfig from './components/profileConfig.vue'
 import appAuth from './components/auth.vue'
@@ -61,7 +62,8 @@ const routes = [
   { path: '/catalogconfig/:id?', component: appCatalog, name: 'catalogconfig', beforeEnter: ifAuthenticated},
   { path: '/catalog/:page?', component: appCatalogList, name: 'catalog', beforeEnter: ifAuthenticated},
   { path: '/provider', component: appProvider, name: 'provider', beforeEnter: ifAuthenticated},
-  { path: '/attachments', component: appAttachments, name: 'attachments', beforeEnter: ifAuthenticated},
+  { path: '/application', component: appApplication, name: 'applications', beforeEnter: ifAuthenticated},
+  { path: '/singleapp/:id?', component: appSingleApp, name: 'singleapp', beforeEnter: ifAuthenticated},
   { path: '/profileconfig/:id?', component: appProfileConfig, name: 'profileconfig', beforeEnter: ifAuthenticated},
   { path: '/auth', component: appAuth, name: 'auth', beforeEnter: ifNotAuthenticated},
   { path: '/users/:page?', component: appUsersList, name: 'users', beforeEnter: ifAuthenticated},
