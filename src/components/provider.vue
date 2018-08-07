@@ -54,8 +54,8 @@
                     catalogFileUrl: 'https://android-school.ru/wp-content/uploads/2016/07/FileUpload-1024x528.png',//файл для скачивания
                     catalogSaved: true,//провайдер сохранён, при внесении изменений или копирывании поставщика ставим в false... если каталог не сохранён, то его нельзя скопировать и выводится ошибка(предупреждение) для пользователя
                     inputsArr: {
-                      'profit-rub':{
-                        id: 'profit-rub',
+                      'profit-val':{
+                        id: 'profit-val',
                         showError: false,
                         validFeedback: "",
                         invalidFeedback: "Наценка введена неверно",
@@ -121,15 +121,15 @@
                     catalogFileUrl: 'https://android-school.ru/wp-content/uploads/2016/07/FileUpload-1024x528.png',//файл для скачивания
                     catalogSaved: true,//провайдер сохранён, при внесении изменений или копирывании поставщика ставим в false... если каталог не сохранён, то его нельзя скопировать и выводится ошибка(предупреждение) для пользователя
                     inputsArr: {
-                      'profit-rub':{
-                        id: 'profit-rub',
+                      'profit-val':{
+                        id: 'profit-val',
                         showError: false,
                         validFeedback: "",
-                        invalidFeedback: "Наценка введена неверно",
-                        placeholder: "Наценка, руб.",
+                        invalidFeedback: "Вес введен неверно",
+                        placeholder: "Вес",
                         type: "text",
                         required: "false",
-                        pattern: /^[0-9,.]{1,15}$/,
+                        pattern: /^[0-9]{1,15}$/,
                         value: '',
                         isValid: false
                       },

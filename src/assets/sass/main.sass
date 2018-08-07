@@ -939,9 +939,14 @@ textarea
   background: #FFFFFF
   margin-bottom: 30px
   border-radius: 5px
+  .pr-0
+    padding-right: 0px
   &>.row
     width: 100%
-
+  .title-c
+    font-size: 16px
+    color: $gray-600
+    margin-bottom: 0px
 .white-block-r22
   padding: 30px
   background: #FFFFFF
@@ -1097,6 +1102,48 @@ textarea
 
 .hideRegQuest
   .login-quest
-    display: none 
+    display: none
+.app-tc
+  .btn-danger
+    margin-right: -30px
+
+.selectLabeled
+  position: relative
+  padding-top: 25px
+  margin-bottom: 16px
+  .multiselect__tags
+    background: $gray-300
+    border: solid 1px $gray-400
+    border-radius: 4px
+    min-height: 38px
+  input
+    background: $gray-300
+    color: $gray-600
+  .multiselect__single
+    background: $gray-300
+    color: $gray-600
+  &:before
+    content: attr(cont)
+    font-size: 14px
+    color: #6c757d
+    position: absolute
+    top: 0px
+    left: 0px
+
+.buffer-copy-inpt
+  .input-group-append button
+    background: $blue!important
+    &:hover
+      background: $blue!important
+    .svg-c
+      display: flex
+      align-items: center
+.heygen-c
+  display: flex
+  align-items: center
+  .btn-c
+    padding-top: 25px
+    margin-bottom: 16px
+    margin-left: 15px
 
 @import "media" // Всегда в конце
