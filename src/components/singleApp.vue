@@ -49,12 +49,13 @@
         </div>
         <div class="col-4">
          <div class="d-flex align-items-center selectLabeled" cont="Выберите каталог">
-           <!--todo: иногда не подгружаются стили, поправить-->
            <multiselect
              v-model="selectedCatalogs"
              :options="catalogList"
              :multiple="false"
              :close-on-select="true"
+             :allow-empty="false"
+             :searchable="false"
              placeholder="Каталоги"
              selectedLabel="Выбрано"
              label="name"
