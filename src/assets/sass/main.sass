@@ -334,7 +334,7 @@ button
   display: flex
   align-items: center
   justify-content: space-between
-  padding: 30px
+  padding: 15px 30px
   padding-right: 10px
   border-bottom: solid 2px $gray-300
 .folder-b
@@ -1188,33 +1188,95 @@ textarea
       width: 0
 .att-folders-c
   background: #FFFFFF
+  display: flex
   .bottom-s
     .btn-c
       padding: 15px
 .att-folders-i
-  max-width: 50%
   border-right: solid 2px $gray-300
   min-height: $folderConfigHeight
   display: flex
   flex-direction: column
   justify-content: space-between
+  flex: 1
+  &.folders-wt
+    min-height: $folderConfigHeightTabs!important
   &:last-child
     border-right-color: transparent
 .find-folder-i
   display: flex
-  align-items: center
-  justify-content: space-between
+  flex-direction: column
   padding: 0 15px
-  min-height: 86px
   border-bottom: solid 2px $gray-300
+  border-top: solid 2px $blue
+  .selectLabeled
+    min-width: 320px
+    margin-left: 30px
+    padding: 0px
+    margin-bottom: 0px
+    .multiselect__tags
+      min-height: 40px
   .txt-f
     color: $gray-600
+    padding: 15px 0px
   .find-b
     margin-right: 0px
-
+    padding-bottom: 15px
+    padding-top: 15px
+    max-width: 50%
 .hide-side-panel-btn
   border-left: solid 2px $gray-500
   max-width: 28px
   &.show-sp
     transform: rotate(180deg)
+
+.tab-controls-c
+  display: flex
+  .tab-i
+    padding: 15px 15px
+    color: $gray-500
+    background: #FFFFFF
+    position: relative
+    cursor: pointer
+    display: flex
+    align-items: center
+    transition: all .3s ease
+    &:hover
+      color: $gray-600
+      .svg-c
+        svg path
+          fill: $gray-600
+    .svg-c
+      margin-left: 10px
+      display: flex
+      align-items: center
+      justify-content: center
+      svg path
+        fill: $gray-500
+    //overflow: hidden
+    //&:after
+    //  content: ''
+    //  width: 0
+    //  height: 0
+    //  border-style: solid
+    //  border-width: 49px 0 49px 15px
+    //  border-color: transparent transparent transparent #FFFFFF
+    &.active
+      color: #FFFFFF
+      background: $blue
+      .svg-c
+        margin-left: 10px
+        svg path
+          fill: #FFFFFF
+      //&:after
+      //  content: ''
+      //  position: absolute
+      //  width: 0
+      //  height: 0
+      //  top: 0px
+      //  right: -15px
+      //  border-style: solid
+      //  border-width: 49px 0 49px 15px
+      //  border-color: transparent transparent transparent $blue
+
 @import "media" // Всегда в конце
