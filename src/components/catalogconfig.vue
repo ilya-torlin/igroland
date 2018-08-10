@@ -29,10 +29,11 @@
     удалить - удаление папки
 
     todo: API - Запрос каталога в зависимости от выбранного поставщика
-    todo: API - Вывод каталога по ид
+    todo: API - Вывод товаров каталога по ид
+
     todo: API - Скрыть товары, которых нет в наличии у поставщика из селекта(по ид поставщика), в селекте может быть выбрано "все поставщики".
     todo: API - запрос поставщиков для селекта. Возвращает массив формата [{name: 'Игроленд', id: '1234'}, {} ...]
-
+    todo: API - Запрос сообщения последнего обновления каталога 'Последнее изменение 09.08.2018 18:00'
 
     todo: Переработать интерфейс
       todo: Каталог (панель слева)
@@ -49,8 +50,8 @@
 
 
     todo: Каталог (панель слева)
-      todo: свернуть каталог, переделать свёрнутый блок
-      todo: сварачивание/разворачивание папок (для уровней возможно сделать параметр lvl)
+      todo: Папки вынести в отдельный компонент
+      todo: сварачивание/разворачивание папок (для уровней возможно сделать параметр lvl).
       todo: при клике на папку в каталоге, изменть хлебные крошки
       todo: вывод количества товаров в папке (запрос к API по ид папки)
       todo: !!Сделать возможность изменения родителя (придумать как сделать)
@@ -74,6 +75,8 @@
         todo: кнопка блокировать/разблокировать - если заблокирована, то категорию нельзя изменить (передавать на бекенд этот параметр)
   -->
 
+
+
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -88,13 +91,16 @@
               >
               </appBreadcrumbs>
             </div>
-            <div class="widthTransition" :class="{'col-3': showSideBarCatalog, 'col-1': !showSideBarCatalog}">
+            <div class="widthTransition col-3">
                 <appCatalogFolders
-                  :showSideBarCatalog = "showSideBarCatalog"
-                  @showSideBarCatalog = "onShowSideBarCatalog">
+                  :folderH = 'foldersCont.catalogFolder.folderH'
+                  :sideFolder = 'foldersCont.catalogFolder.sideFolder'
+                  :lastUpdateTxt = 'foldersCont.catalogFolder.lastUpdateTxt'
+                  :contextMenu = 'foldersCont.catalogFolder.contextMenu'
+                >
                 </appCatalogFolders>
             </div>
-            <div class=""  :class="{'col-9': showSideBarCatalog, 'col': !showSideBarCatalog}">
+            <div class="col-9" >
               <div class="row">
                   <div class="tab-controls-c">
                     <div class="tab-i" :class="{'active': tabValue === 'provider'}" @click="tabChangeVal('provider')">
@@ -142,143 +148,13 @@
                               <!--</div>-->
                               <!--</div>-->
                             </div>
-                            <div class="catalog-folder white-bg">
-                              <div class="folder-b">
-                                <div class="folder-c">
-                                  <ul class="folder-list folder-list-main ">
-                                    <li class="is-active" >
-                                      <div class="folder-title"  >
-                                        <div class="folder-name ">
-                                          Машинки
-                                        </div>
-                                        <div class="folder-controls-c">
-                                          <span class="badge badge-success badge-pill">21</span>
-                                          <button class="btn-icon-tr">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                                              width="8px" height="13px">
-                                              <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                    d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                            </svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                      <ul class="folder-list">
-                                        <li style="padding-left: 10px"  >
-                                          <div class="folder-title">
-                                            <div class="folder-name">
-                                        <span class="dot-txt">
-                                            &#183;
-                                        </span>
-                                              Машинки 2
-                                            </div>
-                                            <div class="folder-controls-c">
-                                              <span class="badge badge-success badge-pill">21</span>
-                                              <button class="btn-icon-tr">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                  width="8px" height="13px">
-                                                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                        d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                                </svg>
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li style="padding-left: 10px"  >
-                                          <div class="folder-title">
-                                            <div class="folder-name">
-                                        <span class="dot-txt">
-                                            &#183;
-                                        </span>
-                                              Машинки 2
-                                            </div>
-                                            <div class="folder-controls-c">
-                                              <span class="badge badge-success badge-pill">21</span>
-                                              <button class="btn-icon-tr">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                  width="8px" height="13px">
-                                                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                        d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                                </svg>
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li style="padding-left: 10px" >
-                                          <div class="folder-title">
-                                            <div class="folder-name">
-                                        <span class="dot-txt">
-                                            &#183;
-                                        </span>
-                                              Машинки 2
-                                            </div>
-                                            <div class="folder-controls-c">
-                                              <span class="badge badge-success badge-pill">21</span>
-                                              <button class="btn-icon-tr">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                  width="8px" height="13px">
-                                                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                        d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                                </svg>
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </li>
-                                    <li>
-                                      <div class="folder-title" @click.right = "contextOpen($event)">
-                                        <div class="folder-name">
-                                          Машинки
-                                        </div>
-                                        <div class="folder-controls-c">
-                                          <span class="badge badge-success badge-pill">21</span>
-                                          <button class="btn-icon-tr">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                                              width="8px" height="13px">
-                                              <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                    d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                            </svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </li>
-                                    <li>
-                                      <div class="folder-title" @click.right = "contextOpen($event)">
-                                        <div class="folder-name">
-                                          Машинки
-                                        </div>
-                                        <div class="folder-controls-c">
-                                          <span class="badge badge-success badge-pill">21</span>
-                                          <button class="btn-icon-tr">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                                              width="8px" height="13px">
-                                              <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                    d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                            </svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  </ul>
-
-                                  <!--<div v-for="singleFolder in foldersCatalog" :key="singleFolder.folderId">-->
-                                  <!--{{singleFolder.folderId}}  -->
-                                  <!--</div>-->
-                                </div>
-                              </div>
-                            </div>
+                            <appCatalogFolders
+                              :folderH = 'foldersCont.providerFolder.folderH'
+                              :sideFolder = 'foldersCont.providerFolder.sideFolder'
+                              :lastUpdateTxt = 'foldersCont.providerFolder.lastUpdateTxt'
+                              :contextMenu = 'foldersCont.providerFolder.contextMenu'
+                            >
+                            </appCatalogFolders>
                           </div>
                           <div class="bottom-s">
                             <div class="btn-c d-flex justify-content-between">
@@ -325,145 +201,9 @@
                                   </multiselect>
                                 </div>
                               </div>
-
                             </div>
-                            <div class="catalog-folder white-bg">
-                              <div class="folder-b">
-                                <div class="folder-c">
-                                  <ul class="folder-list folder-list-main ">
-                                    <li class="is-active" >
-                                      <div class="folder-title"  >
-                                        <div class="folder-name ">
-                                          Машинки
-                                        </div>
-                                        <div class="folder-controls-c">
-                                          <span class="badge badge-success badge-pill">21</span>
-                                          <button class="btn-icon-tr">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                                              width="8px" height="13px">
-                                              <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                    d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                            </svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                      <ul class="folder-list">
-                                        <li style="padding-left: 10px"  >
-                                          <div class="folder-title">
-                                            <div class="folder-name">
-                                        <span class="dot-txt">
-                                            &#183;
-                                        </span>
-                                              Машинки 2
-                                            </div>
-                                            <div class="folder-controls-c">
-                                              <span class="badge badge-success badge-pill">21</span>
-                                              <button class="btn-icon-tr">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                  width="8px" height="13px">
-                                                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                        d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                                </svg>
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li style="padding-left: 10px"  >
-                                          <div class="folder-title">
-                                            <div class="folder-name">
-                                        <span class="dot-txt">
-                                            &#183;
-                                        </span>
-                                              Машинки 2
-                                            </div>
-                                            <div class="folder-controls-c">
-                                              <span class="badge badge-success badge-pill">21</span>
-                                              <button class="btn-icon-tr">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                  width="8px" height="13px">
-                                                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                        d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                                </svg>
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li style="padding-left: 10px" >
-                                          <div class="folder-title">
-                                            <div class="folder-name">
-                                        <span class="dot-txt">
-                                            &#183;
-                                        </span>
-                                              Машинки 2
-                                            </div>
-                                            <div class="folder-controls-c">
-                                              <span class="badge badge-success badge-pill">21</span>
-                                              <button class="btn-icon-tr">
-                                                <svg
-                                                  xmlns="http://www.w3.org/2000/svg"
-                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                                                  width="8px" height="13px">
-                                                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                        d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                                </svg>
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </li>
-                                      </ul>
-                                    </li>
-                                    <li>
-                                      <div class="folder-title" @click.right = "contextOpen($event)">
-                                        <div class="folder-name">
-                                          Машинки
-                                        </div>
-                                        <div class="folder-controls-c">
-                                          <span class="badge badge-success badge-pill">21</span>
-                                          <button class="btn-icon-tr">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                                              width="8px" height="13px">
-                                              <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                    d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                            </svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </li>
-                                    <li>
-                                      <div class="folder-title" @click.right = "contextOpen($event)">
-                                        <div class="folder-name">
-                                          Машинки
-                                        </div>
-                                        <div class="folder-controls-c">
-                                          <span class="badge badge-success badge-pill">21</span>
-                                          <button class="btn-icon-tr">
-                                            <svg
-                                              xmlns="http://www.w3.org/2000/svg"
-                                              xmlns:xlink="http://www.w3.org/1999/xlink"
-                                              width="8px" height="13px">
-                                              <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                                    d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                                            </svg>
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </li>
-                                  </ul>
-
-                                  <!--<div v-for="singleFolder in foldersCatalog" :key="singleFolder.folderId">-->
-                                  <!--{{singleFolder.folderId}}  -->
-                                  <!--</div>-->
-                                </div>
-                              </div>
-                            </div>
+                            <!--<appCatalogFolders>-->
+                            <!--</appCatalogFolders>-->
                           </div>
                           <div class="bottom-s">
                             <div class="btn-c d-flex justify-content-between">
@@ -499,7 +239,7 @@
         data () {
             return {
                 findUserStr: '', // временный атрибут, заменить
-                tabValue: 'find', // Значение таба: find, provider
+                tabValue: 'provider', // Значение таба: find, provider
                 breadcrumbs: [ // Хлебные крошки
                   {
                     title: 'Кросовки', // имя каталога
@@ -522,7 +262,6 @@
                   name: 'Все поставщики',
                   id: '9999'
                 },
-                showSideBarCatalog: true, // показывать панель с каталогом справа
                 findFolderArr: { // Для вывода папок в блоке поиска
                 },
                 selectedFind: { // Выбранный параметр для поиска во вкладке поиск
@@ -530,9 +269,67 @@
                   id: '9999'
                 },
                 additionalFindProp: [
-                  {name: 'Каталог(панель слева)', id: '1234'},
+                  {name: 'Каталог (панель слева)', id: '1234'},
                   {name: 'Выделенная папка (панель слева)', id: '4453'},
                 ],
+                foldersCont: { //массив со всеми папками для компонента catalogFolder
+                  providerFolder: {
+                    folderH: '', // заголовок каталога
+                    sideFolder: false, //боковая панель (каталог)
+                    lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
+                    contextMenu:{ // Контекстное меню
+                      contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
+                      yPos: 323,//полложение по оси x
+                      xPos: 224,//полложение по оси y
+                      menuOpt: [ // пункты меню
+                        {
+                          title: 'Товары',//заголовок
+                          eventName: 'showGoods' // имя ивента, который вызывается при нажатии на пункт меню
+                          //Подумать как передавать payload, при нажатии на папку
+                        },
+                        {
+                          title: 'Привязать',//заголовок
+                          eventName: 'attachFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          //Подумать как передавать payload, при нажатии на папку
+                        },
+
+                      ]
+                    },
+                  },
+                  catalogFolder: {
+                    folderH: 'Каталог', // заголовок каталога
+                    sideFolder: true, //боковая панель (каталог)
+                    lastUpdateTxt: 'Последнее изменение Сегодня 18:00', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
+                    contextMenu:{ // Контекстное меню
+                      contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
+                      yPos: 323,//полложение по оси x
+                      xPos: 224,//полложение по оси y
+                      menuOpt: [ // пункты меню
+                        {
+                          title: 'Параметры',//заголовок
+                          eventName: 'showParamFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          //Подумать как передавать payload, при нажатии на папку
+                        },
+                        {
+                          title: 'Товары',//заголовок
+                          eventName: 'showGoods' // имя ивента, который вызывается при нажатии на пункт меню
+                          //Подумать как передавать payload, при нажатии на папку
+                        },
+                        {
+                          title: 'Добавить',//заголовок
+                          eventName: 'addFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          //Подумать как передавать payload, при нажатии на папку
+                        },
+                        {
+                          title: 'Удалить',//заголовок
+                          eventName: 'deleteFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          //Подумать как передавать payload, при нажатии на папку
+                        },
+
+                      ]
+                    },
+                  },
+                }
             }
         },
         computed: {
@@ -569,9 +366,6 @@
             this.selectedProvider = newProviderObj;
             console.log('Провайдер изменён на: ', newProviderObj);
 
-          },
-          onShowSideBarCatalog(){
-            this.showSideBarCatalog = !this.showSideBarCatalog;
           },
           tabChangeVal(newVal){
             this.tabValue = newVal;
