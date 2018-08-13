@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="folder-b">
-        <div class="folder-c">
+        <div class="folder-c" :class="{'containerPending':folderPending}">
           <ul class="folder-list folder-list-main ">
 
             <!--
@@ -31,22 +31,22 @@
               todo: Подумать насчёт колизии с одинаковым ид папок (сортировка + ид), в разных папках
             -->
 
-            <li v-for="(catFolder, key) in rootCatalogFolders"
+            <li v-for="(catFolder, index) in rootCatalogFoldersComp"
                 :class="{'is-active': catFolder.isOpen}"
                 :style="{'paddingLeft': catFolder.lvlFolder * 10 + 'px'}"
                 v-if="!catFolder.hideFolder"
-                :key="catFolder.id"
             >
+              <!--:key - параметр для сортировки-->
               <div class="folder-title" @click.right = "contextOpen($event)" >
                 <div class="folder-name ">
                   <span class="dot-txt" v-for="i in catFolder.lvlFolder">
                       &#183;
                   </span>
-                  {{key}}__{{catFolder.name}}
+                  {{catFolder.name}}
                 </div>
                 <div class="folder-controls-c">
                   <span class="badge badge-success badge-pill">{{catFolder.goodsCount}}</span>
-                  <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0" @click="openSubfolder(key, catFolder.folderId, catFolder.lvlFolder, key)">
+                  <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0" @click="openSubfolder(index, catFolder.folderId, catFolder.lvlFolder, index)">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -102,13 +102,9 @@
         name: 'catalogFolders',
         data () {
           return {
-            rootCatalogFolders: //корневой каталог
-              {
-              /*Логика:
-              * Нет никакой влеженности
-              * У каждой папки есть место для вывода следующего массива папок (folderArr)
-              * */
-                '0_0_123321': { // формат ключа lvl_sortVal_idFolder: sortVal - для сортировки значение [0, infinite], '_' - разделитель , idFolder - ид папки
+            rootCatalogFoldersComp: //каталог
+              [
+                /*{
                   folderId: '123321', //уникальный ид папки
                   name: 'Велосипед', // Имя папки
                   goodsCount: 181, // количество товаров в папке
@@ -117,65 +113,11 @@
                   hasFolders: false,// есть вложенный каталог
                   hideFolder: false,// скрыть папку
                   folderArr: [ // храниться массив подпапок
-                  ]
-                },
-                '0_1_2324': { // формат ключа sortVal_idFolder: sortVal - для сортировки значение [0, infinite], '_' - разделитель , idFolder - ид папки
-                  folderId: '2324', //уникальный ид папки
-                  name: 'Самокат', // Имя папки
-                  goodsCount: 102, // количество товаров в папке
-                  lvlFolder: 0, // Уровень папки, 0 - папка в корне
-                  isOpen: false, // Открыть ли каталог (для фронтенда)
-                  hasFolders: true,// есть вложенный каталог
-                  hideFolder: false,// скрыть папку
-                  folderArr: [ // храниться массив подпапок
-                    '1_0_7878',
-                    '1_1_6676'
-                  ]
-                },
-                //с сервера приходит lvl 0
-                '1_0_7878': { // формат ключа sortVal_idFolder: sortVal - для сортировки значение [0, infinite], '_' - разделитель , idFolder - ид папки
-                  folderId: '7878', //уникальный ид папки
-                  name: 'Электросамокат', // Имя папки
-                  goodsCount: 192, // количество товаров в папке
-                  lvlFolder: 1, // Уровень папки, 0 - папка в корне
-                  hasFolders: false,// есть вложенный каталог
-                  hideFolder: true,//скрыть папку
-                  isOpen: false, // Открыть ли каталог (для фронтенда)
-                  folderArr: [ // храниться массив подпапок
-                  ]
-                },
-                '1_1_6676': { // формат ключа sortVal_idFolder: sortVal - для сортировки значение [0, infinite], '_' - разделитель , idFolder - ид папки
-                  folderId: '6676', //уникальный ид папки
-                  name: 'Минисамокат', // Имя папки
-                  goodsCount: 19, // количество товаров в папке
-                  lvlFolder: 1, // Уровень папки, 0 - папка в корне
-                  hasFolders: false,// есть вложенный каталог
-                  hideFolder: true,//скрыть папку
-                  isOpen: false, // Открыть ли каталог (для фронтенда)
-                  folderArr: [ // храниться массив подпапок
-                  ]
-                },
-              },
-              subCatalogFolders:{ // подкаталоги
-              '1_0_7878': { // формат ключа sortVal_idFolder: sortVal - для сортировки значение [0, infinite], '_' - разделитель , idFolder - ид папки
-                folderId: '7878', //уникальный ид папки
-                name: 'Электросамокат', // Имя папки
-                goodsCount: 192, // количество товаров в папке
-                lvlFolder: 1, // Уровень папки, 0 - папка в корне
-                isOpen: false, // Открыть ли каталог (для фронтенда)
-                folderArr: [ // храниться массив подпапок
-                ]
-              },
-              '0_1_6676': { // формат ключа sortVal_idFolder: sortVal - для сортировки значение [0, infinite], '_' - разделитель , idFolder - ид папки
-                folderId: '6676', //уникальный ид папки
-                name: 'Минисамокат', // Имя папки
-                goodsCount: 19, // количество товаров в папке
-                lvlFolder: 1, // Уровень папки, 0 - папка в корне
-                isOpen: false, // Открыть ли каталог (для фронтенда)
-                folderArr: [ // храниться массив подпапок
-                ]
-              },
-            }
+                  ],
+                  key: '1',
+                }*/
+              ],
+            folderPending: false // true, пока идёт запрос на подгрузку папок
           }
         },
         computed: {
@@ -206,85 +148,90 @@
               this.contextMenu.xPos = e.clientX;
               this.contextMenu.yPos = e.clientY;
               this.contextMenu.contextMenuOpen = true;
-
               console.log('e = ', e);
               e.preventDefault();
           },
           // открыть папку
-          requestCategory(idCategory, lvlFolder, providerId, parentId){ // запрос категории/каталога по ид, возвращает промис
+          requestCategory(idCategory, lvlFolder, providerId, parentFolderId){ // запрос категории/каталога по ид, возвращает промис
+            //после вызова в promise вызывать this.setFolders().. для перезаписи каталога в родительском компоненте
             return new Promise((resolve, reject) => {
               let payload = {
                 // lvlFolder: lvlFolder ? lvlFolder : '',
                 lvlFolder: lvlFolder,
                 id: idCategory || '',
                 supplier_id: providerId || '',
-                parentId: parentId || '0'
+                parentFolderId: parentFolderId || '0'
               };
-              console.log('!!!!!!payload ---------', payload);
-                axios({url: API_URL + '/category', data: payload, method: 'GET' })
-                  .then(resp => {
-                    const error = resp.data.error;
-                    if(error){
-                      reject(resp.data.data);
-                    }else {
-                      resolve(resp.data.data);
-                    }
-                  })
-                  .catch(err => {
-                    reject(err);
-                  });
-                //http://igroland-api.praweb.ru/category?lvlFolder=0&id=33556&supplier_id=
-                axios.get( API_URL + '/category', {
-                    params: {
-                      ...payload
-                    },
-                    // paramsSerializer: function(params) {
-                    //   return qs.stringify(params, { indices: false })
-                    // }
-                  })
-                  .then(resp => {
-                    const error = resp.data.error;
-                    if(error){
-                      reject(resp.data.data);
-                    }else {
-                      resolve(resp.data.data);
-                    }
-                  })
-                  .catch(err => {
-                    reject(err);
-                  });
+              this.folderPending = true;
+              this.stepOneActive(); // прогрессбар
+              // console.log('!!!!!!payload ---------', payload);
+              axios.get( API_URL + '/category', {
+                  params: {
+                    ...payload
+                  },
+                })
+                .then(resp => {
+                  const error = resp.data.error;
+                  if(error){
+                    reject(resp.data.data);
+                  }else {
+                    resolve(resp.data.data);
+                  }
+                  this.stepLastActive(); // прогрессбар
+                  this.folderPending = false;
+                })
+                .catch(err => {
+                  this.folderPending = false;
+                  this.stepLastActive(); // прогрессбар
+                  reject(err);
+                });
+
             });
           },
-          openSubfolder(index, folderId, lvlFolder, parentId){
+          openSubfolder(index, folderId, lvlFolder, parentFolderId){
             //Делаем запрос на сервер, от сервера приходит ассециативный массив с папками catalogFolders и catalogFoldersKeyArr - массив ключей
             //формат lvlFolder++_index_idCatalog, также на сервере делаем инкремент lvlFolder у папки
             //Далее проходимся по массиву с сервера и добавляем все ключи
-            this.rootCatalogFolders[index].isOpen = !this.rootCatalogFolders[index].isOpen; // меняем значение, открываем/закрываем папку
-            //скрываем/открываем папки-потомки // в axios, после успешного запроса
 
-            for(let catItem of this.rootCatalogFolders[index].folderArr){
-              this.rootCatalogFolders[catItem].hideFolder = !this.rootCatalogFolders[index].isOpen;
-            }
-
-            let categoryRequest = this.requestCategory(folderId, lvlFolder, '', parentId);
-            categoryRequest.then(
-              result => { // всё ок
-                console.log('!!!!!!categoryRequest SUB result ---------', result);
-                for (let key in result.catalogFolders) {
-                  console.log('key in result.catalogFolders ', key );
-                  this.$set(this.rootCatalogFolders, key, result.catalogFolders[key]);
-
+            if(this.rootCatalogFoldersComp[index].isOpen) {
+              // Удаляем все подпапки, начиная с index.. закрываем папку index
+              this.rootCatalogFoldersComp.splice(index+1, this.rootCatalogFoldersComp[index].childCount);
+              this.rootCatalogFoldersComp[index].isOpen = false;
+              this.setFolders();
+            }else{
+              let categoryRequest = this.requestCategory(folderId, lvlFolder, '', parentFolderId);
+              categoryRequest.then(
+                result => { // всё ок
+                  // console.log('!!!!!!categoryRequest SUB result ---------', result);
+                  for (let item of result.catalogFolders) {
+                    // с позиции index
+                    // удалить 0
+                    // вставить item
+                    //Изменять индекс у родителя
+                    this.rootCatalogFoldersComp.splice(index+1, 0, item);
+                    // this.rootCatalogFoldersComp[index].folderArr.splice(this.rootCatalogFoldersComp[index].folderArr.length, 0, index+1);
+                  }
+                  let parentIndex = index ;//индекс родительской папки
+                  this.rootCatalogFoldersComp[parentIndex].childCount = this.rootCatalogFoldersComp[parentIndex].childCount + result.catalogFolders.length;
+                  // this.$set(this.rootCatalogFoldersComp[index], 'folderArr', result.catalogFoldersKeyArr); // $set, что бы "не потерять динамичность"
+                  this.rootCatalogFoldersComp[index].isOpen = true; // открываем папку
+                  this.setFolders();
+                },
+                error =>{ // всё не ок
+                  console.log('error');
                 }
-                this.$set(this.rootCatalogFolders[index], 'folderArr', result.catalogFoldersKeyArr); // $set, что бы "не потерять динамичность"
-              },
-              error =>{ // всё не ок
-                console.log('error');
-              }
-            );
+              );
 
               //передаём ивент, для родительского компонента
               this.$emit('openSubfolder', {'index': index, 'folderId': folderId});
-            },
+            }
+
+
+          },
+          setFolders(){
+            this.$emit('setFolders', {'value': this.rootCatalogFoldersComp });
+          }
+
         },
         props:[
           'folderH', // заголовок каталога
@@ -292,6 +239,7 @@
           'lastUpdateTxt', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
           'contextMenu', // Контекстное меню
           'menuOpt', // пункты контекстного меню
+          'rootCatalogFolders', // все папки
         ],
         mounted(){
             let varthis = this;
@@ -307,8 +255,8 @@
             categoryRequest.then(
               result => { // всё ок
                 console.log('categoryRequest result ---------', result);
-                this.rootCatalogFolders = result.catalogFolders;
-
+                this.rootCatalogFoldersComp = result.catalogFolders;
+                this.setFolders();
               },
               error =>{ // всё не ок
                 console.log('error');

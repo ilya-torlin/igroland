@@ -97,6 +97,8 @@
                   :sideFolder = 'foldersCont.catalogFolder.sideFolder'
                   :lastUpdateTxt = 'foldersCont.catalogFolder.lastUpdateTxt'
                   :contextMenu = 'foldersCont.catalogFolder.contextMenu'
+                  :rootCatalogFolders = 'foldersCont.catalogFolder.rootCatalogFolders'
+                  @setFolders = 'onSetFolders($event, "catalogFolder")'
                 >
                 </appCatalogFolders>
             </div>
@@ -153,6 +155,8 @@
                               :sideFolder = 'foldersCont.providerFolder.sideFolder'
                               :lastUpdateTxt = 'foldersCont.providerFolder.lastUpdateTxt'
                               :contextMenu = 'foldersCont.providerFolder.contextMenu'
+                              :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
+                              @setFolders = 'onSetFolders($event, "providerFolder")'
                             >
                             </appCatalogFolders>
                           </div>
@@ -295,6 +299,7 @@
 
                       ]
                     },
+                    rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
                   },
                   catalogFolder: {
                     folderH: 'Каталог', // заголовок каталога
@@ -328,6 +333,7 @@
 
                       ]
                     },
+                    rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
                   },
                 }
             }
@@ -341,6 +347,9 @@
           Multiselect
         },
         methods: {
+          onSetFolders(e, keyFolder){
+            this.foldersCont[keyFolder].rootCatalogFolders = e.value;
+          },
           findFolder(){ //поиск среди папок
 
           },

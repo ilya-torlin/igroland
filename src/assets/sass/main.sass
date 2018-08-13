@@ -326,6 +326,9 @@ button
 .folder-c
   //padding: 0 20px
   //padding-right: 30px
+.containerPending
+  pointer-events: none
+  opacity: 0.8
 .folder-h
   font-size: 17px
   font-weight: 500
@@ -352,7 +355,7 @@ button
   padding: 0px
   overflow: auto
   max-height: calc(100vh - 300px - 118px)
-  +custom-scroll($blue)
+  +custom-scroll($gray-500)
   &:not(.folder-list-main)
     //background: $grey-bg
   .folder-title
