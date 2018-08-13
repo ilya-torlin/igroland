@@ -35,18 +35,18 @@
                 :class="{'is-active': catFolder.isOpen}"
                 :style="{'paddingLeft': catFolder.lvlFolder * 10 + 'px'}"
                 v-if="!catFolder.hideFolder"
-                :key="key"
+                :key="catFolder.id"
             >
               <div class="folder-title" @click.right = "contextOpen($event)" >
                 <div class="folder-name ">
                   <span class="dot-txt" v-for="i in catFolder.lvlFolder">
                       &#183;
                   </span>
-                  {{catFolder.name}}
+                  {{key}}__{{catFolder.name}}
                 </div>
                 <div class="folder-controls-c">
                   <span class="badge badge-success badge-pill">{{catFolder.goodsCount}}</span>
-                  <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0" @click="openSubfolder(key, catFolder.folderId, catFolder.lvlFolder)">
+                  <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0" @click="openSubfolder(key, catFolder.folderId, catFolder.lvlFolder, key)">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -108,7 +108,7 @@
               * Нет никакой влеженности
               * У каждой папки есть место для вывода следующего массива папок (folderArr)
               * */
-                '0_0_123321': { // формат ключа sortVal_idFolder: sortVal - для сортировки значение [0, infinite], '_' - разделитель , idFolder - ид папки
+                '0_0_123321': { // формат ключа lvl_sortVal_idFolder: sortVal - для сортировки значение [0, infinite], '_' - разделитель , idFolder - ид папки
                   folderId: '123321', //уникальный ид папки
                   name: 'Велосипед', // Имя папки
                   goodsCount: 181, // количество товаров в папке
@@ -211,13 +211,14 @@
               e.preventDefault();
           },
           // открыть папку
-          requestCategory(idCategory, lvlFolder, providerId){ // запрос категории/каталога по ид, возвращает промис
+          requestCategory(idCategory, lvlFolder, providerId, parentId){ // запрос категории/каталога по ид, возвращает промис
             return new Promise((resolve, reject) => {
               let payload = {
                 // lvlFolder: lvlFolder ? lvlFolder : '',
                 lvlFolder: lvlFolder,
                 id: idCategory || '',
                 supplier_id: providerId || '',
+                parentId: parentId || '0'
               };
               console.log('!!!!!!payload ---------', payload);
                 axios({url: API_URL + '/category', data: payload, method: 'GET' })
@@ -254,28 +255,27 @@
                   });
             });
           },
-          openSubfolder(index, folderId, lvlFolder){
+          openSubfolder(index, folderId, lvlFolder, parentId){
             //Делаем запрос на сервер, от сервера приходит ассециативный массив с папками catalogFolders и catalogFoldersKeyArr - массив ключей
             //формат lvlFolder++_index_idCatalog, также на сервере делаем инкремент lvlFolder у папки
-            // Далее проходимся по массиву с сервера и добавляем все ключи
+            //Далее проходимся по массиву с сервера и добавляем все ключи
             this.rootCatalogFolders[index].isOpen = !this.rootCatalogFolders[index].isOpen; // меняем значение, открываем/закрываем папку
-
             //скрываем/открываем папки-потомки // в axios, после успешного запроса
+
             for(let catItem of this.rootCatalogFolders[index].folderArr){
               this.rootCatalogFolders[catItem].hideFolder = !this.rootCatalogFolders[index].isOpen;
             }
 
-            let categoryRequest = this.requestCategory(folderId, lvlFolder);
+            let categoryRequest = this.requestCategory(folderId, lvlFolder, '', parentId);
             categoryRequest.then(
               result => { // всё ок
-                console.log('!!!!!!categoryRequest result ---------', result);
-
+                console.log('!!!!!!categoryRequest SUB result ---------', result);
                 for (let key in result.catalogFolders) {
+                  console.log('key in result.catalogFolders ', key );
                   this.$set(this.rootCatalogFolders, key, result.catalogFolders[key]);
+
                 }
-
-
-                // this.rootCatalogFolders[index].folderArr = result.catalogFoldersKeyArr;
+                this.$set(this.rootCatalogFolders[index], 'folderArr', result.catalogFoldersKeyArr); // $set, что бы "не потерять динамичность"
               },
               error =>{ // всё не ок
                 console.log('error');
@@ -308,6 +308,7 @@
               result => { // всё ок
                 console.log('categoryRequest result ---------', result);
                 this.rootCatalogFolders = result.catalogFolders;
+
               },
               error =>{ // всё не ок
                 console.log('error');

@@ -345,12 +345,14 @@ button
   .folder-name
     color: $gray-600
     font-size: 16px
+    padding-right: 10px
 .folder-list
   list-style: none
   margin: 0px
   padding: 0px
-  //max-height: calc(100vh - 300px)
-  //overflow: auto
+  overflow: auto
+  max-height: calc(100vh - 300px - 118px)
+  +custom-scroll($blue)
   &:not(.folder-list-main)
     //background: $grey-bg
   .folder-title
@@ -1194,6 +1196,9 @@ textarea
     width: 160px
     .folder-b
       width: 0
+  .folder-list
+    max-height: calc(100vh - 300px - 74px)
+
 .att-folders-c
   background: #FFFFFF
   display: flex
