@@ -93,7 +93,7 @@
         props: [
           'breadcrumbs',//массив с хлебными крошками
           'providerList',// поставщики для селекта
-          'selectedProvider'//выбранный поставщик
+          'selectedProvider',//выбранный поставщик
         ],
         methods:{
           breadItemClicked(catalogId){

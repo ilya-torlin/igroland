@@ -157,6 +157,7 @@
                               :lastUpdateTxt = 'foldersCont.providerFolder.lastUpdateTxt'
                               :contextMenu = 'foldersCont.providerFolder.contextMenu'
                               :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
+                              :selectedProvider = 'selectedProvider'
                               @setFolders = 'onSetFolders($event, "providerFolder")'
                             >
                             </appCatalogFolders>
@@ -228,14 +229,13 @@
 </template>
 
 <script>
-    import Vue from 'vue'
-    import VueRouter from 'vue-router'
-
     import appCatalogFolders from './catalogFolders.vue'
-    Vue.component('appCatalogFolders', appCatalogFolders);
-
     import appBreadcrumbs from './breadcrumbs.vue'
-    Vue.component('appBreadcrumbs', appBreadcrumbs);
+
+    import {API_URL} from '../constants';
+    import axios from 'axios';
+    import {mapGetters} from 'vuex';
+    import {mapMutations} from 'vuex';
 
     import Multiselect from 'vue-multiselect'
 
@@ -257,21 +257,14 @@
                 ],
                 selectedCatalogId: 12, // выбранный каталог из левой панели
                 providerList: [ // поставщики для селекта
-                  {name: 'Игроленд', id: '1234'},
-                  {name: 'РС Восток', id: '4453'},
-                  {name: 'Гала центр', id: '8489'},
-                  {name: 'Союз игрушка', id: '8489'},
-                  {name: 'Все поставщики', id: '9999'},
                 ],
                 selectedProvider: {
-                  name: 'Все поставщики',
-                  id: '9999'
                 },
                 findFolderArr: { // Для вывода папок в блоке поиска
                 },
                 selectedFind: { // Выбранный параметр для поиска во вкладке поиск
                   name: 'Все поставщики',
-                  id: '9999'
+                  id: ''
                 },
                 additionalFindProp: [
                   {name: 'Каталог (панель слева)', id: '1234'},
@@ -342,14 +335,37 @@
             }
         },
         computed: {
+          ...mapGetters('alerts', {
+            succesAlert: 'succesAlert',
+            errorAlert: 'errorAlert'
+          }),
+          ...mapGetters('progress', {
+            progStateWidth: 'progStateWidth',
+            progShow: 'progShow'
+          }),
           findSelectOpt(){
             return this.providerList.concat(this.additionalFindProp);
           },
         },
         components: {
-          Multiselect
+          Multiselect,
+          appCatalogFolders,
+          appBreadcrumbs
         },
         methods: {
+          ...mapMutations('alerts',{
+            setSuccesAlertShow: 'setSuccesAlertShow',
+            setErrorAlertShow: 'setErrorAlertShow',
+            setSuccesAlertMsg: 'setSuccesAlertMsg',
+            setErrorAlertMsg: 'setErrorAlertMsg'
+          }),
+          ...mapMutations('progress',{
+            setProgStateWidth: 'setProgStateWidth',
+            setProgShow: 'setProgShow',
+            stepOneActive: 'stepOneActive',
+            stepTwoActive: 'stepTwoActive',
+            stepLastActive: 'stepLastActive',
+          }),
           onSetFolders(e, keyFolder){
             this.foldersCont[keyFolder].rootCatalogFolders = e.value;
           },
@@ -370,20 +386,45 @@
             }
           },
           onChangeProvider(newProviderObj){
-            if(newProviderObj){
+            /*if(newProviderObj){
               this.selectedProvider = newProviderObj;
             }else {
-
-            }
+            }*/
             this.selectedProvider = newProviderObj;
             console.log('Провайдер изменён на: ', newProviderObj);
 
           },
           tabChangeVal(newVal){
             this.tabValue = newVal;
+          },
+          getProvider(){
+            this.stepOneActive(); // прогрессбар
+            axios.get( API_URL + '/supplier', {
+              params: {},
+            }).then(resp => {
+                const error = resp.data.error;
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при запросе поставщиков: ' + errorTxt);
+                }else {
+                  this.providerList = resp.data.data;
+                  this.providerList.push({name: 'Все поставщики', id: ''});
+                  //todo: при изменении провайдера вызывать!!
+                  this.selectedProvider = this.providerList[this.providerList.length-1]
+                }
+                this.stepLastActive(); // прогрессбар
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при запросе поставщиков');
+                this.stepLastActive(); // прогрессбар
+              });
           }
-
         },
+        mounted(){
+          this.getProvider();
+        }
 
     }
 </script>

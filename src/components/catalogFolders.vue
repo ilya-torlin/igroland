@@ -3,17 +3,26 @@
     <!--catalogFolders.vue-->
 
     <!--
-      todo: для каталога делается запрос на сервер(отправляется ид родителя), с сервера приходят потомки
       todo: скрывать/удалять папку после привязки
     -->
 
   <!--
-    todo: Примерная логика работы
-    todo: У любой папки есть место для вывода новой папки
-    todo: при клике на развертывание папки, делается запрос на сервер с ид папки, на которую кликнули; добавить флаг, что папка была запрошена с сервера, что бы не выполнять лишние запросы
-    todo: после ответа сервера новые каталоги добавляются в массив подпапок данной папки, и менять каким-то образом lvl(Уровень вложенности, возможно делать ++ к lvl вложенности родителькой папки)
-
-    todo: при сворачивании папки
+    Логика работы компонента ↓↓↓
+      Данные
+        Есть временное хранилище rootCatalogFoldersComp, которое перезаписывается при помощи метода this.setFolders()
+        Основное хранилище хранится в родительском компоненте
+      Первоначальная инициализация
+        Данные для папок запрашиваются в родительском компоненте, prop rootCatalogFolders
+      Примерная логика работы открытия/закрытия папок
+        Весь каталог представляет из себя обычный массив, БЕЗ ВЛОЖЕННОСТИ
+        Изначально запрашиваются каталоги(далее папки) всех поставщиков
+        При нажатии на значок расскрытия папки
+          На сервер отправляется запрос, используя метод this.requestCategory(...params); данный метод возвращает promise и папки соответствующей категории(на которую кликнули)
+          Если запрос успешен, то после родительской папки в массив добавляются новые папки, и перерасчитывается колличество папок-потомков (необходимо для удаления)
+          Учитывайте, что есть несколько уровней вложенности, и у всех родителей необходимо пересчитать кол-во потомков... аналогично и с удалением
+          !!!ВАЖНО Вызываем метод this.setFolders(), если вы изменили rootCatalogFoldersComp
+        При нажатии на значок Закрытия папки
+          Аналогичная ситуация что и с добавлением, в коде есть комментарии
   -->
 
   <div class=" catalog-folder white-bg" :class="{'side-catalog-f': sideFolder}" >
@@ -150,17 +159,17 @@
               e.preventDefault();
           },
           // открыть папку
-          requestCategory(idCategory, lvlFolder, providerId, parentFolderId){ // запрос категории/каталога по ид, возвращает промис
+          requestCategory(idCategory, lvlFolder, parentFolderId){ // запрос категории/каталога по ид, возвращает промис
             //после вызова в promise вызывать this.setFolders().. для перезаписи каталога в родительском компоненте
             return new Promise((resolve, reject) => {
               let payload = {
                 // lvlFolder: lvlFolder ? lvlFolder : '',
-                lvlFolder: lvlFolder,
-                id: idCategory || '',
-                supplier_id: providerId || '',
-                parentFolderId: parentFolderId || '0'
+                lvlFolder: lvlFolder, // уровень вложенности
+                id: idCategory || '', // ид папки
+                supplier_id: this.selectedProvider.id || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
+                parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
               };
-              this.folderPending = true;
+              this.folderPending = true; // пока идёт запрос контейнер с папками блокируется
               this.stepOneActive(); // прогрессбар
               // console.log('!!!!!!payload ---------', payload);
               axios.get( API_URL + '/category', {
@@ -172,6 +181,9 @@
                   const error = resp.data.error;
                   if(error){
                     reject(resp.data.data);
+                    let errorTxt = resp.data.data.msgClient;
+                    this.setErrorAlertShow(true);
+                    this.setErrorAlertMsg('Ошибка при запросе категории: ' + errorTxt);
                   }else {
                     resolve(resp.data.data);
                   }
@@ -180,6 +192,8 @@
                 })
                 .catch(err => {
                   this.folderPending = false;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при генерации ключа');
                   this.stepLastActive(); // прогрессбар
                   reject(err);
                 });
@@ -193,7 +207,6 @@
 
             if(this.rootCatalogFoldersComp[index].isOpen) {
               // Удаляем все подпапки, начиная с index.. закрываем папку index
-              //todo: !!! Доделать скрытие папки, если открыть и закрыть дочернюю папку, то удаляются лишние папки, т.к. из родительской не вычитается кол-во потомков
               let childCount = this.rootCatalogFoldersComp[index].childCount;
               if(this.rootCatalogFoldersComp[index].lvlFolder > 0) {
                 let indexLvlFolder = this.rootCatalogFoldersComp[index].lvlFolder - 1;
@@ -222,7 +235,7 @@
 
               this.setFolders();
             }else{
-              let categoryRequest = this.requestCategory(folderId, lvlFolder, '', parentFolderId);
+              let categoryRequest = this.requestCategory(folderId, lvlFolder, parentFolderId);
               categoryRequest.then(
 
                 result => { // всё ок
@@ -288,6 +301,7 @@
           'contextMenu', // Контекстное меню
           'menuOpt', // пункты контекстного меню
           'rootCatalogFolders', // все папки
+          'selectedProvider', //выбранный поставщик (объект {name, id})
         ],
         mounted(){
             let varthis = this;
