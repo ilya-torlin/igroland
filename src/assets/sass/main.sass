@@ -341,13 +341,18 @@ button
   border-bottom: solid 2px $gray-300
 .folder-b
   .folder-controls-c
-    min-width: 80px
+    min-width: 28px
     .btn-icon-tr
-      padding-left: 15px
+      padding: 0 10px
   .folder-name
     color: $gray-600
     font-size: 16px
     padding-right: 10px
+    display: flex
+    align-items: center
+.dot-txt
+  padding-right: 5px
+
 .folder-list
   list-style: none
   margin: 0px
@@ -375,11 +380,11 @@ button
         border-left: 2px solid $blue
       &>.folder-title
         &>.folder-controls-c
-          &>.btn-icon-tr
-            transform: rotate(90deg)
-            position: relative
-            top: -3px
-            left: 6px
+      .btn-icon-tr
+        transform: rotate(90deg)
+        position: relative
+        top: -3px
+        left: 6px
   .context-open
     background: $yellow
 .folder-controls-c
@@ -393,6 +398,7 @@ button
     transition: all .3s ease
     &>.folder-title
       padding: 16px 30px
+      padding-left: 15px
     &:hover
       background: $gray-400
 .folder-f

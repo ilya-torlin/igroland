@@ -37,12 +37,23 @@
           <ul class="folder-list folder-list-main ">
             <li v-for="(catFolder, index) in rootCatalogFoldersComp"
                 :class="{'is-active': catFolder.isOpen}"
-                :style="{'paddingLeft': catFolder.lvlFolder * 10 + 'px'}"
+                :style="{'paddingLeft': catFolder.lvlFolder * 28 + 'px'}"
                 v-if="!catFolder.hideFolder"
             >
               <!--:key - параметр для сортировки-->
               <div class="folder-title" @click.right = "contextOpen($event, catFolder )" >
                 <div class="folder-name ">
+                  <div class="folder-controls-c">
+                    <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0" @click="openSubfolder(index, catFolder.folderId, catFolder.lvlFolder, index)">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        width="8px" height="13px">
+                        <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
+                              d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
+                      </svg>
+                    </button>
+                  </div>
                   <span class="dot-txt" v-for="i in catFolder.lvlFolder">
                       &#183;
                   </span>
@@ -50,15 +61,6 @@
                 </div>
                 <div class="folder-controls-c">
                   <span class="badge badge-success badge-pill">{{catFolder.goodsCount}}</span>
-                  <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0" @click="openSubfolder(index, catFolder.folderId, catFolder.lvlFolder, index)">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlns:xlink="http://www.w3.org/1999/xlink"
-                      width="8px" height="13px">
-                      <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                            d="M1.738,12.343 C1.390,12.681 0.826,12.681 0.479,12.343 C0.131,12.004 0.131,11.455 0.479,11.116 L5.116,6.601 L0.479,2.085 C0.131,1.747 0.131,1.198 0.479,0.860 C0.826,0.521 1.390,0.521 1.738,0.860 L6.986,5.970 C7.164,6.143 7.249,6.373 7.244,6.601 C7.249,6.829 7.164,7.058 6.986,7.232 L1.738,12.343 Z"/>
-                    </svg>
-                  </button>
                 </div>
               </div>
             </li>
@@ -148,6 +150,9 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
+          setRootCatalogFoldersComp(value){
+            this.rootCatalogFoldersComp = value;
+          },
           contextMenuOptEvent(eventName){
             this.$emit(eventName);
           },
@@ -159,14 +164,14 @@
               e.preventDefault();
           },
           // открыть папку
-          requestCategory(idCategory, lvlFolder, parentFolderId){ // запрос категории/каталога по ид, возвращает промис
+          requestCategory(idCategory, lvlFolder, parentFolderId, selectedProvider){ // запрос категории/каталога по ид, возвращает промис
             //после вызова в promise вызывать this.setFolders().. для перезаписи каталога в родительском компоненте
             return new Promise((resolve, reject) => {
               let payload = {
                 // lvlFolder: lvlFolder ? lvlFolder : '',
                 lvlFolder: lvlFolder, // уровень вложенности
                 id: idCategory || '', // ид папки
-                supplier_id: this.selectedProvider.id || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
+                supplier_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
                 parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
               };
               this.folderPending = true; // пока идёт запрос контейнер с папками блокируется
@@ -184,7 +189,7 @@
                     let errorTxt = resp.data.data.msgClient;
                     this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при запросе категории: ' + errorTxt);
-                  }else {
+                  }else{
                     resolve(resp.data.data);
                   }
                   this.stepLastActive(); // прогрессбар
@@ -193,7 +198,7 @@
                 .catch(err => {
                   this.folderPending = false;
                   this.setErrorAlertShow(true);
-                  this.setErrorAlertMsg('Ошибка при генерации ключа');
+                  this.setErrorAlertMsg('Ошибка при запросе категории');
                   this.stepLastActive(); // прогрессбар
                   reject(err);
                 });

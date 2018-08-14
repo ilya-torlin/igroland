@@ -47,7 +47,7 @@
                   track-by="name"
                   selectLabel="Выбрать"
                   deselectLabel=""
-                  @input = "onChangeProvider">
+                  @input = "onChangeProvider" >
                 </multiselect>
               </div>
 

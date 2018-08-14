@@ -124,11 +124,7 @@
               <div class="row att-folders-r">
                   <div class="col-12 white-bg">
                     <div class="att-folders-c">
-                      <transition name="custom-classes-transition" mode="out-in"
-                                  duration="300"
-                                  enter-active-class="animated fadeIn"
-                                  leave-active-class="animated fadeOut">
-                        <div key="provider-tab" class="att-folders-i folders-wt" v-if="tabValue == 'provider'">
+                        <div key="provider-tab" class="att-folders-i folders-wt" v-show="tabValue == 'provider'">
                           <div class="upper-s">
                             <div class="find-folder-i">
                               <div class="txt-f">
@@ -136,7 +132,7 @@
                               </div>
                               <!--<div class="find-b justify-content-start d-flex">-->
                               <!--<div class="input-group ">-->
-                              <!--<input v-model.lazy="findUserStr" v-on:keyup.enter="findFolder" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">-->
+                              <!--<input v-model.lazy="findFolderStr" v-on:keyup.enter="findFolder" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">-->
                               <!--<div class="input-group-append">-->
                               <!--<button class="btn btn-outline-secondary" type="button" @click="findFolder">-->
                               <!--<svg-->
@@ -159,6 +155,7 @@
                               :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
                               :selectedProvider = 'selectedProvider'
                               @setFolders = 'onSetFolders($event, "providerFolder")'
+                              ref="providerCont"
                             >
                             </appCatalogFolders>
                           </div>
@@ -169,57 +166,65 @@
                             </div>
                           </div>
                         </div>
-                        <div key="find-tab" class="att-folders-i folders-wt" v-else-if="tabValue == 'find'">
-                          <div class="upper-s">
-                            <div class="find-folder-i">
-                              <!--<div class="txt-f">-->
+                        <div key="find-tab" class="att-folders-i folders-wt" v-show="tabValue == 'find'">
+                            <div class="upper-s">
+                              <div class="find-folder-i">
+                                <!--<div class="txt-f">-->
                                 <!--Категории поставщика 22: <span class="provider-txt">{{selectedProvider.name}}</span>-->
-                              <!--</div>-->
-                              <div class="find-b justify-content-start d-flex">
-                                <div class="input-group ">
-                                  <input v-model.lazy="findUserStr" v-on:keyup.enter="findFolder" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">
-                                  <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" @click="findFolder">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        xmlns:xlink="http://www.w3.org/1999/xlink"
-                                        width="17px" height="17px">
-                                        <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                                              d="M15.919,15.813 C15.525,16.207 14.887,16.207 14.494,15.813 L11.403,12.723 C10.235,13.594 8.792,14.117 7.223,14.117 C3.357,14.117 0.223,10.983 0.223,7.117 C0.223,3.251 3.357,0.117 7.223,0.117 C11.088,0.117 14.222,3.251 14.222,7.117 C14.222,8.686 13.700,10.130 12.828,11.298 L15.919,14.388 C16.312,14.782 16.312,15.420 15.919,15.813 ZM7.223,2.117 C4.461,2.117 2.222,4.355 2.222,7.117 C2.222,9.879 4.461,12.117 7.223,12.117 C9.984,12.117 12.223,9.879 12.223,7.117 C12.223,4.355 9.984,2.117 7.223,2.117 Z"/>
-                                      </svg>
-                                    </button>
+                                <!--</div>-->
+                                <div class="find-b justify-content-start d-flex">
+                                  <div class="input-group ">
+                                    <input v-model.lazy="findFolderStr" v-on:keyup.enter="findFolder" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                    <div class="input-group-append">
+                                      <button class="btn btn-outline-secondary" type="button" @click="findFolder">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                                          width="17px" height="17px">
+                                          <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
+                                                d="M15.919,15.813 C15.525,16.207 14.887,16.207 14.494,15.813 L11.403,12.723 C10.235,13.594 8.792,14.117 7.223,14.117 C3.357,14.117 0.223,10.983 0.223,7.117 C0.223,3.251 3.357,0.117 7.223,0.117 C11.088,0.117 14.222,3.251 14.222,7.117 C14.222,8.686 13.700,10.130 12.828,11.298 L15.919,14.388 C16.312,14.782 16.312,15.420 15.919,15.813 ZM7.223,2.117 C4.461,2.117 2.222,4.355 2.222,7.117 C2.222,9.879 4.461,12.117 7.223,12.117 C9.984,12.117 12.223,9.879 12.223,7.117 C12.223,4.355 9.984,2.117 7.223,2.117 Z"/>
+                                        </svg>
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <div class="selectLabeled">
+                                    <multiselect
+                                      :value="selectedFind"
+                                      :options="findSelectOpt"
+                                      :multiple="false"
+                                      :close-on-select="true"
+                                      :allow-empty="false"
+                                      :searchable="false"
+                                      placeholder="Выбрать параметры поиска"
+                                      selectedLabel="Выбрано"
+                                      label="name"
+                                      track-by="name"
+                                      selectLabel="Выбрать"
+                                      deselectLabel=""
+                                      @input = "onInputSelect($event, 'selectedFind')" >
+                                    </multiselect>
                                   </div>
                                 </div>
-                                <div class="selectLabeled">
-                                  <multiselect
-                                    v-model="selectedFind"
-                                    :options="findSelectOpt"
-                                    :multiple="false"
-                                    :close-on-select="true"
-                                    :allow-empty="false"
-                                    :searchable="false"
-                                    placeholder="Выбрать параметры поиска"
-                                    selectedLabel="Выбрано"
-                                    label="name"
-                                    track-by="name"
-                                    selectLabel="Выбрать"
-                                    deselectLabel="" >
-                                  </multiselect>
-                                </div>
+                              </div>
+                              <appCatalogFolders
+                                :folderH = 'foldersCont.findResFolder.folderH'
+                                :sideFolder = 'foldersCont.findResFolder.sideFolder'
+                                :lastUpdateTxt = 'foldersCont.findResFolder.lastUpdateTxt'
+                                :contextMenu = 'foldersCont.findResFolder.contextMenu'
+                                :rootCatalogFolders = 'foldersCont.findResFolder.rootCatalogFolders'
+                                :selectedProvider = 'selectedProvider'
+                                @setFolders = 'onSetFolders($event, "findResFolder")'
+                                ref="findResFolder"
+                              >
+                              </appCatalogFolders>
+                            </div>
+                            <div class="bottom-s">
+                              <div class="btn-c d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary">Показать товары</button>
+                                <button type="button" class="btn btn-outline-secondary">Привязать</button>
                               </div>
                             </div>
-                            <!--<appCatalogFolders>-->
-                            <!--</appCatalogFolders>-->
                           </div>
-                          <div class="bottom-s">
-                            <div class="btn-c d-flex justify-content-between">
-                              <button type="button" class="btn btn-outline-secondary">Показать товары</button>
-                              <button type="button" class="btn btn-outline-secondary">Привязать</button>
-                            </div>
-                          </div>
-                        </div>
-                      </transition>
-
                     </div>
                   </div>
                 </div>
@@ -243,7 +248,7 @@
         name: 'catalogConfig',
         data () {
             return {
-                findUserStr: '', // временный атрибут, заменить
+                findFolderStr: '', // Для поиска по папкам
                 tabValue: 'provider', // Значение таба: find, provider
                 breadcrumbs: [ // Хлебные крошки
                   {
@@ -272,6 +277,31 @@
                 ],
                 foldersCont: { //массив со всеми папками для компонента catalogFolder
                   providerFolder: {
+                    folderH: '', // заголовок каталога
+                    sideFolder: false, //боковая панель (каталог)
+                    lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
+                    contextMenu:{ // Контекстное меню
+                      contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
+                      yPos: 323,//полложение по оси x
+                      xPos: 224,//полложение по оси y
+                      selectedFolder: {},//папка, на которую кликнули
+                      menuOpt: [ // пункты меню
+                        {
+                          title: 'Товары',//заголовок
+                          eventName: 'showGoods' // имя ивента, который вызывается при нажатии на пункт меню
+                          //Подумать как передавать payload, при нажатии на папку
+                        },
+                        {
+                          title: 'Привязать',//заголовок
+                          eventName: 'attachFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          //Подумать как передавать payload, при нажатии на папку
+                        },
+
+                      ]
+                    },
+                    rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
+                  },
+                  findResFolder: { // вывод поиска
                     folderH: '', // заголовок каталога
                     sideFolder: false, //боковая панель (каталог)
                     lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
@@ -366,10 +396,49 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
+          onInputSelect(event, selectResKey){
+            let selectedProvider = {
+              code: event.code,
+              id: event.id,
+              name: event.name
+            };
+            this[selectResKey] = selectedProvider;
+
+            if(selectResKey === 'selectedFind'){
+              //Запрос категории
+              this.updateFolderCont(null, null, null, +selectedProvider.id, 'findResFolder', 'findResFolder');
+            }
+          },
           onSetFolders(e, keyFolder){
             this.foldersCont[keyFolder].rootCatalogFolders = e.value;
           },
           findFolder(){ //поиск среди папок
+            console.log('Поиск по подстроке - ', this.findFolderStr);
+            let payload = {
+              text: this.findFolderStr,
+              supplier_id: this.selectedFind.id || null
+            };
+            this.stepOneActive(); // прогрессбар
+            axios.get( API_URL + '/category/search', {
+              params: {
+                ...payload
+              },
+            }).then(resp => {
+                const error = resp.data.error;
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при поиске: ' + errorTxt);
+                }else{
+                  this.$refs['findResFolder'].setRootCatalogFoldersComp(resp.data.data.catalogFolders);
+                }
+                this.stepLastActive(); // прогрессбар
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при поиске');
+                this.stepLastActive(); // прогрессбар
+              });
 
           },
           onBreadItemClicked(e){
@@ -385,17 +454,46 @@
 
             }
           },
+          updateFolderCont(idCategory, lvlFolder, parentFolderId, selectedProvider, folderKey, componentRefKey){
+            //folderKey - ключ папки в foldersCont
+            // componentRefKey - ссылка на компонент,
+
+            if(!folderKey || !componentRefKey){
+              console.error('folderKey && componentRefKey - обязательные параметры');
+            } else {
+              let payload = {
+                lvlFolder: lvlFolder || null, // уровень вложенности
+                id: idCategory || '', // ид папки
+                supplier_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
+                parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
+              };
+              console.log('Req pay --', payload);
+              let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider);
+              categoryRequest.then(
+                result => { // всё ок
+                  console.log('categoryRequest result -->>', result);
+                  this.foldersCont[folderKey].rootCatalogFolders = result.catalogFolders;
+                  //Перезаписываем значение в компоненте
+                  this.$refs[componentRefKey].setRootCatalogFoldersComp(result.catalogFolders);
+                },
+                error =>{ // всё не ок
+                  console.log('error');
+                }
+              );
+            }
+          },
           onChangeProvider(newProviderObj){
-            /*if(newProviderObj){
-              this.selectedProvider = newProviderObj;
-            }else {
-            }*/
             this.selectedProvider = newProviderObj;
             console.log('Провайдер изменён на: ', newProviderObj);
-
+            //Запрос категории
+            this.updateFolderCont(null, null, null, +newProviderObj.id, 'providerFolder', 'providerCont');
           },
           tabChangeVal(newVal){
             this.tabValue = newVal;
+            if(newVal === 'provider'){
+              console.log('provider Tab Selected')
+              // this.updateFolderCont(null, null, null, this.selectedProvider.id, 'providerFolder', 'providerCont');
+            }
           },
           getProvider(){
             this.stepOneActive(); // прогрессбар
