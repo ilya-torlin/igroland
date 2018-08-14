@@ -4,6 +4,7 @@
 
     <!--
       todo: для каталога делается запрос на сервер(отправляется ид родителя), с сервера приходят потомки
+      todo: скрывать/удалять папку после привязки
     -->
 
   <!--
@@ -25,19 +26,13 @@
       <div class="folder-b">
         <div class="folder-c" :class="{'containerPending':folderPending}">
           <ul class="folder-list folder-list-main ">
-
-            <!--
-              todo: Убрать вложенный цикл, надо просто идти по папкам и в зависимости от lvl добавлять отступ
-              todo: Подумать насчёт колизии с одинаковым ид папок (сортировка + ид), в разных папках
-            -->
-
             <li v-for="(catFolder, index) in rootCatalogFoldersComp"
                 :class="{'is-active': catFolder.isOpen}"
                 :style="{'paddingLeft': catFolder.lvlFolder * 10 + 'px'}"
                 v-if="!catFolder.hideFolder"
             >
               <!--:key - параметр для сортировки-->
-              <div class="folder-title" @click.right = "contextOpen($event)" >
+              <div class="folder-title" @click.right = "contextOpen($event, catFolder )" >
                 <div class="folder-name ">
                   <span class="dot-txt" v-for="i in catFolder.lvlFolder">
                       &#183;
@@ -82,7 +77,7 @@
       <ul>
         <li v-for=" (item, index) in contextMenu.menuOpt"
             :key="index">
-          <a href="javascript:void(0)">
+          <a href="javascript:void(0)" @click="contextMenuOptEvent(item.eventName)">
             {{item.title}}
           </a>
         </li>
@@ -144,11 +139,14 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
-          contextOpen(e){
+          contextMenuOptEvent(eventName){
+            this.$emit(eventName);
+          },
+          contextOpen(e, val){
               this.contextMenu.xPos = e.clientX;
               this.contextMenu.yPos = e.clientY;
               this.contextMenu.contextMenuOpen = true;
-              console.log('e = ', e);
+              this.contextMenu.selectedFolder  = val;
               e.preventDefault();
           },
           // открыть папку
@@ -195,12 +193,38 @@
 
             if(this.rootCatalogFoldersComp[index].isOpen) {
               // Удаляем все подпапки, начиная с index.. закрываем папку index
-              this.rootCatalogFoldersComp.splice(index+1, this.rootCatalogFoldersComp[index].childCount);
+              //todo: !!! Доделать скрытие папки, если открыть и закрыть дочернюю папку, то удаляются лишние папки, т.к. из родительской не вычитается кол-во потомков
+              let childCount = this.rootCatalogFoldersComp[index].childCount;
+              if(this.rootCatalogFoldersComp[index].lvlFolder > 0) {
+                let indexLvlFolder = this.rootCatalogFoldersComp[index].lvlFolder - 1;
+                // this.rootCatalogFoldersComp[index].wasOpened = true; // папка была открыта и родительской папке уже прибавились подпапки (необходимо для корректного удаления)
+                for(let ind = index; ind >= 0 || indexLvlFolder === 0; ind--){ // Пока не дошли до самой первой папки, или пока не проверили последнего родителя
+                  if(indexLvlFolder === this.rootCatalogFoldersComp[ind].lvlFolder){ //нашли родителя в текущей итерации
+                    console.log('<<<----parent find ind', this.rootCatalogFoldersComp[ind]);
+                    if(indexLvlFolder !== 0){ //т.к. нашли первого родителя, уменьшаем уровень вложенности для поиска следующего родителя
+                      indexLvlFolder--;
+                    }
+                    this.rootCatalogFoldersComp[ind].childCount -= childCount;
+                    if(this.rootCatalogFoldersComp[ind].lvlFolder === 0){//Дошли до корня
+                      break;
+                    }
+                  }
+                }
+                //Производим удаление(скрытие) папок,
+                this.rootCatalogFoldersComp.splice(index+1, childCount);
+                this.rootCatalogFoldersComp[index].childCount = this.rootCatalogFoldersComp[index].childCount - childCount;
+              }else {
+                this.rootCatalogFoldersComp.splice(index+1, childCount);
+                this.rootCatalogFoldersComp[index].childCount = this.rootCatalogFoldersComp[index].childCount - childCount;
+              }
+
               this.rootCatalogFoldersComp[index].isOpen = false;
+
               this.setFolders();
             }else{
               let categoryRequest = this.requestCategory(folderId, lvlFolder, '', parentFolderId);
               categoryRequest.then(
+
                 result => { // всё ок
                   // console.log('!!!!!!categoryRequest SUB result ---------', result);
                   for (let item of result.catalogFolders) {
@@ -211,9 +235,33 @@
                     this.rootCatalogFoldersComp.splice(index+1, 0, item);
                     // this.rootCatalogFoldersComp[index].folderArr.splice(this.rootCatalogFoldersComp[index].folderArr.length, 0, index+1);
                   }
-                  let parentIndex = index ;//индекс родительской папки
-                  this.rootCatalogFoldersComp[parentIndex].childCount = this.rootCatalogFoldersComp[parentIndex].childCount + result.catalogFolders.length;
-                  // this.$set(this.rootCatalogFoldersComp[index], 'folderArr', result.catalogFoldersKeyArr); // $set, что бы "не потерять динамичность"
+
+                  if(this.rootCatalogFoldersComp[index].lvlFolder > 0){
+                    let indexLvlFolder = this.rootCatalogFoldersComp[index].lvlFolder - 1;
+                    console.log('<<indexLvlFolder', indexLvlFolder);
+
+                    // this.rootCatalogFoldersComp[index].wasOpened = true; // папка была открыта и родительской папке уже прибавились подпапки (необходимо для корректного удаления)
+                    for(let ind = index; ind >= 0 || indexLvlFolder === 0; ind--){ // Пока не дошли до самой первой папки, или пока не проверили последнего родителя
+                      if(indexLvlFolder === this.rootCatalogFoldersComp[ind].lvlFolder){
+                        console.log('<<<----parent find ind', this.rootCatalogFoldersComp[ind]);
+                        if(indexLvlFolder !== 0){ //т.к. нашли первого родителя, уменьшаем уровень вложенности для поиска следующего родителя
+                          indexLvlFolder--;
+                        }
+                        this.rootCatalogFoldersComp[ind].childCount += result.catalogFolders.length;
+                        if(this.rootCatalogFoldersComp[ind].lvlFolder === 0){//Дошли до корня
+                          break;
+                        }
+                      }
+                    }
+                    //присваиваем значение потомков папке, которую открыли
+                    this.rootCatalogFoldersComp[index].childCount = this.rootCatalogFoldersComp[index].childCount + result.catalogFolders.length;
+                  }else {
+                    this.rootCatalogFoldersComp[index].childCount = this.rootCatalogFoldersComp[index].childCount + result.catalogFolders.length;
+                  }
+
+                  console.log('<<valueClickedFolder', this.rootCatalogFoldersComp[index]);
+
+
                   this.rootCatalogFoldersComp[index].isOpen = true; // открываем папку
                   this.setFolders();
                 },
