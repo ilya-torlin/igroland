@@ -28,6 +28,7 @@
     Добавить - добавить новую папку, пишем только название
     удалить - удаление папки
 
+    todo: API - в первую очередь ↓↓↓
     todo: API - Запрос каталога в зависимости от выбранного поставщика
     todo: API - Вывод товаров каталога по ид
     todo: API - Показать товары по ид папки
@@ -100,6 +101,8 @@
                   :contextMenu = 'foldersCont.catalogFolder.contextMenu'
                   :rootCatalogFolders = 'foldersCont.catalogFolder.rootCatalogFolders'
                   @setFolders = 'onSetFolders($event, "catalogFolder")'
+                  @addCatalogFolder = 'onAddCatalogFolder'
+                  ref="catalogFolder"
                 >
                 </appCatalogFolders>
             </div>
@@ -118,6 +121,9 @@
                                 d="M15.919,15.813 C15.525,16.207 14.887,16.207 14.494,15.813 L11.403,12.723 C10.235,13.594 8.792,14.117 7.223,14.117 C3.357,14.117 0.223,10.983 0.223,7.117 C0.223,3.251 3.357,0.117 7.223,0.117 C11.088,0.117 14.222,3.251 14.222,7.117 C14.222,8.686 13.700,10.130 12.828,11.298 L15.919,14.388 C16.312,14.782 16.312,15.420 15.919,15.813 ZM7.223,2.117 C4.461,2.117 2.222,4.355 2.222,7.117 C2.222,9.879 4.461,12.117 7.223,12.117 C9.984,12.117 12.223,9.879 12.223,7.117 C12.223,4.355 9.984,2.117 7.223,2.117 Z"></path>
                         </svg>
                       </div>
+                    </div>
+                    <div class="tab-i" :class="{'active': tabValue === 'goods'}" @click="tabChangeVal('goods')">
+                      Товары
                     </div>
                   </div>
               </div>
@@ -225,6 +231,128 @@
                               </div>
                             </div>
                           </div>
+                        <div key="goods-tab" class="att-folders-i folders-wt goods-tab" v-show="tabValue == 'goods'">
+                          <div class="upper-s">
+                            <div class="find-folder-i">
+                              <div class="txt-f">
+                                Товары в категории: <span class="provider-txt">{{categoryGoods.category.name}}</span>
+                              </div>
+                              <div class="find-b justify-content-start d-flex">
+                                <div class="input-group ">
+                                  <input v-model.lazy="categoryGoods.findGoodsStr" v-on:keyup.enter="findGoods" type="text" class="form-control" placeholder="Поиск по категории">
+                                  <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" @click="findGoods">
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                                        width="17px" height="17px">
+                                        <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
+                                              d="M15.919,15.813 C15.525,16.207 14.887,16.207 14.494,15.813 L11.403,12.723 C10.235,13.594 8.792,14.117 7.223,14.117 C3.357,14.117 0.223,10.983 0.223,7.117 C0.223,3.251 3.357,0.117 7.223,0.117 C11.088,0.117 14.222,3.251 14.222,7.117 C14.222,8.686 13.700,10.130 12.828,11.298 L15.919,14.388 C16.312,14.782 16.312,15.420 15.919,15.813 ZM7.223,2.117 C4.461,2.117 2.222,4.355 2.222,7.117 C2.222,9.879 4.461,12.117 7.223,12.117 C9.984,12.117 12.223,9.879 12.223,7.117 C12.223,4.355 9.984,2.117 7.223,2.117 Z"/>
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="goods-cont">
+                              <div class="row">
+                                <div class="col-4">
+                                  <div class="goods-col-1">
+                                    <div class="goodsLimit">
+                                      <div class="txt">
+                                        Показывать по:
+                                      </div>
+                                      <ul>
+                                        <li class="active"><a href="javascript:void(0)">
+                                          20
+                                        </a></li>
+                                        <li><a href="javascript:void(0)">
+                                          50
+                                        </a></li>
+                                        <li><a href="javascript:void(0)">
+                                          100
+                                        </a></li>
+                                      </ul>
+                                    </div>
+                                    <div class="goods-list">
+                                      <ul>
+                                        <li v-for="(goodsItem, index) in categoryGoods.goodsListArr">
+                                          <div class="img-c">
+                                            <img :src="goodsItem.img" alt="" v-if="goodsItem.img">
+                                            <img src="../../src/assets/img/imageTmp.png" alt="" v-else>
+                                          </div>
+                                          <div class="goods-name">
+                                            {{goodsItem.name}}
+                                          </div>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-4">
+                                  <h6>
+                                    Галлерея
+                                  </h6>
+                                </div>
+                                <div class="col-4">
+                                  <div class="goods-col-3">
+                                    <h6>
+                                      Информация о продукте
+                                    </h6>
+                                    <div class="goods-info">
+                                      <div class="goods-i">
+                                        <div class="title-h">
+                                          Наименование
+                                        </div>
+                                        <div class="gray-txt">
+                                          Игровой набор Mioshi Army "Лучник: разведчик" (лук, 3 стрелы, 1 мишень)
+                                        </div>
+                                      </div>
+                                      <div class="goods-i">
+                                        <div class="title-h">
+                                          Альтернативное наименование
+                                        </div>
+                                        <div class="find-b justify-content-start d-flex">
+                                          <div class="input-group ">
+                                            <input v-model.lazy="categoryGoods.findGoodsStr" v-on:keyup.enter="findGoods" type="text" class="form-control" placeholder="">
+                                            <div class="input-group-append">
+                                              <button class="btn btn-outline-secondary" type="button" @click="findGoods">
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                  width="15px" height="15px">
+                                                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
+                                                        d="M14.410,3.414 L13.938,3.886 L11.108,1.054 L11.579,0.582 C12.361,-0.200 13.628,-0.200 14.410,0.582 C15.192,1.364 15.192,2.632 14.410,3.414 ZM5.190,12.639 L2.360,9.807 L10.164,1.998 L12.995,4.830 L5.190,12.639 ZM3.775,14.055 L0.001,14.999 L0.944,11.223 L1.416,10.751 L4.247,13.583 L3.775,14.055 Z"/>
+                                                </svg>
+                                              </button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="goods-i ">
+                                        <div class="atr-i" v-for="(itemParam, index) in categoryGoods.goodsListArr[0].params">
+                                          <div class="i-t title-h">
+                                            {{itemParam.key}}
+                                          </div>
+                                          <div class="i-t gray-txt">
+                                            {{itemParam.val}}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="bottom-s">
+                            <div class="row">
+                              <appPagination :countPage = "categoryGoods.pagination.countPage"
+                                             @pageChange = "onGoodsPageChange()">
+                              </appPagination>
+                            </div>
+                          </div>
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -244,12 +372,17 @@
 
     import Multiselect from 'vue-multiselect'
 
+    import singleFolder from '../modules/singleFolder'
+
+    import appPagination from './pagination'
+
+
     export default {
         name: 'catalogConfig',
         data () {
             return {
                 findFolderStr: '', // Для поиска по папкам
-                tabValue: 'provider', // Значение таба: find, provider
+                tabValue: 'goods', // Значение таба: find, provider
                 breadcrumbs: [ // Хлебные крошки
                   {
                     title: 'Кросовки', // имя каталога
@@ -288,15 +421,16 @@
                       menuOpt: [ // пункты меню
                         {
                           title: 'Товары',//заголовок
-                          eventName: 'showGoods' // имя ивента, который вызывается при нажатии на пункт меню
+                          eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
+                          iconId: 1,
                           //Подумать как передавать payload, при нажатии на папку
                         },
                         {
                           title: 'Привязать',//заголовок
-                          eventName: 'attachFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          eventName: 'attachFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                          iconId: 2,
                           //Подумать как передавать payload, при нажатии на папку
                         },
-
                       ]
                     },
                     rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
@@ -313,12 +447,14 @@
                       menuOpt: [ // пункты меню
                         {
                           title: 'Товары',//заголовок
-                          eventName: 'showGoods' // имя ивента, который вызывается при нажатии на пункт меню
+                          eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
+                          iconId: 1,
                           //Подумать как передавать payload, при нажатии на папку
                         },
                         {
                           title: 'Привязать',//заголовок
-                          eventName: 'attachFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          eventName: 'attachFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                          iconId: 2,
                           //Подумать как передавать payload, при нажатии на папку
                         },
 
@@ -338,22 +474,26 @@
                       menuOpt: [ // пункты меню
                         {
                           title: 'Параметры',//заголовок
-                          eventName: 'showParamFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          eventName: 'showParamFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                          iconId: 3,
                           //Подумать как передавать payload, при нажатии на папку
                         },
                         {
                           title: 'Товары',//заголовок
-                          eventName: 'showGoods' // имя ивента, который вызывается при нажатии на пункт меню
+                          eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
+                          iconId: 1,
                           //Подумать как передавать payload, при нажатии на папку
                         },
                         {
                           title: 'Добавить',//заголовок
-                          eventName: 'addFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          eventName: 'addFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                          iconId: 4,
                           //Подумать как передавать payload, при нажатии на папку
                         },
                         {
                           title: 'Удалить',//заголовок
-                          eventName: 'deleteFolder' // имя ивента, который вызывается при нажатии на пункт меню
+                          eventName: 'deleteFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                          iconId: 5,
                           //Подумать как передавать payload, при нажатии на папку
                         },
 
@@ -361,7 +501,96 @@
                     },
                     rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
                   },
-                }
+                },
+                //Goods
+                categoryGoods: { // товары выбранной категории
+                  findGoodsStr: '',
+                  category: {
+                    childCount: 0,
+                    folderId: "33556",
+                    goodsCount: 12,
+                    hasFolders: true,
+                    hideFolder: false,
+                    isOpen: false,
+                    lvlFolder: 0,
+                    name: "Авто",
+                    supplier_id: "1",
+                  },
+                  pagination:{
+                    countPage: 12, // общее колличество страниц, делаем запрос к базе
+                    countItemsPage: 12 // колличество элементов на странице
+                  },
+                  goodsListArr: [
+                    {
+                      name: 'Салфетка пластик, 43х28см',
+                      img: '../../src/assets/img/dodik2.png',
+                      params: [
+                        {key :'Артикул', val: "123141"},
+                        {key :'Бренд', val: "Adibas"},
+                        {key :'Код 1С', val: "90210"},
+                        {key :'Штрихкод', val: "31235888"},
+                        {key :'id', val: "767864"},
+                        {key :'Цена', val: "233.45"},
+                        {key :'Мин. партия', val: "3333"},
+                        {key :'В коробке', val: "10"},
+                        {key :'Количество', val: "10000"},
+                        {key :'Страна', val: "Китай"},
+                    ],
+                    id: "65879",
+                    price: "23.69",
+                    idx: 1,
+                    images: [
+                      '../../src/assets/img/dodik2.png',
+                      '../../src/assets/img/dodik2.png',
+                      '../../src/assets/img/dodik.png'
+                    ]
+                    },
+                    {
+                      name: 'Додя 2',
+                      img: '../../src/assets/img/dodik2.png'
+                    },
+                    {
+                      name: 'Додя 3',
+                      img: ''
+                    },
+                    {
+                      name: 'Додя 4',
+                      img: '../../src/assets/img/dodik2.png'
+                    },
+                    {
+                      name: 'Додя 1',
+                      img: '../../src/assets/img/dodik2.png'
+                    },
+                    {
+                      name: 'Додя 2',
+                      img: '../../src/assets/img/dodik2.png'
+                    },
+                    {
+                      name: 'Додя 3',
+                      img: ''
+                    },
+                    {
+                      name: 'Додя 4',
+                      img: '../../src/assets/img/dodik2.png'
+                    },
+                    {
+                      name: 'Додя 1',
+                      img: '../../src/assets/img/dodik2.png'
+                    },
+                    {
+                      name: 'Додя 2',
+                      img: '../../src/assets/img/dodik2.png'
+                    },
+                    {
+                      name: 'Додя 3',
+                      img: ''
+                    },
+                    {
+                      name: 'Додя 4',
+                      img: '../../src/assets/img/dodik2.png'
+                    },
+                  ],
+                },
             }
         },
         computed: {
@@ -376,11 +605,15 @@
           findSelectOpt(){
             return this.providerList.concat(this.additionalFindProp);
           },
+          currentCatalogId(){
+            return this.$route.params.id || null;
+          }
         },
         components: {
           Multiselect,
           appCatalogFolders,
-          appBreadcrumbs
+          appBreadcrumbs,
+          appPagination
         },
         methods: {
           ...mapMutations('alerts',{
@@ -409,6 +642,7 @@
               this.updateFolderCont(null, null, null, +selectedProvider.id, 'findResFolder', 'findResFolder');
             }
           },
+          //запись новых значений в папку
           onSetFolders(e, keyFolder){
             this.foldersCont[keyFolder].rootCatalogFolders = e.value;
           },
@@ -439,7 +673,6 @@
                 this.setErrorAlertMsg('Ошибка при поиске');
                 this.stepLastActive(); // прогрессбар
               });
-
           },
           onBreadItemClicked(e){
             console.log('catalog id is ==== ', e.value);
@@ -495,6 +728,22 @@
               // this.updateFolderCont(null, null, null, this.selectedProvider.id, 'providerFolder', 'providerCont');
             }
           },
+          //инициализация всех папок/категорий
+          allFoldersInit(){
+            //папка с поставщиком
+            this.updateFolderCont(null, null, null, null, 'providerFolder', 'providerCont');
+            //папка с результатами поиска
+            this.updateFolderCont(null, null, null, null, 'findResFolder', 'findResFolder');
+            //папка каталога пользователя
+
+            //заглушка, создаём пустую папку
+            this.foldersCont.catalogFolder.rootCatalogFolders.push(new singleFolder({}));
+            this.$refs['catalogFolder'].setRootCatalogFoldersComp(this.foldersCont.catalogFolder.rootCatalogFolders);
+
+            //todo: будет новый метод на беке,
+            // this.updateFolderCont(this.currentCatalogId, null, null, null, 'catalogFolder', 'catalogFolder');
+
+          },
           getProvider(){
             this.stepOneActive(); // прогрессбар
             axios.get( API_URL + '/supplier', {
@@ -518,10 +767,46 @@
                 this.setErrorAlertMsg('Ошибка при запросе поставщиков');
                 this.stepLastActive(); // прогрессбар
               });
-          }
+          },
+          //Добавить папку/категорию в каталог/категорию
+          onAddCatalogFolder(){
+            console.log('API пока не готово');
+          },
+          findGoods(){ //поиск среди папок
+            console.log('Поиск по подстроке - ', this.categoryGoods.findGoodsStr);
+            let payload = {
+              text: this.categoryGoods.findGoodsStr || '',
+              categoryId: this.categoryGoods.category.folderId || null
+            };
+            this.stepOneActive(); // прогрессбар
+            axios.get( API_URL + '/category/search', {
+              params: {
+                ...payload
+              },
+            }).then(resp => {
+              const error = resp.data.error;
+              if(error){
+                let errorTxt = resp.data.data.msgClient;
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при поиске: ' + errorTxt);
+              }else{
+                this.$refs['findResFolder'].setRootCatalogFoldersComp(resp.data.data.catalogFolders);
+              }
+              this.stepLastActive(); // прогрессбар
+            })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при поиске');
+                this.stepLastActive(); // прогрессбар
+              });
+          },
+          onGoodsPageChange(){
+
+          },
         },
         mounted(){
           this.getProvider();
+          this.allFoldersInit();
         }
 
     }

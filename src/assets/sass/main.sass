@@ -399,6 +399,7 @@ button
     &>.folder-title
       padding: 16px 30px
       padding-left: 15px
+      border-bottom: solid 1px #f1f1f1
     &:hover
       background: $gray-400
 .folder-f
@@ -410,15 +411,22 @@ button
     color: $gray-600
     margin-left: 9px
 
+.empty-cat
+  color: $gray-600
+  padding: 15px 10px
+  padding-left: 30px
+  font-weight: 400
 .context-menu-custom
-  border: solid 2px $gray-400
-  border-radius: 10px
+  //border: solid 2px $gray-400
+  border-radius: 5px
   overflow: hidden
   position: fixed
   min-width: 165px
   display: none
   left: 323px
   top: 224px
+  z-index: 10
+  box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2)
   &.is-active
     display: block
   ul
@@ -426,23 +434,27 @@ button
     padding: 0px
     margin: 0px
     li
-      background: $grey-bg
-      border-bottom: solid 2px $gray-400
+      background: #ffffff
+      border-bottom: solid 1px $gray-400
       transition: all .3s ease
       &:hover
-        background: $gray-600
+        background: $gray-200
         a
-          color: #FFFFFF
+          //color: #FFFFFF
       &:last-child
         border-bottom: none
+      .svg-c
+        display: inline-flex
+        align-items: center
+        margin-right: 15px
       a
         color: $gray-600
         padding: 15px
         font-weight: 400
         font-size: 15px
-        text-transform: uppercase
-        text-align: center
-        display: block
+        //text-transform: uppercase
+        display: flex
+        align-items: center
         text-decoration: none!important
 .breadcrumb-r
   background: #FFFFFF
@@ -1262,6 +1274,7 @@ textarea
     display: flex
     align-items: center
     transition: all .3s ease
+    border-left: solid 1px $gray-400
     &:hover
       color: $gray-600
       .svg-c
@@ -1299,5 +1312,90 @@ textarea
       //  border-style: solid
       //  border-width: 49px 0 49px 15px
       //  border-color: transparent transparent transparent $blue
+.goods-tab
+  .find-folder-i
+    display: flex
+    align-items: center
+    flex-direction: row
+    .find-b
+      margin-right: 0px
+      margin-left: 30px
+  .goods-cont
+    padding: 15px 15px
+  .goods-list
+    height: calc(100vh - 223px - 30px - 149px - 39px) !important
+    overflow: auto
+    +custom-scroll($gray-500)
+    ul
+      padding: 0px
+      margin: 0px
+      li
+        display: flex
+        align-items: center
+        margin-bottom: 15px
+        &:last-child
+          margin-bottom: 0px
+        .img-c
+          border: solid 1px $gray-400
+          padding: 10px
+          width: 70px
+          height: 70px
+          display: flex
+          align-items: center
+          justify-content: center
+          img
+            max-width: 100%
+            height: auto
+        .goods-name
+          margin-left: 15px
+          color: $gray-600
+  h6
+    color: $gray-800
+.goods-col-1
+  .goodsLimit
+    display: flex
+    align-items: center
+    margin-bottom: 15px
+    .txt
+      color: $gray-800
+    ul
+      padding: 0px
+      margin: 0px
+      display: flex
+      align-items: center
+      li
+        list-style: none
+        margin-left: 10px
+        padding: 2px 0px
+        border-bottom: solid 1px transparent
+        &.active
+          //border-color: $blue
+          a
+            color: $blue
+        a
+          text-decoration: none!important
+          color: $gray-600
+          &:hover
+            color: $gray-700
+
+.goods-col-3
+  .find-b
+    margin-right: 0px
+  .goods-info
+    .goods-i
+      margin-top: 15px
+      .title-h
+        color: $gray-800
+        margin-bottom: 8px
+      .gray-txt
+        color: $gray-600
+      .atr-i
+        display: flex
+        align-items: center
+        margin-bottom: 10px
+        .title-h
+          margin-bottom: 0px
+        .i-t
+          flex: 1
 
 @import "media" // Всегда в конце

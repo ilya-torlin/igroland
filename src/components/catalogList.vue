@@ -64,10 +64,10 @@
         @removeCatalog = "onRemoveCatalog(index)">
       </appCatalogItem>
 
-    <appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
-    @pageChange = "onPageChange()">
+      <appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
+      @pageChange = "onPageChange()">
 
-    </appPagination>
+      </appPagination>
 
     <!--<div class="row">-->
       <!--<div class="col-12">-->
@@ -305,7 +305,6 @@
               console.log(err);
             });
         }
-
         // let indRand = (new Date).getTime();//unixtime in mileseconds
         // this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
         // this.catalogList[indRand].catalogName = this.catalogList[index].catalogName + ' (копия)';
@@ -316,11 +315,6 @@
         $('#confirmDeleteModal').modal();
       },
       onPageChange(){
-        console.log('onPageChange');
-        console.log('onPageChange');
-        console.log('onPageChange');
-        console.log('onPageChange');
-        console.log('onPageChange');
         console.log('onPageChange');
       },
       removeCatalog(index){ // удаление каталога
