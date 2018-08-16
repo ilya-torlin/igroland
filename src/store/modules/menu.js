@@ -1,3 +1,4 @@
+//todo: Переработать структуру, изменить header.vue
 export default {
   namespaced: true,
   state:{

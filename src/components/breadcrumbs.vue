@@ -75,7 +75,7 @@
 
 <script>
     // import $ from '../../node_modules/jquery';
-    import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.min';
+    // import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.min';
     import appSwitcher from './switcher'
     import Multiselect from 'vue-multiselect'
     export default {
@@ -112,7 +112,6 @@
         },
         mounted(){
           $('[data-toggle="tooltip"]').tooltip();
-          $('select, input[type="number"], input[type="file"]').styler();
         }
     }
 </script>

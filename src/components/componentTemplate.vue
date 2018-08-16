@@ -14,7 +14,7 @@
 
 <script>
     export default {
-        name: 'app',
+        name: 'componentTemplate',
         data () {
             return {
                 msg: 'template'

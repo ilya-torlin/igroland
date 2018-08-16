@@ -3,8 +3,8 @@
   <!--pagination.vue-->
   <div class="col-12">
         <nav aria-label="Page navigation example">
-          <ul class="pagination">
-            <router-link :to="'/catalog/' + prevPage"
+          <ul class="pagination" v-if="routerOn">
+            <router-link :to="routerLink + prevPage"
                          tag="li"
                          class="page-item"  >
               <a class="page-link" href="#" aria-label="Previous" @click= "$emit('pageChange')">
@@ -12,15 +12,15 @@
                 <span class="sr-only">Предыдущая</span>
               </a>
             </router-link>
-            <router-link :to="'/catalog/' + value"
+            <router-link :to="routerLink + value"
                          tag="li"
                          class="page-item"
                          :key="value"
-                         :class="{'is-active': value == currentPage}"
+                         :class="{'is-active': value === currentPage}"
                          v-for="(value, index) in (1, countPage)">
               <a class="page-link" href="#" @click= "$emit('pageChange')" >{{value}}</a>
             </router-link>
-            <router-link :to="'/catalog/' + nextPagePag"
+            <router-link :to="routerLink + nextPagePag"
                          tag="li"
                          class="page-item" >
               <a class="page-link" href="#" aria-label="Next">
@@ -45,6 +45,29 @@
             <!--<li class="page-item"><a class="page-link" href="#">15</a></li>-->
 
           </ul>
+          <ul class="pagination" v-else>
+
+            <li class="page-item">
+              <a class="page-link" @click.prevent= "pageChange" href="#" aria-label="Previous" >
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Предыдущая</span>
+              </a>
+            </li>
+            <li class="page-item"
+                :class="{'is-active': value === currentPage}"
+                v-for="(value, index) in (1, countPage)">
+                <a class="page-link" href="#" @click.prevent= "pageChange(value)" >
+                  {{value}}
+                </a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" @click.prevent= "pageChange" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Следующая</span>
+              </a>
+            </li>
+
+          </ul>
         </nav>
       </div>
 </template>
@@ -54,30 +77,42 @@
     name: 'pagination',
     data () {
       return {
-        msg: 'pagination'
+        msg: 'pagination',
+        pageCur: 0
       }
     },
     computed: {
       currentPage(){ // текущая страница, передаётся в url в качестве параметра
-        return +this.$route.params.page || 1;
+        if (this.routerOn){
+          return +this.$route.params.page || 1;
+        }else {
+          return this.pageCur;
+        }
       },
       prevPage(){
-        let page = (+this.currentPage === 1) ? 1 : --this.currentPage;
+        let page = (+this.currentPage === 1) ? 1 : this.currentPage - 1;
         return page;
       },
       nextPagePag(){
-        let page = (+this.currentPage == +this.countPage) ? this.countPage : ++this.currentPage;
+        let page = (+this.currentPage == +this.countPage) ? this.countPage : this.currentPage + 1;
         return page;
       },
     },
     methods: {
-      pageChange(){
-        this.$emit('pageChange')
+      pageChange(clickedPage){
+        this.pageCur = clickedPage || 1;
+        let resVal = {
+          currentPage: this.currentPage,
+          prevPage: this.prevPage,
+          nextPagePag: this.nextPagePag
+        };
+        this.$emit('pageChange', {'value': resVal});
       }
     },
     props: [
-      'currentPage',
-      'countPage'
+      'countPage',
+      'routerLink',
+      'routerOn'
     ]
 
   }

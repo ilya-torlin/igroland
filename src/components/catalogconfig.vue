@@ -34,7 +34,7 @@
     todo: API - Показать товары по ид папки
 
     todo: API - Скрыть товары, которых нет в наличии у поставщика из селекта(по ид поставщика), в селекте может быть выбрано "все поставщики".
-    todo: API - запрос поставщиков для селекта. Возвращает массив формата [{name: 'Игроленд', id: '1234'}, {} ...]
+    todo: API - запрос каталогов для селекта. Возвращает массив формата [{name: 'Игроленд', id: '1234'}, {} ...]
     todo: API - Запрос сообщения последнего обновления каталога 'Последнее изменение 09.08.2018 18:00'
 
     todo: Переработать интерфейс
@@ -47,37 +47,29 @@
       todo: Сделать 2 таба
         todo: 1й таб - категории поставщика из селекта
         todo: 2й таб - Поиск категорий/тоавров(?)
-          todo: Состоит из строки поиска, селекта (выбирается где ищется товар): Список поставщиков, среди привязанных товаров(в каталоге), среди привязанных товаров в выделенной папке;
+          todo: Состоит из строки поиска, селекта (выбирается где ищется товар): Список каталогов, среди привязанных товаров(в каталоге), среди привязанных товаров в выделенной папке;
 
 
 
     todo: Каталог (панель слева)
-      todo: Папки вынести в отдельный компонент
-      todo: сварачивание/разворачивание папок (для уровней возможно сделать параметр lvl).
       todo: при клике на папку в каталоге, изменть хлебные крошки
       todo: вывод количества товаров в папке (запрос к API по ид папки)
-      todo: !!Сделать возможность изменения родителя (придумать как сделать)
+      todo: !!Сделать возможность изменения родителя (придумать как сделать), скорее всего в настройках категории
       todo: Последнее изменение каталога
-      todo: !!Придумать куда впихнуть кнопку сохраненния
       todo: контекстное меню
         todo: Параметры - Параметры каталога, по типу окна "Показать товары" (не отрисованно) Поля: фото и описание, родительская категория
         todo: Товары - кнопка  "Показать товары"
         todo: Добавить - добавить новую папку, пишем только название
         todo: удалить - удаление папки
     todo: Столбцы
-      todo: Поиск среди товаров/каталогов(?)
       todo: Показать товары (кнопка не активна, если не выделен каталог(папка)), чекбоксы не внедрять
         todo: Сверстать блок
-      todo: !!! Возможно сделать switch и объеденить две колонки(2 и 3)
+
       todo: Первый столбец - товары от поставщика, выделенного в селекте из хлебных крошек
-
       todo: Второй столбец - товары, которые были привязаны в appCatalogFolders
-
       todo: Третий столбец - товары, которые были привязаны в appCatalogFolders(у отмеченной папки)
         todo: кнопка блокировать/разблокировать - если заблокирована, то категорию нельзя изменить (передавать на бекенд этот параметр)
   -->
-
-
 
     <div class="container">
         <div class="row">
@@ -110,7 +102,7 @@
               <div class="row">
                   <div class="tab-controls-c">
                     <div class="tab-i" :class="{'active': tabValue === 'provider'}" @click="tabChangeVal('provider')">
-                      Поставщик
+                      Каталоги
                     </div>
                     <div class="tab-i" :class="{'active': tabValue === 'find'}" @click="tabChangeVal('find')">
                       Поиск
@@ -134,7 +126,7 @@
                           <div class="upper-s">
                             <div class="find-folder-i">
                               <div class="txt-f">
-                                Категории поставщика: <span class="provider-txt">{{selectedProvider.name}}</span>
+                                Выбранный каталог: <span class="provider-txt">{{selectedProvider.name}}</span>
                               </div>
                               <!--<div class="find-b justify-content-start d-flex">-->
                               <!--<div class="input-group ">-->
@@ -220,6 +212,7 @@
                                 :rootCatalogFolders = 'foldersCont.findResFolder.rootCatalogFolders'
                                 :selectedProvider = 'selectedProvider'
                                 @setFolders = 'onSetFolders($event, "findResFolder")'
+                                @showParamFolder = 'onSetFolders($event)'
                                 ref="findResFolder"
                               >
                               </appCatalogFolders>
@@ -291,8 +284,13 @@
                                 </div>
                                 <div class="col-4">
                                   <h6>
-                                    Галлерея
+                                    Галерея
                                   </h6>
+                                  <appSwitcher  txt="Использовать свои изображения"
+                                                :switcherActive="categoryGoods.useOwnImagesSwitch"
+                                                @switchToogle="onUseOwnImages">
+                                  </appSwitcher>
+                                  <vue-dropzone ref="myVueDropzone" id="dropzone" :options="categoryGoods.dropzoneOptions"></vue-dropzone>
                                 </div>
                                 <div class="col-4">
                                   <div class="goods-col-3">
@@ -337,6 +335,7 @@
                                           <div class="i-t gray-txt">
                                             {{itemParam.val}}
                                           </div>
+                                          <!--todo: Добавить краткое описание товара-->
                                         </div>
                                       </div>
                                     </div>
@@ -348,7 +347,9 @@
                           <div class="bottom-s">
                             <div class="row">
                               <appPagination :countPage = "categoryGoods.pagination.countPage"
-                                             @pageChange = "onGoodsPageChange()">
+                                             :routerOn = "categoryGoods.pagination.routerOn"
+                                             @pageChange = "onGoodsPageChange($event)"
+                                             :pageNum="categoryGoods.pagination.currentPage">
                               </appPagination>
                             </div>
                           </div>
@@ -375,7 +376,9 @@
     import singleFolder from '../modules/singleFolder'
 
     import appPagination from './pagination'
+    import appSwitcher from './switcher'
 
+    import vue2Dropzone from 'vue2-dropzone'
 
     export default {
         name: 'catalogConfig',
@@ -394,14 +397,14 @@
                   },
                 ],
                 selectedCatalogId: 12, // выбранный каталог из левой панели
-                providerList: [ // поставщики для селекта
+                providerList: [// поставщики для селекта
                 ],
                 selectedProvider: {
                 },
                 findFolderArr: { // Для вывода папок в блоке поиска
                 },
                 selectedFind: { // Выбранный параметр для поиска во вкладке поиск
-                  name: 'Все поставщики',
+                  name: 'Все каталоги',
                   id: ''
                 },
                 additionalFindProp: [
@@ -505,9 +508,10 @@
                 //Goods
                 categoryGoods: { // товары выбранной категории
                   findGoodsStr: '',
+                  useOwnImagesSwitch: false,
                   category: {
                     childCount: 0,
-                    folderId: "33556",
+                    folderId: "33472",
                     goodsCount: 12,
                     hasFolders: true,
                     hideFolder: false,
@@ -516,9 +520,11 @@
                     name: "Авто",
                     supplier_id: "1",
                   },
-                  pagination:{
+                  pagination: {
                     countPage: 12, // общее колличество страниц, делаем запрос к базе
-                    countItemsPage: 12 // колличество элементов на странице
+                    countItemsPage: 12, // колличество элементов на странице
+                    routerOn: false, // отключение роутера, если включить, то надо настроить роутер
+                    currentPage: 1
                   },
                   goodsListArr: [
                     {
@@ -590,6 +596,12 @@
                       img: '../../src/assets/img/dodik2.png'
                     },
                   ],
+                  dropzoneOptions: {
+                    url: 'https://httpbin.org/post',
+                    thumbnailWidth: 150,
+                    maxFilesize: 0.5,
+                    headers: { "My-Awesome-Header": "header value" }
+                  }
                 },
             }
         },
@@ -613,7 +625,9 @@
           Multiselect,
           appCatalogFolders,
           appBreadcrumbs,
-          appPagination
+          appPagination,
+          appSwitcher,
+          vueDropzone: vue2Dropzone
         },
         methods: {
           ...mapMutations('alerts',{
@@ -697,7 +711,7 @@
               let payload = {
                 lvlFolder: lvlFolder || null, // уровень вложенности
                 id: idCategory || '', // ид папки
-                supplier_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
+                supplier_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех каталогов
                 parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
               };
               console.log('Req pay --', payload);
@@ -753,10 +767,10 @@
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
                   this.setErrorAlertShow(true);
-                  this.setErrorAlertMsg('Ошибка при запросе поставщиков: ' + errorTxt);
+                  this.setErrorAlertMsg('Ошибка при запросе каталогов: ' + errorTxt);
                 }else {
                   this.providerList = resp.data.data;
-                  this.providerList.push({name: 'Все поставщики', id: ''});
+                  this.providerList.push({name: 'Все каталоги', id: ''});
                   //todo: при изменении провайдера вызывать!!
                   this.selectedProvider = this.providerList[this.providerList.length-1]
                 }
@@ -764,7 +778,7 @@
               })
               .catch(err => {
                 this.setErrorAlertShow(true);
-                this.setErrorAlertMsg('Ошибка при запросе поставщиков');
+                this.setErrorAlertMsg('Ошибка при запросе каталогов');
                 this.stepLastActive(); // прогрессбар
               });
           },
@@ -772,7 +786,8 @@
           onAddCatalogFolder(){
             console.log('API пока не готово');
           },
-          findGoods(){ //поиск среди папок
+          //поиск среди папок
+          findGoods(){
             console.log('Поиск по подстроке - ', this.categoryGoods.findGoodsStr);
             let payload = {
               text: this.categoryGoods.findGoodsStr || '',
@@ -800,18 +815,25 @@
                 this.stepLastActive(); // прогрессбар
               });
           },
-          onGoodsPageChange(){
-
+          //event смены страницы товара (пагинация)
+          onGoodsPageChange(e){
+            console.log('onGoodsPageChange ', e.value);
+            this.categoryGoods.pagination.currentPage = e.value.currentPage;
+          },
+          //
+          onUseOwnImages(){
+            this.categoryGoods.useOwnImagesSwitch = !this.categoryGoods.useOwnImagesSwitch;
           },
         },
         mounted(){
           this.getProvider();
           this.allFoldersInit();
         }
-
     }
 </script>
 
 <style lang="sass">
     /*@import 'assets/sass/main.sass';*/
+    @import '../../node_modules/vue2-dropzone/dist/vue2Dropzone.min.css'
+
 </style>

@@ -1,10 +1,14 @@
 <!--Список всех каталогов-->
 
-<!--todo: API - Список каталогов, запрашивается несколько(10) каталогов, в зависимости от страницы-->
-<!--todo: API - Скопировать каталог-->
-<!--todo: API - Сохранить каталог-->
-<!--todo: API - Удалить каталог-->
 <!--todo: API - Добавить каталог-->
+<!--todo: API - Удалить каталог-->
+<!--todo: API - Скопировать каталог-->
+<!--todo: API - Список каталогов, запрашивается несколько(10) каталогов, в зависимости от страницы, в этом же запросе возвращать данные для пагинации-->
+<!--todo: API - блокировать/разблокировать каталог-->
+
+<!--todo: API - Сохранить каталог (после редактирования)-->
+<!--todo: API - Запрос списка пользователей(для селекта), для всех каталогов он один-->
+
 
 <template>
   <!--catalogList.vue-->
@@ -65,8 +69,9 @@
       </appCatalogItem>
 
       <appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
-      @pageChange = "onPageChange()">
-
+        :routerLink="/catalog/"
+        :routerOn="pagination.routerOn"
+        @pageChange = "onPageChange()">
       </appPagination>
 
     <!--<div class="row">-->
@@ -141,7 +146,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -216,7 +220,8 @@
         //pagination, при переключении страницы, делаем запрос к серверу
         pagination:{
           countPage: 12, // общее колличество страниц, делаем запрос к базе
-          countItemsPage: 12 // колличество элементов на странице
+          countItemsPage: 12, // колличество элементов на странице
+          routerOn: true // // отключение роутера, если включить, то надо настроить роутер
         },
       }
     },
@@ -284,7 +289,7 @@
         }else {
           let payload = this.catalogList[index];
           this.stepOneActive(); // прогрессбар
-          axios({url: API_URL + '/login', data: payload, method: 'POST' })
+          axios({url: API_URL + '/saveCatalog', data: payload, method: 'POST' })
             .then(resp => {
               const error = resp.data.error;
               this.stepLastActive(); // прогрессбар
@@ -322,7 +327,7 @@
         if(this.inputsArr[0].value === this.catalogList[index].catalogName){
           let payload = this.catalogList[index];
           this.stepOneActive(); // прогрессбар
-          axios({url: API_URL + '/login', data: payload, method: 'POST' })
+          axios({url: API_URL + '/removeCatalog', data: payload, method: 'POST' })
             .then(resp => {
               const error = resp.data.error;
               this.stepLastActive(); // прогрессбар
