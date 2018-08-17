@@ -388,12 +388,6 @@
               newpassrepeat: this.acountArr['newpassrepeat-i'].value,
             }, samePwd = false;//флаг совпадения паролей
 
-            // for(let key in this.acountArr){
-            //   if(!this.acountArr[key].isValid){
-            //     this.acountArr[key].showError = true;
-            //   }
-            // }
-
             if(this.acountArr['newpass-i'].value === this.acountArr['newpassrepeat-i'].value){
               samePwd = true;
             }

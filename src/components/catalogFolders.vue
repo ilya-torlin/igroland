@@ -230,7 +230,7 @@
                 // lvlFolder: lvlFolder ? lvlFolder : '',
                 lvlFolder: lvlFolder, // уровень вложенности
                 id: idCategory || '', // ид папки
-                supplier_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
+                catalog_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
                 parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
               };
               this.folderPending = true; // пока идёт запрос контейнер с папками блокируется

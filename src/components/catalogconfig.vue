@@ -269,9 +269,10 @@
                                     </div>
                                     <div class="goods-list">
                                       <ul>
-                                        <li v-for="(goodsItem, index) in categoryGoods.goodsListArr">
+                                        <li v-for="(goodsItem, index) in categoryGoods.goodsListArr"
+                                            @click="setProduct(goodsItem.id)">
                                           <div class="img-c">
-                                            <img :src="goodsItem.img" alt="" v-if="goodsItem.img">
+                                            <img :src="API_URL + goodsItem.images[0]" alt="" v-if="goodsItem.images">
                                             <img src="../../src/assets/img/imageTmp.png" alt="" v-else>
                                           </div>
                                           <div class="goods-name">
@@ -283,14 +284,49 @@
                                   </div>
                                 </div>
                                 <div class="col-4">
-                                  <h6>
+                                  <h6 class="mb-3">
                                     Галерея
                                   </h6>
-                                  <appSwitcher  txt="Использовать свои изображения"
-                                                :switcherActive="categoryGoods.useOwnImagesSwitch"
-                                                @switchToogle="onUseOwnImages">
+
+                                  <button @click="getProducts" type="button" class="btn btn-primary mb-3">
+                                    Запрос товаров
+                                  </button>
+
+                                  <appSwitcher class="mb-3"  txt="Использовать галерею по умолчанию"
+                                                :switcherActive="categoryGoods.useDefaultImagesSwitch"
+                                                @switchToogle="onUseDefaultImages">
                                   </appSwitcher>
-                                  <vue-dropzone ref="myVueDropzone" id="dropzone" :options="categoryGoods.dropzoneOptions"></vue-dropzone>
+                                  <div class="image-galery mb-3">
+                                    <img src="../assets/img/dodik.png" alt="">
+                                    <img src="../assets/img/dodik2.png" alt="">
+                                    <img src="../assets/img/imageTmp.png" alt="">
+                                    <img src="../assets/img/dodik2.png" alt="">
+                                    <img src="../assets/img/imageTmp.png" alt="">
+                                    <img src="../assets/img/dodik2.png" alt="">
+                                    <img src="../assets/img/imageTmp.png" alt="">
+                                  </div>
+
+                                  <appSwitcher class="mb-3" txt="Использовать свои изображения"
+                                               :switcherActive="categoryGoods.useOwnImagesSwitch"
+                                               @switchToogle="onUseOwnImages">
+                                  </appSwitcher>
+
+                                  <transition name="vue-fade" mode="out-in"
+                                              enter-active-class="animated zoomIn"
+                                              leave-active-class="animated zoomOut">
+                                    <div v-if="categoryGoods.useOwnImagesSwitch">
+                                      <vue-dropzone class="mb-3" ref="myVueDropzone" id="dropzone" :options="categoryGoods.dropzoneOptions"></vue-dropzone>
+                                      <div class="image-galery mb-3">
+                                        <img src="../assets/img/dodik.png" alt="">
+                                        <img src="../assets/img/dodik2.png" alt="">
+                                        <img src="../assets/img/imageTmp.png" alt="">
+                                        <img src="../assets/img/dodik2.png" alt="">
+                                        <img src="../assets/img/imageTmp.png" alt="">
+                                        <img src="../assets/img/dodik2.png" alt="">
+                                        <img src="../assets/img/imageTmp.png" alt="">
+                                      </div>
+                                    </div>
+                                  </transition>
                                 </div>
                                 <div class="col-4">
                                   <div class="goods-col-3">
@@ -326,6 +362,24 @@
                                             </div>
                                           </div>
                                         </div>
+                                      </div>
+                                      <div class="goods-i">
+                                        <div class="title-h">
+                                          Наценка, %
+                                        </div>
+                                        <appInput key="profitPercentInput"
+                                                  :validFeedback="categoryGoods.profitPercentInput.validFeedback"
+                                                  :invalidFeedback="categoryGoods.profitPercentInput.invalidFeedback"
+                                                  :placeholder="categoryGoods.profitPercentInput.placeholder"
+                                                  :required="categoryGoods.profitPercentInput.required"
+                                                  :pattern="categoryGoods.profitPercentInput.pattern"
+                                                  :type="categoryGoods.profitPercentInput.type"
+                                                  :value="categoryGoods.profitPercentInput.value"
+                                                  :isValid="categoryGoods.profitPercentInput.isValid"
+                                                  :showError="categoryGoods.profitPercentInput.showError"
+                                                  @changedata="onChangeDataParcent($event)"
+                                        >
+                                        </appInput>
                                       </div>
                                       <div class="goods-i ">
                                         <div class="atr-i" v-for="(itemParam, index) in categoryGoods.goodsListArr[0].params">
@@ -377,14 +431,15 @@
 
     import appPagination from './pagination'
     import appSwitcher from './switcher'
-
+    import appInput from './inputValid'
     import vue2Dropzone from 'vue2-dropzone'
 
     export default {
         name: 'catalogConfig',
         data () {
             return {
-                findFolderStr: '', // Для поиска по папкам
+              API_URL: API_URL,
+              findFolderStr: '', // Для поиска по папкам
                 tabValue: 'goods', // Значение таба: find, provider
                 breadcrumbs: [ // Хлебные крошки
                   {
@@ -509,6 +564,23 @@
                 categoryGoods: { // товары выбранной категории
                   findGoodsStr: '',
                   useOwnImagesSwitch: false,
+                  useDefaultImagesSwitch: true,
+                  categoryId: 33472,//для запроса товаров
+                  supplier_id: '',//для запроса товаров
+                  limit: '',//для запроса товаров
+                  offset: '',//для запроса товаров
+                  profitPercentInput: {
+                    id: 'profit-percent',
+                    showError: false,
+                    validFeedback: "",
+                    invalidFeedback: "Наценка введена неверно",
+                    placeholder: "Наценка, %",
+                    type: "text",
+                    required: "false",
+                    pattern: /^[0-9,.]{1,15}$/,
+                    value: '',
+                    isValid: false
+                  },
                   category: {
                     childCount: 0,
                     folderId: "33472",
@@ -520,16 +592,15 @@
                     name: "Авто",
                     supplier_id: "1",
                   },
-                  pagination: {
+                  pagination: { // параметры пагинации
                     countPage: 12, // общее колличество страниц, делаем запрос к базе
                     countItemsPage: 12, // колличество элементов на странице
                     routerOn: false, // отключение роутера, если включить, то надо настроить роутер
                     currentPage: 1
                   },
-                  goodsListArr: [
+                  goodsListArr: [ // массив с товарами
                     {
                       name: 'Салфетка пластик, 43х28см',
-                      img: '../../src/assets/img/dodik2.png',
                       params: [
                         {key :'Артикул', val: "123141"},
                         {key :'Бренд', val: "Adibas"},
@@ -542,14 +613,14 @@
                         {key :'Количество', val: "10000"},
                         {key :'Страна', val: "Китай"},
                     ],
-                    id: "65879",
-                    price: "23.69",
-                    idx: 1,
-                    images: [
-                      '../../src/assets/img/dodik2.png',
-                      '../../src/assets/img/dodik2.png',
-                      '../../src/assets/img/dodik.png'
-                    ]
+                      id: "65879",
+                      price: "23.69",
+                      idx: 1,
+                      images: [
+                        '../../src/assets/img/dodik2.png',
+                        '../../src/assets/img/dodik2.png',
+                        '../../src/assets/img/dodik.png'
+                      ]
                     },
                     {
                       name: 'Додя 2',
@@ -596,11 +667,19 @@
                       img: '../../src/assets/img/dodik2.png'
                     },
                   ],
-                  dropzoneOptions: {
+                  dropzoneOptions: { // опции для dropzone
                     url: 'https://httpbin.org/post',
                     thumbnailWidth: 150,
                     maxFilesize: 0.5,
-                    headers: { "My-Awesome-Header": "header value" }
+                    headers: { "My-Awesome-Header": "header value" },
+                    addRemoveLinks: true,
+                    //для перевода
+                    dictFileTooBig: 'Загружаемый файл слишком большой',
+                    dictDefaultMessage: '<div class="dropzone-cont"> <div class="img-c"> <img src="../../src/assets/img/imageUpload.png" alt=""> </div> <span class="sad">Перетащите изображения (*.png, *.jpg, *.jpeg) сюда</span> </div>',
+                    dictInvalidFileType: 'Тип файла не подходит (*.png, *.jpg, *.jpeg)',
+                    dictResponseError: 'Ошибка передачи на сервер, перезагрузите страницу и повторите действие ещё раз',
+                    dictCancelUpload: 'Отменить',
+                    dictRemoveFile: 'Удалить файл'
                   }
                 },
             }
@@ -614,6 +693,7 @@
             progStateWidth: 'progStateWidth',
             progShow: 'progShow'
           }),
+          //формирование опций для селекта с параметрами поиска, вкладка поиск
           findSelectOpt(){
             return this.providerList.concat(this.additionalFindProp);
           },
@@ -627,6 +707,7 @@
           appBreadcrumbs,
           appPagination,
           appSwitcher,
+          appInput,
           vueDropzone: vue2Dropzone
         },
         methods: {
@@ -643,6 +724,7 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
+          //Event handler: выбор параметров поиска, во вкладке поиск (где искать)
           onInputSelect(event, selectResKey){
             let selectedProvider = {
               code: event.code,
@@ -660,11 +742,12 @@
           onSetFolders(e, keyFolder){
             this.foldersCont[keyFolder].rootCatalogFolders = e.value;
           },
-          findFolder(){ //поиск среди папок
+          //поиск среди папок по подстроке
+          findFolder(){
             console.log('Поиск по подстроке - ', this.findFolderStr);
             let payload = {
               text: this.findFolderStr,
-              supplier_id: this.selectedFind.id || null
+              catalog_id: this.selectedFind.id || null
             };
             this.stepOneActive(); // прогрессбар
             axios.get( API_URL + '/category/search', {
@@ -688,19 +771,24 @@
                 this.stepLastActive(); // прогрессбар
               });
           },
+          //Event handler: клик по хлебным крошкам
           onBreadItemClicked(e){
             console.log('catalog id is ==== ', e.value);
           },
-          createNewCatalog(catalogName){ // создание нового каталога/папки
+          // создание нового каталога/папки
+          createNewCatalog(catalogName){
             console.log('create new catalog', catalogName);
           },
-          onHideNotOwned(value){ // скрыть не в наличии
+          //Event handler: скрыть не в наличии
+          onHideNotOwned(value){
+            //todo: переключатель 'скрыть не в наличии', сейчас никак  не обрабатывается, доделать
             if(value === true){ // скрываем товары, которых нет в наличии
               console.log('скрываем товары, которых нет в наличии');
             }else { // отображаем все товары
 
             }
           },
+          //изменение значения setRootCatalogFoldersComp(массив папок), у дочернего компонента по ссылке ref
           updateFolderCont(idCategory, lvlFolder, parentFolderId, selectedProvider, folderKey, componentRefKey){
             //folderKey - ключ папки в foldersCont
             // componentRefKey - ссылка на компонент,
@@ -729,12 +817,14 @@
               );
             }
           },
+          //Event handler: изменение поставщика
           onChangeProvider(newProviderObj){
             this.selectedProvider = newProviderObj;
             console.log('Провайдер изменён на: ', newProviderObj);
             //Запрос категории
             this.updateFolderCont(null, null, null, +newProviderObj.id, 'providerFolder', 'providerCont');
           },
+          // Изменеие значения табов, для переключения
           tabChangeVal(newVal){
             this.tabValue = newVal;
             if(newVal === 'provider'){
@@ -758,6 +848,7 @@
             // this.updateFolderCont(this.currentCatalogId, null, null, null, 'catalogFolder', 'catalogFolder');
 
           },
+          //запрос списка поставщиков
           getProvider(){
             this.stepOneActive(); // прогрессбар
             axios.get( API_URL + '/supplier', {
@@ -820,14 +911,92 @@
             console.log('onGoodsPageChange ', e.value);
             this.categoryGoods.pagination.currentPage = e.value.currentPage;
           },
-          //
+          //Использовать свои изображения, переключатель
           onUseOwnImages(){
             this.categoryGoods.useOwnImagesSwitch = !this.categoryGoods.useOwnImagesSwitch;
+            if (this.categoryGoods.useOwnImagesSwitch){
+              this.categoryGoods.useDefaultImagesSwitch = false;// 1 из 2х, должен быть активен
+            }else {
+              this.categoryGoods.useDefaultImagesSwitch = true;// 1 из 2х, должен быть активен
+            }
+          },
+          //Использовать изображения по умолчанию, переключатель
+          onUseDefaultImages(){
+            this.categoryGoods.useDefaultImagesSwitch = !this.categoryGoods.useDefaultImagesSwitch;
+            if(this.categoryGoods.useDefaultImagesSwitch){
+              this.categoryGoods.useOwnImagesSwitch = false;// 1 из 2х, должен быть активен
+            } else {
+              this.categoryGoods.useOwnImagesSwitch = true;// 1 из 2х, должен быть активен
+            }
+          },
+          // для компонента input, изменение родителя
+          onChangeDataParcent(data){
+            this.categoryGoods.profitPercentInput.value = data.value;
+            this.categoryGoods.profitPercentInput.isValid = data.valid;
+          },
+          //запрос списка товара в определённой категории
+          getProducts(){
+            let payload = {
+              category_id: this.categoryGoods.categoryId || null,
+              supplier_id: this.categoryGoods.supplier_id || null,
+              limit: this.categoryGoods.limit || null,
+              offset: this.categoryGoods.offset || null,
+            };
+            this.stepOneActive(); // прогрессбар
+            axios.get( API_URL + '/product', {
+              params: {
+                ...payload
+              },
+            }).then(resp => {
+              const error = resp.data.error;
+              if(error){
+                let errorTxt = resp.data.data.msgClient;
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
+              }else{
+                this.categoryGoods.goodsListArr = resp.data.data.items;
+              }
+              this.stepLastActive(); // прогрессбар
+            })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при запросе товаров');
+                this.stepLastActive(); // прогрессбар
+              });
+          },
+          //запрос информации о конкретном товаре и выделение товара в списке товаров
+          setProduct(){
+            let payload = {
+              id: this.categoryGoods.categoryId || null,
+            };
+            this.stepOneActive(); // прогрессбар
+            axios.get( API_URL + '/product', {
+              params: {
+                ...payload
+              },
+            }).then(resp => {
+              const error = resp.data.error;
+              if(error){
+                let errorTxt = resp.data.data.msgClient;
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
+              }else{
+                this.categoryGoods.goodsListArr = resp.data.data.items;
+              }
+              this.stepLastActive(); // прогрессбар
+            })
+            .catch(err => {
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Ошибка при запросе товаров');
+              this.stepLastActive(); // прогрессбар
+            });
           },
         },
         mounted(){
           this.getProvider();
           this.allFoldersInit();
+
+          this.getProducts();
         }
     }
 </script>
