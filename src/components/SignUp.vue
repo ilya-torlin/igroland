@@ -132,6 +132,7 @@
             setSuccesAlertMsg: 'setSuccesAlertMsg',
             setErrorAlertMsg: 'setErrorAlertMsg'
           }),
+          //регистрация пользователя
           getSignUp(){
             let pwdVal, confirmVal, samePwd = false;
             for(let item of this.inputsArr){
@@ -203,7 +204,8 @@
 
             }
           },
-          onChangeData(index, data){ // для компонента input
+          // для компонента input
+          onChangeData(index, data){
             this.inputsArr[index].value = data.value;
             this.inputsArr[index].isValid = data.valid;
             if(data.valid){

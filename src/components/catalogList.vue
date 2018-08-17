@@ -169,7 +169,7 @@
             123: { // Идентификатор каталога
               selected: null, // выбранные элементы в селекте
               switcherActive: false, // активность переключателя (Доступен для всех)
-              showConfig: true, // Тригер для отображения параметров переключателя(шестерёнка)
+              showConfig: false, // Тригер для отображения параметров переключателя(шестерёнка)
               catalogName: 'Игрушки', // Наименование каталога
               isActive: true, // каталог активен(значёе молнии), один или несколько пользователей используют его
               isOn: true, // Тригер для включения/отключения каталога, если каталог отключён, то пользователи его не видят
@@ -250,25 +250,31 @@
         stepTwoActive: 'stepTwoActive',
         stepLastActive: 'stepLastActive',
       }),
-      falseCatalogSave(index){//переключение каталога в режим не сохранён
+      //переключение каталога в режим не сохранён
+      falseCatalogSave(index){
         this.catalogList[index].catalogSaved = false;
       },
-      onConfigToogle(index){ // переключение шестерёнки (настройки каталога)
+      // переключение шестерёнки (настройки каталога)
+      onConfigToogle(index){
         this.catalogList[index].showConfig = !this.catalogList[index].showConfig;
       },
-      onIsOnToogle(index){  // включение/отключение каталога
+      // включение/отключение каталога
+      onIsOnToogle(index){
         this.catalogList[index].isOn = !this.catalogList[index].isOn;
         this.falseCatalogSave(index);
       },
-      onSwitchToogle(index){// переключение "Доступен для всех"
+      // переключение "Доступен для всех"
+      onSwitchToogle(index){
         this.catalogList[index].switcherActive = !this.catalogList[index].switcherActive;
         this.falseCatalogSave(index);
       },
-      onChangeDescr(index, e){ // изменение описания
+      // изменение описания
+      onChangeDescr(index, e){
         this.catalogList[index].description = e.value;
         this.falseCatalogSave(index);
       },
-      onCopyCatalog(index){ // копирование каталога
+      // копирование каталога
+      onCopyCatalog(index){
         //копируем, создаём новый каталог на основе существующего, на стороне клиента
         //далее, только при нажатии на кнопку 'сохранить' отправляем этот каталог на сервер, на сервере каталогу присвается новый ид, этот ид приходит в ответе на операцию сохранения
 
@@ -282,7 +288,8 @@
         this.catalogList[indRand].catalogName = this.catalogList[index].catalogName + ' (копия)';
         this.falseCatalogSave(indRand);
       },
-      onSaveCatalog(index){ // сохранение каталога
+      // сохранение каталога
+      onSaveCatalog(index){
         if(this.catalogList[index].catalogSaved){
           this.setSuccesAlertShow(true);
           this.setSuccesAlertMsg('Каталог сохранён');
@@ -315,14 +322,17 @@
         // this.catalogList[indRand].catalogName = this.catalogList[index].catalogName + ' (копия)';
 
       },
-      onRemoveCatalog(index){ // удаление каталога, открытие окна подтверждения
+      // удаление каталога, открытие окна подтверждения
+      onRemoveCatalog(index){
         this.removeCatalogIndex = index;
         $('#confirmDeleteModal').modal();
       },
+      //выполняется при переключении страницы
       onPageChange(){
         console.log('onPageChange');
       },
-      removeCatalog(index){ // удаление каталога
+      // удаление каталога
+      removeCatalog(index){
 
         if(this.inputsArr[0].value === this.catalogList[index].catalogName){
           let payload = this.catalogList[index];
@@ -352,15 +362,18 @@
           this.setErrorAlertMsg('Ошибка при удалении каталога: имена не совпадают');
         }
       },
-      onChangeSelect(index){ // изменение селекта
+      //выполняется при  изменении селекта
+      onChangeSelect(index){
         //Делать запрос на сервер для копирования?
         console.log('onChangeSelect');
         this.falseCatalogSave(index);
       },
-      onChangeData(index, data){ // для компонента input
+      // для компонента input
+      onChangeData(index, data){
         this.inputsArr[index].value = data.value;
         this.inputsArr[index].isValid = data.valid;
       },
+      //Добавить новый каталог
       addNewCatalog(){
         let payload = {};
         this.stepOneActive(); // прогрессбар

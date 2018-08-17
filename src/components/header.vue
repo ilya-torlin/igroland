@@ -174,6 +174,7 @@
       ...mapMutations('user',{
         logOutUser: 'logOut'
       }),
+      // логаут
       logOut(){
         console.log('this.$store = ', this.$store);
         this.$store.dispatch(`${AUTH_LOGOUT}`)

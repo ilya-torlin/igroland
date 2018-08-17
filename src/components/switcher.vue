@@ -20,6 +20,7 @@
       }
     },
     methods:{
+      //вызов события переключения
       doSwitch(){
         this.$emit('switchToogle', {
           switcherActive: !this.switcherActive

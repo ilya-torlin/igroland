@@ -58,9 +58,9 @@
       }
     },
     methods: {
-     onInput(e){
+      //вызывается при изменении инпата
+      onInput(e){
        this.activated = true;
-
        this.$emit('changedata', {
          value: e.target.value,
          valid: this.pattern.test(e.target.value)

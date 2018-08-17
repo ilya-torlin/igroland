@@ -169,7 +169,8 @@
       appInput
     },
     methods: {
-      onChangeData(index, data){ // для компонента input
+      // для компонента input
+      onChangeData(index, data){
         data.id = this.id;
         data.inputIndex = index;
         this.$emit('changeData', data);

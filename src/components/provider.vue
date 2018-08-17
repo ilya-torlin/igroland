@@ -4,9 +4,12 @@
     <!--
       todo: API - сохранение поставщика
       todo: API - блокировка/разблокировка поставщика
+      todo: API - добавить ссылку на каталог для кнопки "скачать"
     -->
 
-    <!--todo: доделать пагинацию, когда закончу делать компонент с пагинацией
+    <!--
+      todo: доделать пагинацию, когда закончу делать компонент с пагинацией
+      todo: заменить ассециативный массив providerList на обыный, такой же как в каталогах catalogList.vue
     -->
 
     <div class="container">
@@ -199,14 +202,16 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
-          falseCatalogSave(index){//переключение поставщика в режим не сохранён
+          //переключение поставщика в режим не сохранён
+          falseCatalogSave(index){
             this.providerList[index].catalogSaved = false;
           },
-          onConfigToogle(index){// переключение шестерёнки (настройки поставщика)
+          // переключение шестерёнки (настройки поставщика)
+          onConfigToogle(index){
             this.providerList[index].showConfig = !this.providerList[index].showConfig;
           },
-          onIsOnToogle(index){// включение/отключение поставщика
-
+          // включение/отключение поставщика
+          onIsOnToogle(index){
             let payload = this.providerList[index];
             this.stepOneActive(); // прогрессбар
             axios({url: API_URL + '/provider/block', data: payload, method: 'POST' })
@@ -230,16 +235,18 @@
                 console.log(err);
               });
           },
-          onUploadTime(payload){// включение/отключение поставщика
+          // включение/отключение поставщика
+          onUploadTime(payload){
             this.providerList[payload.id].uploadTime = payload.value;
             this.falseCatalogSave(payload.id);
           },
+          // Обработчик для инпата
           onChangeData(payload){
             this.providerList[payload.id].inputsArr[payload.inputIndex].value = payload.value;
             this.providerList[payload.id].inputsArr[payload.inputIndex].isValid = payload.valid;
             this.falseCatalogSave(payload.id);
           },
-          //form valid func
+          //Для валидации всех полей формы, вызывается перед отправкой формы на сервер
           FormValid(objectArr, firstKey){
             //objectArr - массив инпатов(форма, которую надо проверить на валидацию)
             //firstKey - любой ключ в массиве инпатов
@@ -249,7 +256,8 @@
             }
             return isValid;
           },
-          onSaveProvider(index){ // сохранение провайдера
+          // сохранение провайдера
+          onSaveProvider(index){
             if(this.providerList[index].catalogSaved){
               this.setSuccesAlertShow(true);
               this.setSuccesAlertMsg('Каталог сохранён');

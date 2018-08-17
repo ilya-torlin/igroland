@@ -99,6 +99,7 @@
       },
     },
     methods: {
+      //изменение страницы
       pageChange(clickedPage){
         this.pageCur = clickedPage || 1;
         let resVal = {

@@ -332,18 +332,17 @@
             setSuccesAlertMsg: 'setSuccesAlertMsg',
             setErrorAlertMsg: 'setErrorAlertMsg'
           }),
-          //form valid func
+          //проверка на валидацию всех полей в форме, возвращает true если все поля валидны
           FormValid(objectArr, firstKey){
             //objectArr - массив инпатов(форма, которую надо проверить на валидацию)
             //firstKey - любой ключ в массиве инпатов
             let isValid = objectArr[firstKey].isValid;
-            // todo: разрешить ошибку
-            //error during evaluation
             for(let key in objectArr){
               isValid = isValid && objectArr[key].isValid;
             }
             return isValid;
           },
+          //обновление профиля пользователя
           updateUserProfile(){
             let payload = {
               surname: this.inputsArr['surname-i'].value,
@@ -357,7 +356,7 @@
             };
             //
             this.stepOneActive(); // прогрессбар
-            axios({url: API_URL + '/login', data: payload, method: 'POST' })
+            axios({url: API_URL + '/updateUserProfile', data: payload, method: 'POST' })
               .then(resp => {
                 const error = resp.data.error;
                 this.stepLastActive(); // прогрессбар
@@ -381,6 +380,7 @@
                 this.stepLastActive();
               });
           },
+          //обновление пароля пользователя
           updateUserPwd(){
             let payload = {
               oldpass: this.acountArr['oldpass-i'].value,
@@ -422,14 +422,17 @@
               this.stepLastActive();
             }
           },
+          //для инпата
           onChangeData(index, data){ // для компонента input
             this.inputsArr[index].value = data.value;
             this.inputsArr[index].isValid = data.valid;
           },
-          onChangeDataAccaount(index, data){ // для компонента input
+          //для компонента input
+          onChangeDataAccaount(index, data){
             this.acountArr[index].value = data.value;
             this.acountArr[index].isValid = data.valid;
           },
+          // для переключения тригеров в this.notifications, key - имя ключа(атрибута)
           onSwitchToogle(key){
             console.log('switched = ', key);
             this.notifications[key].switched = !this.notifications[key].switched;
@@ -437,7 +440,9 @@
         },
         mounted(){
           //Задаём начальные значения
-          //todo: задать задержку, или вызывать requestUser
+          //todo: задать задержку, или вызывать requestUser, вводяться не те значения, отслеживать, когда поступила информация о пользователе, и уже потом вызывать функции ниже
+          //todo: эту ошибку можно отследить, если перезагрузить страницу... данные о пользователя ещё идут, а поля уже пытаются заполнить
+
           this.inputsArr['surname-i'].value = this.profile.surname;
           this.inputsArr['name-i'].value = this.userName;
           this.inputsArr['lastName-i'].value = this.profile.lastName;

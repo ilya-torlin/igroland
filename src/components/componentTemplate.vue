@@ -13,13 +13,45 @@
 </template>
 
 <script>
+
+  import {API_URL} from '../constants';
+  import axios from 'axios';
+  import {mapGetters} from 'vuex';
+  import {mapMutations} from 'vuex';
+
     export default {
-        name: 'componentTemplate',
-        data () {
-            return {
-                msg: 'template'
-            }
-        }
+      name: 'componentTemplate',
+      data () {
+          return {
+              msg: 'template'
+          }
+      },
+      computed: {
+        ...mapGetters('alerts', {
+          succesAlert: 'succesAlert',
+          errorAlert: 'errorAlert'
+        }),
+        ...mapGetters('progress', {
+          progStateWidth: 'progStateWidth',
+          progShow: 'progShow'
+        }),
+      },
+      props: [],
+      methods: {
+        ...mapMutations('alerts',{
+          setSuccesAlertShow: 'setSuccesAlertShow',
+          setErrorAlertShow: 'setErrorAlertShow',
+          setSuccesAlertMsg: 'setSuccesAlertMsg',
+          setErrorAlertMsg: 'setErrorAlertMsg'
+        }),
+        ...mapMutations('progress',{
+          setProgStateWidth: 'setProgStateWidth',
+          setProgShow: 'setProgShow',
+          stepOneActive: 'stepOneActive',
+          stepTwoActive: 'stepTwoActive',
+          stepLastActive: 'stepLastActive',
+        }),
+      },
     }
 </script>
 

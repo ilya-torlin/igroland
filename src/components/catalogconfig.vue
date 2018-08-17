@@ -37,38 +37,53 @@
     todo: API - запрос каталогов для селекта. Возвращает массив формата [{name: 'Игроленд', id: '1234'}, {} ...]
     todo: API - Запрос сообщения последнего обновления каталога 'Последнее изменение 09.08.2018 18:00'
 
-    todo: Переработать интерфейс
-      todo: Каталог (панель слева)
-        todo: В контекстное меню Добавить "Отвязать товар"
-        todo: В контекстное меню Добавить "Заблокировать", то что было в 3м столбце
-        todo: Убрать кнопку сворачивания(больше не нужна, т.к справа будет выводиться 1 колонка)
-      todo: Изменить процесс привязки товара
-        todo: ?
-      todo: Сделать 2 таба
-        todo: 1й таб - категории поставщика из селекта
-        todo: 2й таб - Поиск категорий/тоавров(?)
-          todo: Состоит из строки поиска, селекта (выбирается где ищется товар): Список каталогов, среди привязанных товаров(в каталоге), среди привязанных товаров в выделенной папке;
+
+    todo: API - ТОВАРЫ ↓↓↓
+    todo: API - Поиск по товарам в определённой катагории, передаётся строка и ид категории, получаю соответствующий массив товаров
+    todo: API - Загрузка галереи пользователя через dropZone
+    todo: API - Добавить поле какую галерею использовать(по умолчанию или пользовательскую)
+    todo: API - добавить наценку, метод на подобие 'Альтернативное наименование'
 
 
+    todo: В хлебных крошках ↓↓↓
+      todo: написать обработчик для тригера "Скрыть не в наличии"
+      todo: Добавть "Новую категорию"
 
     todo: Каталог (панель слева)
-      todo: при клике на папку в каталоге, изменть хлебные крошки
-      todo: вывод количества товаров в папке (запрос к API по ид папки)
-      todo: !!Сделать возможность изменения родителя (придумать как сделать), скорее всего в настройках категории
+      todo: В контекстное меню Добавить "Отвязать товар", если товар уже привязан (поидее такого не может быть, т.к. при привязке товара, он удаляется из массива т.е. он не виден для пользователя)
+      todo: В контекстное меню Добавить "Заблокировать" в контекстное меню каталога, то что было в 3м столбце (иконка замочек)
+      todo: при клике на папку в каталоге, изменить хлебные крошки
+      todo: Сделать возможность изменения родителя (придумать как сделать), скорее всего в настройках категории
       todo: Последнее изменение каталога
+      todo: сделать выделение каталога при клике (завести отдельную переменную с индексом и ид выделенного каталога), смотри как сделанно во вкладке "Товары"
       todo: контекстное меню
         todo: Параметры - Параметры каталога, по типу окна "Показать товары" (не отрисованно) Поля: фото и описание, родительская категория
         todo: Товары - кнопка  "Показать товары"
         todo: Добавить - добавить новую папку, пишем только название
         todo: удалить - удаление папки
-    todo: Столбцы
-      todo: Показать товары (кнопка не активна, если не выделен каталог(папка)), чекбоксы не внедрять
-        todo: Сверстать блок
 
-      todo: Первый столбец - товары от поставщика, выделенного в селекте из хлебных крошек
-      todo: Второй столбец - товары, которые были привязаны в appCatalogFolders
-      todo: Третий столбец - товары, которые были привязаны в appCatalogFolders(у отмеченной папки)
-        todo: кнопка блокировать/разблокировать - если заблокирована, то категорию нельзя изменить (передавать на бекенд этот параметр)
+    todo: Вкладка "Каталоги"
+      todo: сделать выделение каталога при клике (завести отдельную переменную с индексом и ид выделенного каталога), смотри как сделанно во вкладке "Товары"
+      todo: контекстное меню
+        todo: Товары - показать товары
+        todo: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
+      todo: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
+
+    todo: Вкладка "Поиск"
+      todo: контекстное меню
+        todo: Товары - показать товары
+        todo: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
+      todo: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
+
+    todo: Вкладка "Товары"
+      todo: Поиск по товарам
+      todo: Загрузка изображений на сервер
+      todo: Переключение какую галерею использовать(по умолчанию или пользовательскую)
+      todo: Добавить обработчик для поля "Наценка"
+      Todo: Добавить обработчик для поля "Альтернативное наименование"
+      todo: Сделать пагинацию товаров, когда будет готова нормальная выгрузка (больше товаров)
+      todo: "Показать по", написать обработчик
+
   -->
 
     <div class="container">
@@ -232,7 +247,7 @@
                               </div>
                               <div class="find-b justify-content-start d-flex">
                                 <div class="input-group ">
-                                  <input v-model.lazy="categoryGoods.findGoodsStr" v-on:keyup.enter="findGoods" type="text" class="form-control" placeholder="Поиск по категории">
+                                  <input v-model.lazy="categoryGoods.findGoodsStr" v-on:keyup.enter="findGoods" type="text" class="form-control" placeholder="Поиск товаров">
                                   <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" @click="findGoods">
                                       <svg
@@ -270,9 +285,9 @@
                                     <div class="goods-list">
                                       <ul>
                                         <li v-for="(goodsItem, index) in categoryGoods.goodsListArr"
-                                            @click="setProduct(goodsItem.id)">
+                                            @click="setProduct(goodsItem.id, index)" :class="{'isActive': categoryGoods.productSelectedId == goodsItem.id}">
                                           <div class="img-c">
-                                            <img :src="API_URL + goodsItem.images[0]" alt="" v-if="goodsItem.images">
+                                            <img :src="IMAGE_URL + goodsItem.images[0]" alt="" v-if="goodsItem.images">
                                             <img src="../../src/assets/img/imageTmp.png" alt="" v-else>
                                           </div>
                                           <div class="goods-name">
@@ -288,29 +303,23 @@
                                     Галерея
                                   </h6>
 
-                                  <button @click="getProducts" type="button" class="btn btn-primary mb-3">
-                                    Запрос товаров
-                                  </button>
-
                                   <appSwitcher class="mb-3"  txt="Использовать галерею по умолчанию"
                                                 :switcherActive="categoryGoods.useDefaultImagesSwitch"
                                                 @switchToogle="onUseDefaultImages">
                                   </appSwitcher>
                                   <div class="image-galery mb-3">
-                                    <img src="../assets/img/dodik.png" alt="">
-                                    <img src="../assets/img/dodik2.png" alt="">
-                                    <img src="../assets/img/imageTmp.png" alt="">
-                                    <img src="../assets/img/dodik2.png" alt="">
-                                    <img src="../assets/img/imageTmp.png" alt="">
-                                    <img src="../assets/img/dodik2.png" alt="">
-                                    <img src="../assets/img/imageTmp.png" alt="">
+                                    <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in categoryGoods.goodsListArr[categoryGoods.productSelectedIndex].images">
+                                    <!--<img src="../assets/img/dodik2.png" alt="">-->
+                                    <!--<img src="../assets/img/imageTmp.png" alt="">-->
+                                    <!--<img src="../assets/img/dodik2.png" alt="">-->
+                                    <!--<img src="../assets/img/imageTmp.png" alt="">-->
+                                    <!--<img src="../assets/img/dodik2.png" alt="">-->
+                                    <!--<img src="../assets/img/imageTmp.png" alt="">-->
                                   </div>
-
                                   <appSwitcher class="mb-3" txt="Использовать свои изображения"
                                                :switcherActive="categoryGoods.useOwnImagesSwitch"
                                                @switchToogle="onUseOwnImages">
                                   </appSwitcher>
-
                                   <transition name="vue-fade" mode="out-in"
                                               enter-active-class="animated zoomIn"
                                               leave-active-class="animated zoomOut">
@@ -339,7 +348,7 @@
                                           Наименование
                                         </div>
                                         <div class="gray-txt">
-                                          Игровой набор Mioshi Army "Лучник: разведчик" (лук, 3 стрелы, 1 мишень)
+                                          {{categoryGoods.goodsListArr[categoryGoods.productSelectedIndex].name}}
                                         </div>
                                       </div>
                                       <div class="goods-i">
@@ -348,9 +357,9 @@
                                         </div>
                                         <div class="find-b justify-content-start d-flex">
                                           <div class="input-group ">
-                                            <input v-model.lazy="categoryGoods.findGoodsStr" v-on:keyup.enter="findGoods" type="text" class="form-control" placeholder="">
+                                            <input v-model.lazy="categoryGoods.findGoodsStr" v-on:keyup.enter="renameGoods" type="text" class="form-control" placeholder="">
                                             <div class="input-group-append">
-                                              <button class="btn btn-outline-secondary" type="button" @click="findGoods">
+                                              <button class="btn btn-outline-secondary" type="button" @click="renameGoods">
                                                 <svg
                                                   xmlns="http://www.w3.org/2000/svg"
                                                   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -381,8 +390,8 @@
                                         >
                                         </appInput>
                                       </div>
-                                      <div class="goods-i ">
-                                        <div class="atr-i" v-for="(itemParam, index) in categoryGoods.goodsListArr[0].params">
+                                      <div class="goods-i">
+                                        <div class="atr-i" v-for="(itemParam, index) in categoryGoods.goodsListArr[categoryGoods.productSelectedIndex].params">
                                           <div class="i-t title-h">
                                             {{itemParam.key}}
                                           </div>
@@ -392,6 +401,7 @@
                                           <!--todo: Добавить краткое описание товара-->
                                         </div>
                                       </div>
+
                                     </div>
                                   </div>
                                 </div>
@@ -420,7 +430,7 @@
     import appCatalogFolders from './catalogFolders.vue'
     import appBreadcrumbs from './breadcrumbs.vue'
 
-    import {API_URL} from '../constants';
+    import {API_URL, IMAGE_URL} from '../constants';
     import axios from 'axios';
     import {mapGetters} from 'vuex';
     import {mapMutations} from 'vuex';
@@ -438,7 +448,7 @@
         name: 'catalogConfig',
         data () {
             return {
-              API_URL: API_URL,
+              IMAGE_URL: API_URL, // корень для изображений
               findFolderStr: '', // Для поиска по папкам
                 tabValue: 'goods', // Значение таба: find, provider
                 breadcrumbs: [ // Хлебные крошки
@@ -560,7 +570,7 @@
                     rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
                   },
                 },
-                //Goods
+                //Goods categoryGoods.pagination.countItemsPage
                 categoryGoods: { // товары выбранной категории
                   findGoodsStr: '',
                   useOwnImagesSwitch: false,
@@ -569,6 +579,8 @@
                   supplier_id: '',//для запроса товаров
                   limit: '',//для запроса товаров
                   offset: '',//для запроса товаров
+                  productSelectedId: 0,// id выбранного товара
+                  productSelectedIndex: 0,
                   profitPercentInput: {
                     id: 'profit-percent',
                     showError: false,
@@ -955,6 +967,11 @@
                 this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
               }else{
                 this.categoryGoods.goodsListArr = resp.data.data.items;
+                // this.categoryGoods.pagination.countItemsPage;
+                // this.categoryGoods.pagination.countPage;
+                //this.categoryGoods.goodsListArr[0];
+                this.setProduct(this.categoryGoods.goodsListArr[0].id, 0); // инициализируем первый товар
+
               }
               this.stepLastActive(); // прогрессбар
             })
@@ -965,14 +982,17 @@
               });
           },
           //запрос информации о конкретном товаре и выделение товара в списке товаров
-          setProduct(){
+          setProduct(prodId, categoryGoodsIndex){
+            this.categoryGoods.productSelectedId = prodId;
+            this.categoryGoods.productSelectedIndex = categoryGoodsIndex;
+
             let payload = {
-              id: this.categoryGoods.categoryId || null,
+              id: prodId || this.categoryGoods.categoryId || null,
             };
             this.stepOneActive(); // прогрессбар
-            axios.get( API_URL + '/product', {
+            axios.get( API_URL + `/product/${this.categoryGoods.productSelectedId}`, {
               params: {
-                ...payload
+
               },
             }).then(resp => {
               const error = resp.data.error;
@@ -981,7 +1001,9 @@
                 this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
               }else{
-                this.categoryGoods.goodsListArr = resp.data.data.items;
+                //this.$set(this.categoryGoods.goodsListArr[categoryGoodsIndex], 'params', resp.data.data.params);
+                this.categoryGoods.goodsListArr[categoryGoodsIndex] = resp.data.data;
+                this.categoryGoods.productSelectedId = resp.data.data.id;
               }
               this.stepLastActive(); // прогрессбар
             })
@@ -991,6 +1013,9 @@
               this.stepLastActive(); // прогрессбар
             });
           },
+          //Переименование товара
+          renameGoods(){
+          }
         },
         mounted(){
           this.getProvider();

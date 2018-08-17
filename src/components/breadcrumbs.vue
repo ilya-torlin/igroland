@@ -96,16 +96,20 @@
           'selectedProvider',//выбранный поставщик
         ],
         methods:{
+          //создание ивента, при клике на элемент из хлебных крошек
           breadItemClicked(catalogId){
             this.$emit('breadItemClicked', {'value': catalogId});
           },
+          //создание ивента, Создание нового каталога
           createNewCatalog(catalogName){
             this.$emit('createNewCatalog', {'value': catalogName});
           },
+          //Создание ивента, скрыть не в наличии
           hideNotOwned(){
             this.hideNotOwnedSwitch = !this.hideNotOwnedSwitch;
             this.$emit('hideNotOwned', {'value': this.hideNotOwnedSwitch})
           },
+          //Создание ивента, Смена поставщика
           onChangeProvider(){
             this.$emit('changeProvider', {'value': this.selectedProvider})
           },

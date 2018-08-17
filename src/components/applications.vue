@@ -233,7 +233,8 @@
         stepTwoActive: 'stepTwoActive',
         stepLastActive: 'stepLastActive',
       }),
-      onSwitchToogle(){// переключение "Все пользователи"
+      // переключение "Все пользователи"
+      onSwitchToogle(){
 
         let payload = this.switcherActive;
         this.stepOneActive(); // прогрессбар
@@ -262,7 +263,8 @@
             this.stepLastActive();
           });
       },
-      isOnToogle(index){ // заблокировать/разблокировать приложение
+      // заблокировать/разблокировать приложение
+      isOnToogle(index){
         let payload = this.applicationList[index];
 
         this.stepOneActive(); // прогрессбар
@@ -289,7 +291,8 @@
           });
 
       },
-      findApp(){ // поиск приложения по подстроке
+      // поиск приложения по подстроке
+      findApp(){
         let payload = this.findAppStr;
 
         this.stepOneActive(); // прогрессбар
@@ -314,6 +317,7 @@
             console.log(err);
           });
       },
+      // Удалить приложение
       deleteApplication(index){ // Удалить приложение
         if(this.inputsArr[0].value === this.applicationList[index].name){
           let payload = this.applicationList[index];
@@ -343,11 +347,13 @@
           this.setErrorAlertMsg('Ошибка при удалении приложения: имена не совпадают');
         }
       },
-      openRemoveModal(index){ // открытие окна подтверждения для удаления пользователя
+      // открытие окна подтверждения для удаления пользователя
+      openRemoveModal(index){
         this.removeUserIndex = index;
         $('#confirmDeleteModal').modal();
       },
-      onChangeData(index, data){ // для компонента input
+      // для компонента input
+      onChangeData(index, data){
         this.inputsArr[index].value = data.value;
         this.inputsArr[index].isValid = data.valid;
       },

@@ -1,4 +1,4 @@
-<!--Шаблонный компонент-->
+<!--Страница приложения из списка приложений-->
 <template>
   <!--singleApp.vue-->
 
@@ -279,7 +279,8 @@
         progStateWidth: 'progStateWidth',
         progShow: 'progShow'
       }),
-      applicationId(){ // id приложения, передаётся в url в качестве параметра
+      // id приложения, передаётся в url в качестве параметра
+      applicationId(){
         return this.$route.params.id || 1;
       }
     },

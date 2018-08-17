@@ -105,6 +105,7 @@
       }
     },
     methods: {
+      //Востановление пароля
       getRefreshPwd(){
         if(this.formValid){
           $('#sendEmailModal').modal();

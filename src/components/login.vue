@@ -120,6 +120,7 @@
       appInput
     },
     methods: {
+      //Авторизация
       getLogIn(){
         if(this.formValid){
           let username = this.inputsArr[0].value;
@@ -151,7 +152,8 @@
           }
         }
       },
-      onChangeData(index, data){ // для компонента input
+      // для компонента input
+      onChangeData(index, data){
         this.inputsArr[index].value = data.value;
         this.inputsArr[index].isValid = data.valid;
       }

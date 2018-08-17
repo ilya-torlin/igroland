@@ -209,12 +209,15 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
+          //перезапись массива каталога, используется в родительском компоненте
           setRootCatalogFoldersComp(value){
             this.rootCatalogFoldersComp = value;
           },
+          //отправка ивента, при нажатии на пункт в контекстном меню
           contextMenuOptEvent(eventName){
             this.$emit(eventName);
           },
+          //открытие контекстного меню, расчёт координат
           contextOpen(e, val){
               this.contextMenu.xPos = e.clientX;
               this.contextMenu.yPos = e.clientY;
@@ -222,8 +225,8 @@
               this.contextMenu.selectedFolder  = val;
               e.preventDefault();
           },
-          // открыть папку
-          requestCategory(idCategory, lvlFolder, parentFolderId, selectedProvider){ // запрос категории/каталога по ид, возвращает промис
+          // запрос категории/каталога по ид, возвращает промис
+          requestCategory(idCategory, lvlFolder, parentFolderId, selectedProvider){
             //после вызова в promise вызывать this.setFolders().. для перезаписи каталога в родительском компоненте
             return new Promise((resolve, reject) => {
               let payload = {
@@ -264,11 +267,8 @@
 
             });
           },
+          //открытие/закрытие папки
           openSubfolder(index, folderId, lvlFolder, parentFolderId){
-            //Делаем запрос на сервер, от сервера приходит ассециативный массив с папками catalogFolders и catalogFoldersKeyArr - массив ключей
-            //формат lvlFolder++_index_idCatalog, также на сервере делаем инкремент lvlFolder у папки
-            //Далее проходимся по массиву с сервера и добавляем все ключи
-
             if(this.rootCatalogFoldersComp[index].isOpen) {
               // Удаляем все подпапки, начиная с index.. закрываем папку index
               let childCount = this.rootCatalogFoldersComp[index].childCount;
@@ -351,10 +351,10 @@
 
 
           },
+          //передача каталога в этом компоненте к родителю, вызывается если вы изменили rootCatalogFoldersComp
           setFolders(){
             this.$emit('setFolders', {'value': this.rootCatalogFoldersComp });
           }
-
         },
         props:[
           'folderH', // заголовок каталога

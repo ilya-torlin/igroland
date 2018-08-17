@@ -1333,8 +1333,16 @@ textarea
         display: flex
         align-items: center
         margin-bottom: 15px
+        border-right: solid 5px transparent
+        cursor: pointer
         &:last-child
           margin-bottom: 0px
+        &.isActive
+          border-color: $yellow
+          .img-c
+            border-color: $yellow
+          .goods-name
+            color: $blue
         .img-c
           border: solid 1px $gray-400
           padding: 10px
