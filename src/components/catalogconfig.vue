@@ -47,7 +47,7 @@
 
     todo: В хлебных крошках ↓↓↓
       todo: написать обработчик для тригера "Скрыть не в наличии"
-      todo: Добавть "Новую категорию"
+      todo: Добавить "Новую категорию"
 
     todo: Каталог (панель слева)
       todo: В контекстное меню Добавить "Отвязать товар", если товар уже привязан (поидее такого не может быть, т.к. при привязке товара, он удаляется из массива т.е. он не виден для пользователя)
@@ -502,6 +502,8 @@
                       ]
                     },
                     rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
+                    catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                    catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
                   },
                   findResFolder: { // вывод поиска
                     folderH: '', // заголовок каталога
@@ -633,51 +635,7 @@
                         '../../src/assets/img/dodik2.png',
                         '../../src/assets/img/dodik.png'
                       ]
-                    },
-                    {
-                      name: 'Додя 2',
-                      img: '../../src/assets/img/dodik2.png'
-                    },
-                    {
-                      name: 'Додя 3',
-                      img: ''
-                    },
-                    {
-                      name: 'Додя 4',
-                      img: '../../src/assets/img/dodik2.png'
-                    },
-                    {
-                      name: 'Додя 1',
-                      img: '../../src/assets/img/dodik2.png'
-                    },
-                    {
-                      name: 'Додя 2',
-                      img: '../../src/assets/img/dodik2.png'
-                    },
-                    {
-                      name: 'Додя 3',
-                      img: ''
-                    },
-                    {
-                      name: 'Додя 4',
-                      img: '../../src/assets/img/dodik2.png'
-                    },
-                    {
-                      name: 'Додя 1',
-                      img: '../../src/assets/img/dodik2.png'
-                    },
-                    {
-                      name: 'Додя 2',
-                      img: '../../src/assets/img/dodik2.png'
-                    },
-                    {
-                      name: 'Додя 3',
-                      img: ''
-                    },
-                    {
-                      name: 'Додя 4',
-                      img: '../../src/assets/img/dodik2.png'
-                    },
+                    }
                   ],
                   dropzoneOptions: { // опции для dropzone
                     url: 'https://httpbin.org/post',
@@ -753,6 +711,13 @@
           //запись новых значений в папку
           onSetFolders(e, keyFolder){
             this.foldersCont[keyFolder].rootCatalogFolders = e.value;
+          },
+          //запись новых значений в объект по которому кликнули (выдяеляется желтым)
+          onSetSelectItem(e, keyFolder){
+            console.log(e);
+            //this.foldersCont.providerFolder[selectedObject] = e.value;
+            this.foldersCont[keyFolder].catalogSelectedItemId = e.value.id;
+            this.foldersCont[keyFolder].catalogSelectedItemIndex = e.value.index;
           },
           //поиск среди папок по подстроке
           findFolder(){

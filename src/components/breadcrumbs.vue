@@ -35,7 +35,7 @@
 
               <div class="d-flex align-items-center selectLabeled" cont="">
                 <multiselect
-                  v-model="selectedProvider"
+                  :value="selectedProvider"
                   :options="providerList"
                   :multiple="false"
                   :close-on-select="true"
@@ -47,7 +47,7 @@
                   track-by="name"
                   selectLabel="Выбрать"
                   deselectLabel=""
-                  @input = "onChangeProvider" >
+                  @input = "onChangeProvider($event, 'thisSelectedProvider')" >
                 </multiselect>
               </div>
 
@@ -84,6 +84,7 @@
             return {
               hideNotOwnedSwitch: true, //переключатель, скрыть в наличии
               newCatalogName: '', // новое имя каталога
+              thisSelectedProvider: {},
             }
         },
         components:{
@@ -110,8 +111,14 @@
             this.$emit('hideNotOwned', {'value': this.hideNotOwnedSwitch})
           },
           //Создание ивента, Смена поставщика
-          onChangeProvider(){
-            this.$emit('changeProvider', {'value': this.selectedProvider})
+          onChangeProvider(event, selectResKey){
+            let selectedProvider = {
+              code: event.code,
+              id: event.id,
+              name: event.name
+            };
+            this[selectResKey] = selectedProvider;
+            this.$emit('changeProvider', {'value': this.thisSelectedProvider})
           },
         },
         mounted(){
