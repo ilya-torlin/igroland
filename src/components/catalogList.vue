@@ -209,27 +209,26 @@
     data () {
       return {
         // catalogList["123"]
-        catalogList: { // ассоциативный массив объектов
-            123: { // Идентификатор каталога
-              selected: null, // выбранные элементы в селекте
-              switcherActive: false, // активность переключателя (Доступен для всех)
-              showConfig: false, // Тригер для отображения параметров переключателя(шестерёнка)
-              catalogName: 'Игрушки', // Наименование каталога
-              isActive: true, // каталог активен(значёе молнии), один или несколько пользователей используют его
-              isOn: true, // Тригер для включения/отключения каталога, если каталог отключён, то пользователи его не видят
-              description: 'Краткое описание каталога', // краткое описание каталога
-              catalogImg: '', // Изображение каталога
-              catalogSaved: true,//каталог сохранён, при внесении изменений или копирывании каталога ставим в false... если каталог не сохранён, то его нельзя скопировать и выводится ошибка(предупреждение) для пользователя
-              userList: [ // пользователи для селекта
-                {name: 'user@gmail.com', id: '1234'},
-                {name: 'goner@gmail.com', id: '4453'},
-                {name: '2user2@gmail.com', id: '8489'}
-              ],
-              selectedUsers: [ // выбранные пользователи в селекте
-                {name: 'user@gmail.com', id: '1234'},
-              ]
-            },
-        },
+        /*123: { // Идентификатор каталога
+        selected: null, // выбранные элементы в селекте
+        switcherActive: false, // активность переключателя (Доступен для всех)
+        showConfig: false, // Тригер для отображения параметров переключателя(шестерёнка)
+        catalogName: 'Игрушки', // Наименование каталога
+        isActive: true, // каталог активен(значёе молнии), один или несколько пользователей используют его
+        isOn: true, // Тригер для включения/отключения каталога, если каталог отключён, то пользователи его не видят
+        description: 'Краткое описание каталога', // краткое описание каталога
+        catalogImg: '', // Изображение каталога
+        catalogSaved: true,//каталог сохранён, при внесении изменений или копирывании каталога ставим в false... если каталог не сохранён, то его нельзя скопировать и выводится ошибка(предупреждение) для пользователя
+        userList: [ // пользователи для селекта
+          {name: 'user@gmail.com', id: '1234'},
+          {name: 'goner@gmail.com', id: '4453'},
+          {name: '2user2@gmail.com', id: '8489'}
+        ],
+        selectedUsers: [ // выбранные пользователи в селекте
+          {name: 'user@gmail.com', id: '1234'},
+        ]
+        },*/
+        catalogList: {}, // ассоциативный массив объектов
         inputsArr:[
           {
             id: 'confirmDelete',
@@ -458,18 +457,17 @@
         axios({url: API_URL + '/catalog/my', method: 'GET' })
           .then(resp => {
             const error = resp.data.error;
-            console.log(resp);
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при получении списка каталогов: ' + errorTxt);
             }else{
-              console.log(resp.data.data);
-              this.catalogList = resp.data.data;
-              //this.setSuccesAlertShow(true);
-              //this.setSuccesAlertMsg('Каталог добавлен');
-
+              let arrayList = resp.data.data;
+              //this.catalogList = resp.data.data;
+              arrayList.forEach(value => {
+                this.$set(this.catalogList, value.id, value);
+              })
             }
           })
           .catch(err => {
@@ -484,14 +482,12 @@
         axios({url: API_URL + '/user', method: 'GET' })
           .then(resp => {
             const error = resp.data.error;
-            console.log(resp);
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
             }else{
-              console.log(resp.data.data);
               this.userList = resp.data.data;
             }
           })
