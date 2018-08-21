@@ -366,6 +366,7 @@ button
     display: flex
     justify-content: space-between
   li
+    cursor: pointer
     &:last-child
       margin-bottom: 0px
     .folder-title
@@ -385,6 +386,8 @@ button
         position: relative
         top: -3px
         left: 6px
+    &.isActive
+      border-left: 3px solid $yellow
   .context-open
     background: $yellow
 .folder-controls-c
