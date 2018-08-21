@@ -3,12 +3,13 @@
 <!--todocomplite: API - Добавить каталог-->
 <!--todo: API - Удалить каталог-->
 <!--todocomplite: API - Скопировать каталог-->
-<!--todo: API - Список каталогов, запрашивается несколько(10) каталогов, в зависимости от страницы, в этом же запросе возвращать данные для пагинации (частично)-->
+<!--todonot-necessary: API - Список каталогов, запрашивается несколько(10) каталогов, в зависимости от страницы, в этом же запросе возвращать данные для пагинации (частично)-->
 <!--todocomplite: API - блокировать/разблокировать каталог (включить/отключить)-->
 
 <!--todocomplite: API - Сохранить каталог (после редактирования)-->
 <!--todocomplite: API - Запрос списка пользователей(для селекта), для всех каталогов он один-->
-<!--todo: API - Получить данные каталога по id (get запрос: /catalog/{id})-->
+<!--todocomplite: API - Получить данные каталога по id (get запрос: /catalog/{id})-->
+
 
 
 <template>
@@ -32,7 +33,7 @@
       <!--</template>-->
 
       <!--
-          todo: Доделать пагинацию
+          todonotneessary: Доделать пагинацию
           todo: Загрузка фото
           todo: Добавить редактирование имени каталога, справа от названия добавить кнопку с карандашиком. при нажатии на кнопку, заменять название на инпат(???)
           todo: добавить массив со страницами в состояние
@@ -70,12 +71,12 @@
         @removeCatalog = "onRemoveCatalog(index)">
       </appCatalogItem>
 
-      <appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
+      <!--appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
         :routerLink="/catalog/"
         :routerOn="pagination.routerOn"
         @pageChange = "onPageChange()">
-      </appPagination>
-
+      </appPagination-->
+    <div class="pagination"></div>
     <!--<div class="row">-->
       <!--<div class="col-12">-->
         <!--<nav aria-label="Page navigation example">-->
@@ -194,7 +195,7 @@
     </div>
   </div>
 </template>
-
+<!--todo: переделать ассоциативный массив на обычный -->
 <script>
 
   import appCatalogItem from './catalogItem'

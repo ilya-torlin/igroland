@@ -454,212 +454,213 @@
             return {
               IMAGE_URL: API_URL, // корень для изображений
               findFolderStr: '', // Для поиска по папкам
-                tabValue: 'goods', // Значение таба: find, provider
-                breadcrumbs: [ // Хлебные крошки
+              tabValue: 'provider', // Значение таба: find, provider
+              /*[ // Хлебные крошки
                   {
                     title: 'Кросовки', // имя каталога
                     id: '32' // id каталога
                   },
-                  {
-                    title: 'Беговые', // имя каталога
+                {
+                  title: 'Беговые', // имя каталога
                     id: '21' // id каталога
+                },
+              ]*/
+              breadcrumbs: [],// Хлебные крошки
+              selectedCatalogId: 12, // выбранный каталог из левой панели
+              providerList: [// поставщики для селекта
+              ],
+              selectedProvider: {
+              },
+              findFolderArr: { // Для вывода папок в блоке поиска
+              },
+              selectedFind: { // Выбранный параметр для поиска во вкладке поиск
+                name: 'Все каталоги',
+                id: ''
+              },
+              additionalFindProp: [
+                {name: 'Каталог (панель слева)', id: '1234'},
+                {name: 'Выделенная папка (панель слева)', id: '4453'},
+              ],
+              foldersCont: { //массив со всеми папками для компонента catalogFolder
+                providerFolder: {
+                  folderH: '', // заголовок каталога
+                  sideFolder: false, //боковая панель (каталог)
+                  lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
+                  contextMenu:{ // Контекстное меню
+                    contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
+                    yPos: 323,//полложение по оси x
+                    xPos: 224,//полложение по оси y
+                    selectedFolder: {},//папка, на которую кликнули
+                    menuOpt: [ // пункты меню
+                      {
+                        title: 'Товары',//заголовок
+                        eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
+                        iconId: 1,
+                        //Подумать как передавать payload, при нажатии на папку
+                      },
+                      {
+                        title: 'Привязать',//заголовок
+                        eventName: 'attachFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                        iconId: 2,
+                        //Подумать как передавать payload, при нажатии на папку
+                      },
+                    ]
                   },
-                ],
-                selectedCatalogId: 12, // выбранный каталог из левой панели
-                providerList: [// поставщики для селекта
-                ],
-                selectedProvider: {
+                  rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
+                  catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
                 },
-                findFolderArr: { // Для вывода папок в блоке поиска
-                },
-                selectedFind: { // Выбранный параметр для поиска во вкладке поиск
-                  name: 'Все каталоги',
-                  id: ''
-                },
-                additionalFindProp: [
-                  {name: 'Каталог (панель слева)', id: '1234'},
-                  {name: 'Выделенная папка (панель слева)', id: '4453'},
-                ],
-                foldersCont: { //массив со всеми папками для компонента catalogFolder
-                  providerFolder: {
-                    folderH: '', // заголовок каталога
-                    sideFolder: false, //боковая панель (каталог)
-                    lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
-                    contextMenu:{ // Контекстное меню
-                      contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
-                      yPos: 323,//полложение по оси x
-                      xPos: 224,//полложение по оси y
-                      selectedFolder: {},//папка, на которую кликнули
-                      menuOpt: [ // пункты меню
-                        {
-                          title: 'Товары',//заголовок
-                          eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
-                          iconId: 1,
-                          //Подумать как передавать payload, при нажатии на папку
-                        },
-                        {
-                          title: 'Привязать',//заголовок
-                          eventName: 'attachFolder', // имя ивента, который вызывается при нажатии на пункт меню
-                          iconId: 2,
-                          //Подумать как передавать payload, при нажатии на папку
-                        },
-                      ]
-                    },
-                    rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
-                    catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
-                    catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
-                  },
-                  findResFolder: { // вывод поиска
-                    folderH: '', // заголовок каталога
-                    sideFolder: false, //боковая панель (каталог)
-                    lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
-                    contextMenu:{ // Контекстное меню
-                      contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
-                      yPos: 323,//полложение по оси x
-                      xPos: 224,//полложение по оси y
-                      selectedFolder: {},//папка, на которую кликнули
-                      menuOpt: [ // пункты меню
-                        {
-                          title: 'Товары',//заголовок
-                          eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
-                          iconId: 1,
-                          //Подумать как передавать payload, при нажатии на папку
-                        },
-                        {
-                          title: 'Привязать',//заголовок
-                          eventName: 'attachFolder', // имя ивента, который вызывается при нажатии на пункт меню
-                          iconId: 2,
-                          //Подумать как передавать payload, при нажатии на папку
-                        },
+                findResFolder: { // вывод поиска
+                  folderH: '', // заголовок каталога
+                  sideFolder: false, //боковая панель (каталог)
+                  lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
+                  contextMenu:{ // Контекстное меню
+                    contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
+                    yPos: 323,//полложение по оси x
+                    xPos: 224,//полложение по оси y
+                    selectedFolder: {},//папка, на которую кликнули
+                    menuOpt: [ // пункты меню
+                      {
+                        title: 'Товары',//заголовок
+                        eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
+                        iconId: 1,
+                        //Подумать как передавать payload, при нажатии на папку
+                      },
+                      {
+                        title: 'Привязать',//заголовок
+                        eventName: 'attachFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                        iconId: 2,
+                        //Подумать как передавать payload, при нажатии на папку
+                      },
 
-                      ]
-                    },
-                    rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
-                    catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
-                    catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
+                    ]
                   },
-                  catalogFolder: {
-                    folderH: 'Каталог', // заголовок каталога
-                    sideFolder: true, //боковая панель (каталог)
-                    lastUpdateTxt: 'Последнее изменение Сегодня 18:00', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
-                    contextMenu:{ // Контекстное меню
-                      contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
-                      yPos: 323,//полложение по оси x
-                      xPos: 224,//полложение по оси y
-                      selectedFolder: {},//папка, на которую кликнули
-                      menuOpt: [ // пункты меню
-                        {
-                          title: 'Параметры',//заголовок
-                          eventName: 'showParamFolder', // имя ивента, который вызывается при нажатии на пункт меню
-                          iconId: 3,
-                          //Подумать как передавать payload, при нажатии на папку
-                        },
-                        {
-                          title: 'Товары',//заголовок
-                          eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
-                          iconId: 1,
-                          //Подумать как передавать payload, при нажатии на папку
-                        },
-                        {
-                          title: 'Добавить',//заголовок
-                          eventName: 'addFolder', // имя ивента, который вызывается при нажатии на пункт меню
-                          iconId: 4,
-                          //Подумать как передавать payload, при нажатии на папку
-                        },
-                        {
-                          title: 'Удалить',//заголовок
-                          eventName: 'deleteFolder', // имя ивента, который вызывается при нажатии на пункт меню
-                          iconId: 5,
-                          //Подумать как передавать payload, при нажатии на папку
-                        },
-
-                      ]
-                    },
-                    rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
-                    catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
-                    catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
-                  },
+                  rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
+                  catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
                 },
-                //Goods categoryGoods.pagination.countItemsPage
-                categoryGoods: { // товары выбранной категории
-                  findGoodsStr: '',
-                  useOwnImagesSwitch: false,
-                  useDefaultImagesSwitch: true,
-                  categoryId: 33472,//для запроса товаров
-                  supplier_id: '',//для запроса товаров
-                  limit: '',//для запроса товаров
-                  offset: '',//для запроса товаров
-                  productSelectedId: 0,// id выбранного товара
-                  productSelectedIndex: 0,
-                  profitPercentInput: {
-                    id: 'profit-percent',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Наценка введена неверно",
-                    placeholder: "Наценка, %",
-                    type: "text",
-                    required: "false",
-                    pattern: /^[0-9,.]{1,15}$/,
-                    value: '',
-                    isValid: false
+                catalogFolder: {
+                  folderH: 'Каталог', // заголовок каталога
+                  sideFolder: true, //боковая панель (каталог)
+                  lastUpdateTxt: 'Последнее изменение Сегодня 18:00', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
+                  contextMenu:{ // Контекстное меню
+                    contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
+                    yPos: 323,//полложение по оси x
+                    xPos: 224,//полложение по оси y
+                    selectedFolder: {},//папка, на которую кликнули
+                    menuOpt: [ // пункты меню
+                      {
+                        title: 'Параметры',//заголовок
+                        eventName: 'showParamFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                        iconId: 3,
+                        //Подумать как передавать payload, при нажатии на папку
+                      },
+                      {
+                        title: 'Товары',//заголовок
+                        eventName: 'showGoods', // имя ивента, который вызывается при нажатии на пункт меню
+                        iconId: 1,
+                        //Подумать как передавать payload, при нажатии на папку
+                      },
+                      {
+                        title: 'Добавить',//заголовок
+                        eventName: 'addFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                        iconId: 4,
+                        //Подумать как передавать payload, при нажатии на папку
+                      },
+                      {
+                        title: 'Удалить',//заголовок
+                        eventName: 'deleteFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                        iconId: 5,
+                        //Подумать как передавать payload, при нажатии на папку
+                      },
+
+                    ]
                   },
-                  category: {
-                    childCount: 0,
-                    folderId: "33472",
-                    goodsCount: 12,
-                    hasFolders: true,
-                    hideFolder: false,
-                    isOpen: false,
-                    lvlFolder: 0,
-                    name: "Авто",
-                    supplier_id: "1",
-                  },
-                  pagination: { // параметры пагинации
-                    countPage: 12, // общее колличество страниц, делаем запрос к базе
-                    countItemsPage: 12, // колличество элементов на странице
-                    routerOn: false, // отключение роутера, если включить, то надо настроить роутер
-                    currentPage: 1
-                  },
-                  goodsListArr: [ // массив с товарами
-                    {
-                      name: 'Салфетка пластик, 43х28см',
-                      params: [
-                        {key :'Артикул', val: "123141"},
-                        {key :'Бренд', val: "Adibas"},
-                        {key :'Код 1С', val: "90210"},
-                        {key :'Штрихкод', val: "31235888"},
-                        {key :'id', val: "767864"},
-                        {key :'Цена', val: "233.45"},
-                        {key :'Мин. партия', val: "3333"},
-                        {key :'В коробке', val: "10"},
-                        {key :'Количество', val: "10000"},
-                        {key :'Страна', val: "Китай"},
-                    ],
-                      id: "65879",
-                      price: "23.69",
-                      idx: 1,
-                      images: [
-                        '../../src/assets/img/dodik2.png',
-                        '../../src/assets/img/dodik2.png',
-                        '../../src/assets/img/dodik.png'
-                      ]
-                    }
+                  rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
+                  catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
+                },
+              },
+              //Goods categoryGoods.pagination.countItemsPage
+              categoryGoods: { // товары выбранной категории
+                findGoodsStr: '',
+                useOwnImagesSwitch: false,
+                useDefaultImagesSwitch: true,
+                categoryId: 33472,//для запроса товаров
+                supplier_id: '',//для запроса товаров
+                limit: '',//для запроса товаров
+                offset: '',//для запроса товаров
+                productSelectedId: 0,// id выбранного товара
+                productSelectedIndex: 0,
+                profitPercentInput: {
+                  id: 'profit-percent',
+                  showError: false,
+                  validFeedback: "",
+                  invalidFeedback: "Наценка введена неверно",
+                  placeholder: "Наценка, %",
+                  type: "text",
+                  required: "false",
+                  pattern: /^[0-9,.]{1,15}$/,
+                  value: '',
+                  isValid: false
+                },
+                category: {
+                  childCount: 0,
+                  folderId: "33472",
+                  goodsCount: 12,
+                  hasFolders: true,
+                  hideFolder: false,
+                  isOpen: false,
+                  lvlFolder: 0,
+                  name: "Авто",
+                  supplier_id: "1",
+                },
+                pagination: { // параметры пагинации
+                  countPage: 12, // общее колличество страниц, делаем запрос к базе
+                  countItemsPage: 12, // колличество элементов на странице
+                  routerOn: false, // отключение роутера, если включить, то надо настроить роутер
+                  currentPage: 1
+                },
+                goodsListArr: [ // массив с товарами
+                  {
+                    name: 'Салфетка пластик, 43х28см',
+                    params: [
+                      {key :'Артикул', val: "123141"},
+                      {key :'Бренд', val: "Adibas"},
+                      {key :'Код 1С', val: "90210"},
+                      {key :'Штрихкод', val: "31235888"},
+                      {key :'id', val: "767864"},
+                      {key :'Цена', val: "233.45"},
+                      {key :'Мин. партия', val: "3333"},
+                      {key :'В коробке', val: "10"},
+                      {key :'Количество', val: "10000"},
+                      {key :'Страна', val: "Китай"},
                   ],
-                  dropzoneOptions: { // опции для dropzone
-                    url: 'https://httpbin.org/post',
-                    thumbnailWidth: 150,
-                    maxFilesize: 0.5,
-                    headers: { "My-Awesome-Header": "header value" },
-                    addRemoveLinks: true,
-                    //для перевода
-                    dictFileTooBig: 'Загружаемый файл слишком большой',
-                    dictDefaultMessage: '<div class="dropzone-cont"> <div class="img-c"> <img src="../../src/assets/img/imageUpload.png" alt=""> </div> <span class="sad">Перетащите изображения (*.png, *.jpg, *.jpeg) сюда</span> </div>',
-                    dictInvalidFileType: 'Тип файла не подходит (*.png, *.jpg, *.jpeg)',
-                    dictResponseError: 'Ошибка передачи на сервер, перезагрузите страницу и повторите действие ещё раз',
-                    dictCancelUpload: 'Отменить',
-                    dictRemoveFile: 'Удалить файл'
+                    id: "65879",
+                    price: "23.69",
+                    idx: 1,
+                    images: [
+                      '../../src/assets/img/dodik2.png',
+                      '../../src/assets/img/dodik2.png',
+                      '../../src/assets/img/dodik.png'
+                    ]
                   }
-                },
+                ],
+                dropzoneOptions: { // опции для dropzone
+                  url: 'https://httpbin.org/post',
+                  thumbnailWidth: 150,
+                  maxFilesize: 0.5,
+                  headers: { "My-Awesome-Header": "header value" },
+                  addRemoveLinks: true,
+                  //для перевода
+                  dictFileTooBig: 'Загружаемый файл слишком большой',
+                  dictDefaultMessage: '<div class="dropzone-cont"> <div class="img-c"> <img src="../../src/assets/img/imageUpload.png" alt=""> </div> <span class="sad">Перетащите изображения (*.png, *.jpg, *.jpeg) сюда</span> </div>',
+                  dictInvalidFileType: 'Тип файла не подходит (*.png, *.jpg, *.jpeg)',
+                  dictResponseError: 'Ошибка передачи на сервер, перезагрузите страницу и повторите действие ещё раз',
+                  dictCancelUpload: 'Отменить',
+                  dictRemoveFile: 'Удалить файл'
+                }
+              },
             }
         },
         computed: {
@@ -676,7 +677,7 @@
             return this.providerList.concat(this.additionalFindProp);
           },
           currentCatalogId(){
-            return this.$route.params.id || null;
+            return +this.$route.params.id || null;
           }
         },
         components: {
@@ -761,7 +762,17 @@
           },
           // создание нового каталога/папки
           createNewCatalog(catalogName){
+            // добавляем категория к нашему каталогу, проверяем если не выбранны в колонке слева категории, то добавляем
+            // в корневую папку и родительскую категорию не ставим, иначе ставим
             console.log('create new catalog', catalogName);
+            if(this.foldersCont.catalogFolder.catalogSelectedItemId === 0){
+
+            }
+
+
+            //заглушка, вставляем папку с сервера
+            //this.foldersCont.catalogFolder.rootCatalogFolders.push(new singleFolder({}));
+            //this.$refs['catalogFolder'].setRootCatalogFoldersComp(this.foldersCont.catalogFolder.rootCatalogFolders);
           },
           //Event handler: скрыть не в наличии
           onHideNotOwned(value){
@@ -774,9 +785,9 @@
           },
           //изменение значения setRootCatalogFoldersComp(массив папок), у дочернего компонента по ссылке ref
           updateFolderCont(idCategory, lvlFolder, parentFolderId, selectedProvider, folderKey, componentRefKey){
+            // todo: переделать вызов параметров на объект
             //folderKey - ключ папки в foldersCont
             // componentRefKey - ссылка на компонент,
-
             if(!folderKey || !componentRefKey){
               console.error('folderKey && componentRefKey - обязательные параметры');
             } else {
@@ -824,12 +835,9 @@
             this.updateFolderCont(null, null, null, null, 'findResFolder', 'findResFolder');
             //папка каталога пользователя
 
-            //заглушка, создаём пустую папку
-            this.foldersCont.catalogFolder.rootCatalogFolders.push(new singleFolder({}));
-            this.$refs['catalogFolder'].setRootCatalogFoldersComp(this.foldersCont.catalogFolder.rootCatalogFolders);
 
             //todo: будет новый метод на беке,
-            // this.updateFolderCont(this.currentCatalogId, null, null, null, 'catalogFolder', 'catalogFolder');
+            this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
 
           },
           //запрос списка поставщиков
@@ -987,12 +995,36 @@
           },
           //Переименование товара
           renameGoods(){
-          }
+          },
+          getMyCatalogInfo(){
+            this.stepOneActive(); // прогрессбар
+            axios.get( API_URL + '/catalog/' + this.currentCatalogId, {
+              params: {
+              },
+            })
+              .then(resp => {
+              const error = resp.data.error;
+              if(error){
+                let errorTxt = resp.data.data.msgClient;
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при запросе информации о каталоге: ' + errorTxt);
+              }else{
+                console.log(resp.data.data);
+                this.foldersCont.catalogFolder.folderH = resp.data.data.catalogName;
+              }
+              this.stepLastActive(); // прогрессбар
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при запросе информации о каталоге');
+                this.stepLastActive(); // прогрессбар
+              });
+          },
         },
         mounted(){
           this.getProvider();
           this.allFoldersInit();
-
+          this.getMyCatalogInfo();
           this.getProducts();
         }
     }
