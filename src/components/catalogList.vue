@@ -317,18 +317,43 @@
       },
       // копирование каталога
       onCopyCatalog(index){
-        //копируем, создаём новый каталог на основе существующего, на стороне клиента
-        //далее, только при нажатии на кнопку 'сохранить' отправляем этот каталог на сервер, на сервере каталогу присвается новый ид, этот ид приходит в ответе на операцию сохранения
+        //копируем, создаём новый каталог на основе существующего, отправляем на сервер имя каталога, создаем каталог,
+        // пролучаем с сервера id при добавлении, вставляем в список новый элемент с этим id
+        //далее, только при нажатии на кнопку 'сохранить' отправляем этот каталог на сервер,
+        let payload = {
+          name: this.catalogList[index].catalogName + ' (копия)'
+        };
+        let indRand = 0;
+        axios({url: API_URL + '/catalog', data: payload, method: 'POST' })
+          .then(resp => {
+            const error = resp.data.error;
+            console.log(resp);
+            this.stepLastActive(); // прогрессбар
+            if(error){
+              let errorTxt = resp.data.data.msgClient;
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Ошибка при добавлении каталога: ' + errorTxt);
+            }else{
+              this.setSuccesAlertShow(true);
+              this.setSuccesAlertMsg('Каталог добавлен');
+              indRand = resp.data.data.id;
+              this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
+              this.catalogList[indRand].id = indRand;
+              this.catalogList[indRand].catalogName = payload.name;
+              $("html, body").animate({ scrollTop: $('.pagination').offset().top - 120}, 600);
+              // this.catalogList.splice(indRand, 1, this.catalogList[indRand]);
+              this.falseCatalogSave(indRand);
+            }
+          })
+          .catch(err => {
+            this.setErrorAlertShow(true);
+            this.setErrorAlertMsg('Ошибка при добавлении каталога ');
+            this.stepLastActive(); // прогрессбар
+            console.log(err);
+          });
 
-        let indRand = (new Date).getTime();//unixtime in mileseconds
-        this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
+        //let indRand = (new Date).getTime();//unixtime in mileseconds
 
-        $("html, body").animate({ scrollTop: $('.pagination').offset().top - 120}, 600);
-
-        // this.catalogList.splice(indRand, 1, this.catalogList[indRand]);
-
-        this.catalogList[indRand].catalogName = this.catalogList[index].catalogName + ' (копия)';
-        this.falseCatalogSave(indRand);
       },
       // сохранение каталога
       onSaveCatalog(index){
@@ -442,7 +467,7 @@
             }else{
               this.setSuccesAlertShow(true);
               this.setSuccesAlertMsg('Каталог добавлен');
-
+              this.initMyCatalog();
             }
           })
           .catch(err => {
