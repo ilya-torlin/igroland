@@ -360,9 +360,14 @@
             this.$emit('setFolders', {'value': this.rootCatalogFoldersComp });
           },
           setSelectItem(catalog, index){
-            this.selectedItemObjectId = catalog.folderId;
-            this.selectedItemObjectIndex = index;
-            console.log('cataloggggggg', catalog);
+            if( this.selectedItemObjectId === catalog.folderId && this.selectedItemObjectIndex === index){
+              this.selectedItemObjectId = 0;
+              this.selectedItemObjectIndex = 0;
+            }else{
+              this.selectedItemObjectId = catalog.folderId;
+              this.selectedItemObjectIndex = index;
+            }
+            this.$emit('setSelectedItem', {'value': { id : this.selectedItemObjectId, index : this.selectedItemObjectIndex } });
           },
         },
         props:[

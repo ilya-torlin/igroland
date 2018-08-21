@@ -63,7 +63,7 @@
         todo: удалить - удаление папки
 
     todo: Вкладка "Каталоги"
-      todo: сделать выделение каталога при клике (завести отдельную переменную с индексом и ид выделенного каталога), смотри как сделанно во вкладке "Товары"
+      todocompete: сделать выделение каталога при клике (завести отдельную переменную с индексом и ид выделенного каталога), смотри как сделанно во вкладке "Товары"
       todo: контекстное меню
         todo: Товары - показать товары
         todo: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
@@ -83,6 +83,7 @@
       Todo: Добавить обработчик для поля "Альтернативное наименование"
       todo: Сделать пагинацию товаров, когда будет готова нормальная выгрузка (больше товаров)
       todo: "Показать по", написать обработчик
+      todo: Сделать контекстное меню для привязки товара к каталогу или кнопку какую-то
 
   -->
 
@@ -109,6 +110,7 @@
                   :rootCatalogFolders = 'foldersCont.catalogFolder.rootCatalogFolders'
                   @setFolders = 'onSetFolders($event, "catalogFolder")'
                   @addCatalogFolder = 'onAddCatalogFolder'
+                  @setSelectedItem = 'onSetSelectItem($event, "catalogFolder")'
                   ref="catalogFolder"
                 >
                 </appCatalogFolders>
@@ -168,6 +170,7 @@
                               :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
                               :selectedProvider = 'selectedProvider'
                               @setFolders = 'onSetFolders($event, "providerFolder")'
+                              @setSelectedItem = 'onSetSelectItem($event, "providerFolder")'
                               ref="providerCont"
                             >
                             </appCatalogFolders>
@@ -228,6 +231,7 @@
                                 :selectedProvider = 'selectedProvider'
                                 @setFolders = 'onSetFolders($event, "findResFolder")'
                                 @showParamFolder = 'onSetFolders($event)'
+                                @setSelectedItem = 'onSetSelectItem($event, "findResFolder")'
                                 ref="findResFolder"
                               >
                               </appCatalogFolders>
@@ -531,6 +535,8 @@
                       ]
                     },
                     rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
+                    catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                    catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
                   },
                   catalogFolder: {
                     folderH: 'Каталог', // заголовок каталога
@@ -570,6 +576,8 @@
                       ]
                     },
                     rootCatalogFolders: [], // все папки, заполняется в компоненте catalogFolders.vue
+                    catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                    catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
                   },
                 },
                 //Goods categoryGoods.pagination.countItemsPage
@@ -715,7 +723,6 @@
           //запись новых значений в объект по которому кликнули (выдяеляется желтым)
           onSetSelectItem(e, keyFolder){
             console.log(e);
-            //this.foldersCont.providerFolder[selectedObject] = e.value;
             this.foldersCont[keyFolder].catalogSelectedItemId = e.value.id;
             this.foldersCont[keyFolder].catalogSelectedItemIndex = e.value.index;
           },
