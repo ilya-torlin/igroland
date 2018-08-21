@@ -2,12 +2,13 @@
 
 <!--todocomplite: API - Добавить каталог-->
 <!--todo: API - Удалить каталог-->
-<!--todo: API - Скопировать каталог-->
-<!--todocomplite: API - Список каталогов, запрашивается несколько(10) каталогов, в зависимости от страницы, в этом же запросе возвращать данные для пагинации-->
-<!--todo: API - блокировать/разблокировать каталог-->
+<!--todocomplite: API - Скопировать каталог-->
+<!--todo: API - Список каталогов, запрашивается несколько(10) каталогов, в зависимости от страницы, в этом же запросе возвращать данные для пагинации (частично)-->
+<!--todocomplite: API - блокировать/разблокировать каталог (включить/отключить)-->
 
-<!--todo: API - Сохранить каталог (после редактирования)-->
+<!--todocomplite: API - Сохранить каталог (после редактирования)-->
 <!--todocomplite: API - Запрос списка пользователей(для селекта), для всех каталогов он один-->
+<!--todo: API - Получить данные каталога по id (get запрос: /catalog/{id})-->
 
 
 <template>
@@ -24,6 +25,7 @@
       </div>
     </div>
     <!--todo: вынести в отдельный компонент-->
+    <!--todo: вынести модальное окнов отдельный компонент (basicModal) -->
 
       <!--<template v-for="(catalogItem, index) in catalogList">-->
         <!--{{catalogItem.switcherActive}} {{index}} // <br>-->
@@ -303,7 +305,31 @@
       // включение/отключение каталога
       onIsOnToogle(index){
         this.catalogList[index].isOn = !this.catalogList[index].isOn;
-        this.falseCatalogSave(index);
+        let payload = {
+          value: Number(this.catalogList[index].isOn).toString()
+        };
+        axios({url: API_URL + '/catalog/'+ index + '/setonoff', data: payload, method: 'POST' })
+          .then(resp => {
+            const error = resp.data.error;
+            console.log(resp);
+            this.stepLastActive(); // прогрессбар
+            if(error){
+              let errorTxt = resp.data.data.msgClient;
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Ошибка при изменении состояния каталога: ' + errorTxt);
+            }else{
+              this.setSuccesAlertShow(true);
+              (this.catalogList[index].isOn) ? this.setSuccesAlertMsg('Каталог включен') : this.setSuccesAlertMsg('Каталог отключен');
+              //this.falseCatalogSave(index);
+            }
+          })
+          .catch(err => {
+            this.setErrorAlertShow(true);
+            this.setErrorAlertMsg('Ошибка при изменении состояния каталога ');
+            this.stepLastActive(); // прогрессбар
+            console.log(err);
+          });
+        //this.falseCatalogSave(index);
       },
       // переключение "Доступен для всех"
       onSwitchToogle(index){
@@ -332,10 +358,10 @@
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertShow(true);
-              this.setErrorAlertMsg('Ошибка при добавлении каталога: ' + errorTxt);
+              this.setErrorAlertMsg('Ошибка при копировании каталога: ' + errorTxt);
             }else{
               this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Каталог добавлен');
+              this.setSuccesAlertMsg('Каталог скопирован');
               indRand = resp.data.data.id;
               this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
               this.catalogList[indRand].id = indRand;
@@ -347,7 +373,7 @@
           })
           .catch(err => {
             this.setErrorAlertShow(true);
-            this.setErrorAlertMsg('Ошибка при добавлении каталога ');
+            this.setErrorAlertMsg('Ошибка при копировании каталога ');
             this.stepLastActive(); // прогрессбар
             console.log(err);
           });
@@ -477,6 +503,7 @@
             console.log(err);
           });
       },
+      // подгрузка каталога с сервера
       initMyCatalog(){
         this.stepOneActive(); // прогрессбар
         axios({url: API_URL + '/catalog/my', method: 'GET' })
@@ -502,6 +529,7 @@
             console.log(err);
           });
       },
+      // подгрузка списка пользователей с сервера
       initUserList(){
         this.stepOneActive(); // прогрессбар
         axios({url: API_URL + '/user', method: 'GET' })
