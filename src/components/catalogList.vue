@@ -338,7 +338,7 @@
         }else {
           let payload = this.catalogList[index];
           this.stepOneActive(); // прогрессбар
-          axios({url: API_URL + '/saveCatalog', data: payload, method: 'POST' })
+          axios({url: API_URL + '/catalog/' +  index, data: payload, method: 'PUT' })
             .then(resp => {
               const error = resp.data.error;
               this.stepLastActive(); // прогрессбар
