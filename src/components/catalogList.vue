@@ -1,32 +1,17 @@
 <!--Список всех каталогов-->
-
-<!--todocomplite: API - Добавить каталог-->
-<!--todo: API - Удалить каталог-->
-<!--todocomplite: API - Скопировать каталог-->
-<!--todonot-necessary: API - Список каталогов, запрашивается несколько(10) каталогов, в зависимости от страницы, в этом же запросе возвращать данные для пагинации (частично)-->
-<!--todocomplite: API - блокировать/разблокировать каталог (включить/отключить)-->
-
-<!--todocomplite: API - Сохранить каталог (после редактирования)-->
-<!--todocomplite: API - Запрос списка пользователей(для селекта), для всех каталогов он один-->
-<!--todocomplite: API - Получить данные каталога по id (get запрос: /catalog/{id})-->
-
-
-
 <template>
   <!--catalogList.vue-->
   <div class="catalogComp">
     <div class="row">
       <div class="col-12">
         <div class="btn-c">
-          <button @click="onAddCatalog" type="button" class="btn btn-outline-secondary">Новый каталог</button>
+          <button @click="onOpenModalWindow" type="button" class="btn btn-outline-secondary">Новый каталог</button>
         </div>
       </div>
       <div class="col-12 mt-3">
-
       </div>
     </div>
     <!--todo: вынести в отдельный компонент-->
-    <!--todo: вынести модальное окнов отдельный компонент (basicModal) -->
 
       <!--<template v-for="(catalogItem, index) in catalogList">-->
         <!--{{catalogItem.switcherActive}} {{index}} // <br>-->
@@ -37,6 +22,7 @@
           todo: Загрузка фото
           todo: Добавить редактирование имени каталога, справа от названия добавить кнопку с карандашиком. при нажатии на кнопку, заменять название на инпат(???)
           todo: добавить массив со страницами в состояние
+          todo: переделать массив каталогов из ассоциативного массива в обычный
       -->
 
       <div class="row" v-if="Object.keys(catalogList).length == 0">
@@ -68,7 +54,7 @@
         @copyCatalog = "onCopyCatalog(index)"
         @saveCatalog = "onSaveCatalog(index)"
         @changeSelect = "onChangeSelect(index, $event)"
-        @removeCatalog = "onRemoveCatalog(index)">
+        @removeCatalog = "onOpenRemoveCatalogWindow(index)">
       </appCatalogItem>
 
       <!--appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
@@ -77,33 +63,6 @@
         @pageChange = "onPageChange()">
       </appPagination-->
     <div class="pagination"></div>
-    <!--<div class="row">-->
-      <!--<div class="col-12">-->
-        <!--<nav aria-label="Page navigation example">-->
-          <!--<ul class="pagination">-->
-            <!--<li class="page-item">-->
-              <!--<a class="page-link" href="#" aria-label="Previous">-->
-                <!--<span aria-hidden="true">&laquo;</span>-->
-                <!--<span class="sr-only">Предыдущая</span>-->
-              <!--</a>-->
-            <!--</li>-->
-            <!--<li class="page-item is-active"><a class="page-link" href="#">1</a></li>-->
-            <!--<li class="page-item dots-pag"><a class="page-link" href="#">...</a></li>-->
-            <!--<li class="page-item"><a class="page-link" href="#">2</a></li>-->
-            <!--<li class="page-item"><a class="page-link" href="#">3</a></li>-->
-            <!--<li class="page-item"><a class="page-link" href="#">4</a></li>-->
-            <!--<li class="page-item dots-pag"><a class="page-link" href="#">...</a></li>-->
-            <!--<li class="page-item"><a class="page-link" href="#">15</a></li>-->
-            <!--<li class="page-item">-->
-              <!--<a class="page-link" href="#" aria-label="Next">-->
-                <!--<span aria-hidden="true">&raquo;</span>-->
-                <!--<span class="sr-only">Следующая</span>-->
-              <!--</a>-->
-            <!--</li>-->
-          <!--</ul>-->
-        <!--</nav>-->
-      <!--</div>-->
-    <!--</div>-->
 
     <!-- Modal RemoveCatalog-->
     <appModal
@@ -354,11 +313,12 @@
 
       },
       // удаление каталога, открытие окна подтверждения
-      onRemoveCatalog(index){
+      onOpenRemoveCatalogWindow(index){
         this.removeCatalogIndex = index;
         $('#confirmDeleteModal').modal();
       },
-      onAddCatalog(){
+      // открытие модального окно по нажатю на кнопку
+      onOpenModalWindow(){
         $('#confirmAddModal').modal();
         //$('#id1232').modal();
       },
