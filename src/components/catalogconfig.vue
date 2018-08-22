@@ -435,7 +435,7 @@
           :keyId="'confirmDeleteModal'"
           :deleteIcon="true"
           :positiveActionText="'Удалить категорию'"
-          :textField="'Вы действительно хотите удалить категорию'"
+          :textField="remoteTextLabel"
           :isNotifyModal="true"
           :negativeActionText="'Отмена'"
           :actionIndex="0"
@@ -512,6 +512,7 @@
                   isValid: false
                 }
               ],
+              remoteTextLabel: '',  // текст для всплывашки удаления
               findFolderStr: '', // Для поиска по папкам
               tabValue: 'provider', // Значение таба: find, provider
               breadcrumbs: [],// Хлебные крошки
@@ -854,6 +855,8 @@
           // создание нового каталога/папки из контекстного меню
           contextCreatedNewCatalog(event){
             let categoryName = event.value.input[0].value;  // название каталога
+            this.inputsAddArr[0].value = '';  // очищаем поля инпутов
+            this.inputsAddArr[0].isValid = false;  // очищаем поля инпутов
             this.createNewCatalog(categoryName);
           },
           // удаление категории из пользовательского каталога
@@ -1019,6 +1022,9 @@
           //Удалить папку категорию - показываем всплывашку
           onRemoveCatalogFolder(){
             if(+this.foldersCont.catalogFolder.catalogSelectedItemId !== 0){
+              console.log(this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont.catalogFolder.catalogSelectedItemIndex]);
+              let categoryName = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont.catalogFolder.catalogSelectedItemIndex].name;
+              this.remoteTextLabel = 'Вы действительно хотите удалить категорию - "' +  categoryName + '"';
               $('#confirmDeleteModal').modal();
             }else{
               this.setErrorAlertShow(true);
