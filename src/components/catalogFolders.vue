@@ -33,7 +33,7 @@
   <div class=" catalog-folder white-bg" :class="{'side-catalog-f': sideFolder}" >
     <div class="bb">
       <div class="folder-h" v-show="folderH">
-        <div class="title-h">
+        <div class="title-h" @click="setSelectRoot">
           {{folderH}}
         </div>
       </div>
@@ -359,15 +359,24 @@
           setFolders(){
             this.$emit('setFolders', {'value': this.rootCatalogFoldersComp });
           },
+          setSelectRoot(){
+            this.$emit('setSelectRoot', {'value': ''});
+          },
           setSelectItem(catalog, index){
             if( this.selectedItemObjectId === catalog.folderId && this.selectedItemObjectIndex === index){
               this.selectedItemObjectId = 0;
               this.selectedItemObjectIndex = 0;
+              //this.setSelectRoot();
             }else{
               this.selectedItemObjectId = catalog.folderId;
               this.selectedItemObjectIndex = index;
             }
-            this.$emit('setSelectedItem', {'value': { id : this.selectedItemObjectId, index : this.selectedItemObjectIndex } });
+            this.$emit('setSelectedItem', {'value': {
+                id : this.selectedItemObjectId,
+                index : this.selectedItemObjectIndex,
+                name: catalog.name,
+                lvlFolder: catalog.lvlFolder
+              } });
           },
         },
         props:[

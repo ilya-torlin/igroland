@@ -111,6 +111,7 @@
                   @setFolders = 'onSetFolders($event, "catalogFolder")'
                   @addCatalogFolder = 'onAddCatalogFolder'
                   @setSelectedItem = 'onSetSelectItem($event, "catalogFolder")'
+                  @setSelectRoot = 'onSetSelectRoot'
                   ref="catalogFolder"
                 >
                 </appCatalogFolders>
@@ -721,11 +722,52 @@
           onSetFolders(e, keyFolder){
             this.foldersCont[keyFolder].rootCatalogFolders = e.value;
           },
+          // выбор корня каталога, сбрасываем хлебные крошки
+          onSetSelectRoot(){
+            // скидываем выбранные ээлементы и очищаем хлебны крошки
+            this.foldersCont.catalogFolder.catalogSelectedItemId = 0;
+            this.foldersCont.catalogFolder.catalogSelectedItemIndex = 0;
+            this.$set(this,'breadcrumbs',[]);
+            console.log('delete breadcrumbs');
+          },
           //запись новых значений в объект по которому кликнули (выдяеляется желтым)
           onSetSelectItem(e, keyFolder){
             console.log(e);
             this.foldersCont[keyFolder].catalogSelectedItemId = e.value.id;
             this.foldersCont[keyFolder].catalogSelectedItemIndex = e.value.index;
+            if(keyFolder === 'catalogFolder'){
+              let newBreadcrumbs = [];
+              if(e.value.lvlFolder > 0 && e.value.id !== 0){
+                let indexLvlFolder = e.value.lvlFolder - 1;
+                newBreadcrumbs.push(e.value);
+                for(let ind = e.value.index; ind >= 0 || indexLvlFolder === 0; ind--){ // Пока не дошли до самой первой папки, или пока не проверили последнего родителя
+                  if(indexLvlFolder === this.foldersCont[keyFolder].rootCatalogFolders[ind].lvlFolder){
+                    let parent_node = {
+                      id: this.foldersCont[keyFolder].rootCatalogFolders[ind].folderId,
+                      index: ind,
+                      lvlFolder: this.foldersCont[keyFolder].rootCatalogFolders[ind].lvlFolder,
+                      name: this.foldersCont[keyFolder].rootCatalogFolders[ind].name,
+                    };
+                    newBreadcrumbs.push(parent_node);
+                    if(indexLvlFolder !== 0) { //т.к. нашли первого родителя, уменьшаем уровень вложенности для поиска следующего родителя
+                      indexLvlFolder--;
+                    }
+                    if(this.foldersCont[keyFolder].rootCatalogFolders[ind].lvlFolder === 0){//Дошли до корня
+                      break;
+                    }
+                  }
+                }
+              }
+              else if(e.value.id === 0){
+                this.onSetSelectRoot();
+              }
+              else {
+                newBreadcrumbs.push(e.value);
+              }
+              //console.log(newBreadcrumbs);
+              newBreadcrumbs.reverse();
+              this.$set(this,'breadcrumbs',newBreadcrumbs);
+            }
           },
           //поиск среди папок по подстроке
           findFolder(){
@@ -768,8 +810,6 @@
             if(this.foldersCont.catalogFolder.catalogSelectedItemId === 0){
 
             }
-
-
             //заглушка, вставляем папку с сервера
             //this.foldersCont.catalogFolder.rootCatalogFolders.push(new singleFolder({}));
             //this.$refs['catalogFolder'].setRootCatalogFoldersComp(this.foldersCont.catalogFolder.rootCatalogFolders);
@@ -834,8 +874,6 @@
             //папка с результатами поиска
             this.updateFolderCont(null, null, null, null, 'findResFolder', 'findResFolder');
             //папка каталога пользователя
-
-
             //todo: будет новый метод на беке,
             this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
 
