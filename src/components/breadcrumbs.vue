@@ -11,7 +11,7 @@
                 v-if="breadcrumbs.length > 0"
                 @click="breadItemClicked(item.id)">
               <a href="javascript:void(0)">
-                {{item.title}}
+                {{item.name}}
               </a>
             </li>
             <li class="breadcrumb-item active">

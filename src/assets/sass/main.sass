@@ -367,6 +367,7 @@ button
     justify-content: space-between
   li
     cursor: pointer
+    border-left: 3px solid transparent
     &:last-child
       margin-bottom: 0px
     .folder-title
@@ -387,7 +388,7 @@ button
         top: -3px
         left: 6px
     &.isActive
-      border-left: 3px solid $yellow
+      border-color: $yellow
   .context-open
     background: $yellow
 .folder-controls-c
@@ -1211,6 +1212,9 @@ textarea
   justify-content: space-between
   overflow: hidden
   transition: width .3s ease
+  .folder-h
+    .title-h
+      cursor: pointer
   .folder-b
     transition: width .3s ease
     width: 100%
