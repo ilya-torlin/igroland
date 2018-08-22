@@ -23,7 +23,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" v-if="!isNotifyModal">
             <appInput v-for="(elem, index) in inputsArr" :key="index"
                       :validFeedback="elem.validFeedback"
                       :invalidFeedback="elem.invalidFeedback"
@@ -37,9 +37,12 @@
                       @changedata="onChangeData(index, $event)">
             </appInput>
           </div>
+          <div class="modal-body" v-else>
+            <p>{{ textField }}</p>
+          </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ negativeActionText || 'Отмена' }}</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="clickEvent(actionIndex)">{{ positiveActionText }}</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ negativeActionText || 'Отменить' }}</button>
+            <button type="button" class="btn" :class="buttonClass" data-dismiss="modal" @click="clickEvent(actionIndex)">{{ positiveActionText }}</button>
           </div>
         </div>
       </div>
@@ -79,7 +82,10 @@
         'actionIndex',
         'inputsArr',
         'necessaryEvent',
-        'keyId'
+        'keyId',
+        'buttonClass',
+        'isNotifyModal',
+        'textField'
       ],
       methods: {
         clickEvent(index){

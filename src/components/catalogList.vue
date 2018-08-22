@@ -73,6 +73,7 @@
       :negativeActionText="'Отмена'"
       :actionIndex="removeCatalogIndex"
       :inputsArr="inputsArr"
+      :buttonClass="'btn-danger'"
       :necessaryEvent="'pageChange'"
       @pageChange="removeCatalog(removeCatalogIndex)">
     </appModal>
@@ -85,6 +86,7 @@
       :negativeActionText="'Отмена'"
       :actionIndex="0"
       :inputsArr="inputsAddArr"
+      :buttonClass="'btn-success'"
       :necessaryEvent="'pageChange'"
       @pageChange="addNewCatalog">
     </appModal>

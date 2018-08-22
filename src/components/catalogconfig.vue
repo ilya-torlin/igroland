@@ -110,6 +110,7 @@
                   :rootCatalogFolders = 'foldersCont.catalogFolder.rootCatalogFolders'
                   @setFolders = 'onSetFolders($event, "catalogFolder")'
                   @addCatalogFolder = 'onAddCatalogFolder'
+                  @removeCatalogFolder = 'onRemoveCatalogFolder'
                   @setSelectedItem = 'onSetSelectItem($event, "catalogFolder")'
                   @setSelectRoot = 'onSetSelectRoot'
                   ref="catalogFolder"
@@ -428,12 +429,41 @@
                 </div>
             </div>
         </div>
+        <!-- Modal RemoveCatalog-->
+        <appModal
+          :headerText="'Подтвердите удаление категории'"
+          :keyId="'confirmDeleteModal'"
+          :deleteIcon="true"
+          :positiveActionText="'Удалить категорию'"
+          :textField="'Вы действительно хотите удалить категорию'"
+          :isNotifyModal="true"
+          :negativeActionText="'Отмена'"
+          :actionIndex="0"
+          :inputsArr="inputsArr"
+          :buttonClass="'btn-danger'"
+          :necessaryEvent="'pageChange'"
+          @pageChange="contextRemoveCatalog">
+        </appModal>
+        <!--Modal AddCatalog-->
+        <appModal
+          :headerText="'Введите имя новой категории'"
+          :keyId="'confirmAddModal'"
+          :deleteIcon="false"
+          :positiveActionText="'Добавить категорию'"
+          :negativeActionText="'Отмена'"
+          :actionIndex="0"
+          :inputsArr="inputsAddArr"
+          :buttonClass="'btn-success'"
+          :necessaryEvent="'pageChange'"
+          @pageChange="contextCreatedNewCatalog($event)">
+        </appModal>
     </div>
 </template>
 
 <script>
     import appCatalogFolders from './catalogFolders.vue'
     import appBreadcrumbs from './breadcrumbs.vue'
+    import appModal from './modalWindow.vue';
 
     import {API_URL, IMAGE_URL} from '../constants';
     import axios from 'axios';
@@ -454,18 +484,36 @@
         data () {
             return {
               IMAGE_URL: API_URL, // корень для изображений
+              inputsArr:[ // массив инпутов для всплывающего окна
+                {
+                  id: 'confirmDelete',
+                  showError: '',
+                  validFeedback: "",
+                  invalidFeedback: "Имя введено неверно",
+                  placeholder: "Введите имя категории, которую хотите удалить",
+                  type: "text",
+                  required: "true",
+                  pattern: /[^]*/,
+                  value: '',
+                  isValid: false
+                }
+              ],
+              inputsAddArr:[  // массив инпутов для всплывающего окна
+                {
+                  id: 'confirmAdd',
+                  showError: '',
+                  validFeedback: "",
+                  invalidFeedback: "Имя введено неверно",
+                  placeholder: "Введите имя категории, которую хотите добавить",
+                  type: "text",
+                  required: "true",
+                  pattern: /[^]*/,
+                  value: '',
+                  isValid: false
+                }
+              ],
               findFolderStr: '', // Для поиска по папкам
               tabValue: 'provider', // Значение таба: find, provider
-              /*[ // Хлебные крошки
-                  {
-                    title: 'Кросовки', // имя каталога
-                    id: '32' // id каталога
-                  },
-                {
-                  title: 'Беговые', // имя каталога
-                    id: '21' // id каталога
-                },
-              ]*/
               breadcrumbs: [],// Хлебные крошки
               selectedCatalogId: 12, // выбранный каталог из левой панели
               providerList: [// поставщики для селекта
@@ -564,13 +612,13 @@
                       },
                       {
                         title: 'Добавить',//заголовок
-                        eventName: 'addFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                        eventName: 'addCatalogFolder', // имя ивента, который вызывается при нажатии на пункт меню
                         iconId: 4,
                         //Подумать как передавать payload, при нажатии на папку
                       },
                       {
                         title: 'Удалить',//заголовок
-                        eventName: 'deleteFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                        eventName: 'removeCatalogFolder', // имя ивента, который вызывается при нажатии на пункт меню
                         iconId: 5,
                         //Подумать как передавать payload, при нажатии на папку
                       },
@@ -688,6 +736,7 @@
           appPagination,
           appSwitcher,
           appInput,
+          appModal,
           vueDropzone: vue2Dropzone
         },
         methods: {
@@ -802,6 +851,39 @@
           onBreadItemClicked(e){
             console.log('catalog id is ==== ', e.value);
           },
+          // создание нового каталога/папки из контекстного меню
+          contextCreatedNewCatalog(event){
+            let categoryName = event.value.input[0].value;  // название каталога
+            this.createNewCatalog(categoryName);
+          },
+          // удаление категории из пользовательского каталога
+          contextRemoveCatalog(){
+            let categoryId = this.foldersCont.catalogFolder.catalogSelectedItemId;
+            let categoryIndex = this.foldersCont.catalogFolder.catalogSelectedItemIndex;
+            this.stepOneActive(); // прогрессбар
+            axios({url: API_URL + '/category/' + categoryId ,method: 'DELETE' })
+              .then(resp => {
+                const error = resp.data.error;
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при удалении категории: ' + errorTxt);
+                }else{
+                  //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
+                  this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                  this.setSuccesAlertShow(true);
+                  this.setSuccesAlertMsg('Категория удалёна');
+
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при удалении категории ');
+                this.stepLastActive(); // прогрессбар
+                console.log(err);
+              });
+          },
           // создание нового каталога/папки
           createNewCatalog(catalogName){
             // добавляем категория к нашему каталогу, проверяем если не выбранны в колонке слева категории, то добавляем
@@ -827,7 +909,7 @@
                   this.setErrorAlertMsg('Ошибка при добавлении категории: ' + errorTxt);
                 }else{
                   this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Категория добавлен');
+                  this.setSuccesAlertMsg('Категория добавлена');
                   this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                 }
               })
@@ -930,10 +1012,18 @@
                 this.stepLastActive(); // прогрессбар
               });
           },
-          //Добавить папку/категорию в каталог/категорию
+          //Добавить папку/категорию в каталог/категорию показать всплывашку
           onAddCatalogFolder(){
-            console.log('API пока не готово');
-
+            $('#confirmAddModal').modal();
+          },
+          //Удалить папку категорию - показываем всплывашку
+          onRemoveCatalogFolder(){
+            if(+this.foldersCont.catalogFolder.catalogSelectedItemId !== 0){
+              $('#confirmDeleteModal').modal();
+            }else{
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Вы не выбрали категорию в пользовательском каталоге');
+            }
           },
           //поиск среди папок
           findGoods(){
@@ -1062,6 +1152,7 @@
           //Переименование товара
           renameGoods(){
           },
+          // получаем информацию по текущему пользовательскому каталогу
           getMyCatalogInfo(){
             this.stepOneActive(); // прогрессбар
             axios.get( API_URL + '/catalog/' + this.currentCatalogId, {
