@@ -91,7 +91,7 @@
                       Доступен для пользователей
                     </div>
                     <multiselect
-                      v-model="selectedUsers"
+                      :value="selectedUsers"
                       :options="userList"
                       :multiple="true"
                       :close-on-select="true"
@@ -100,7 +100,7 @@
                       track-by="name"
                       selectLabel="Выбрать"
                       deselectLabel="Убрать из списка"
-                      @input = "$emit('changeSelect')">
+                      @input="onChangeUsers($event, 'thisSelectedUsers')">
                     </multiselect>
                     <appSwitcher  txt="Доступен для всех"
                                   :switcherActive="switcherActive"
@@ -135,7 +135,8 @@
     name: 'catalogItem',
     data () {
       return {
-        msg: 'catalogItem'
+        msg: 'catalogItem',
+        thisSelectedUsers: {},
       }
     },
     props: ['selected',
@@ -157,10 +158,18 @@
       opt(){
         return this.userList;
       }
-    }
+    },
+    methods:{
+      onChangeUsers(event, selectResKey){
+        //console.log(event);
+        this[selectResKey] = event;
+        this.$emit('changeSelect', {'value': this.thisSelectedUsers});
+      },
+    },
   }
 </script>
 
 <style lang="sass">
   /*@import 'assets/sass/main.sass';*/
+  @import '../../node_modules/vue-multiselect/dist/vue-multiselect.min.css'
 </style>
