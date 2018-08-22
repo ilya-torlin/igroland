@@ -67,7 +67,7 @@
         @changeDescr = "onChangeDescr(index, $event)"
         @copyCatalog = "onCopyCatalog(index)"
         @saveCatalog = "onSaveCatalog(index)"
-        @changeSelect = "onChangeSelect(index)"
+        @changeSelect = "onChangeSelect(index, $event)"
         @removeCatalog = "onRemoveCatalog(index)">
       </appCatalogItem>
 
@@ -106,93 +106,29 @@
     <!--</div>-->
 
     <!-- Modal RemoveCatalog-->
-    <div class="modal fade warning-modal" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle">
-              <div class="svg-c">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="23px" height="23px">
-                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                        d="M11.500,23.000 C5.149,23.000 0.000,17.851 0.000,11.500 C0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM11.500,5.000 C10.672,5.000 10.000,5.671 10.000,6.500 C10.000,7.328 10.672,8.000 11.500,8.000 C12.328,8.000 13.000,7.328 13.000,6.500 C13.000,5.671 12.328,5.000 11.500,5.000 ZM13.000,10.500 C13.000,9.671 12.328,9.000 11.500,9.000 C10.672,9.000 10.000,9.671 10.000,10.500 L10.000,16.500 C10.000,17.328 10.672,18.000 11.500,18.000 C12.328,18.000 13.000,17.328 13.000,16.500 L13.000,10.500 Z"/>
-                </svg>
-              </div>
-              <div class="txt">
-                Подтвердите удаление каталога
-              </div>
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <appInput v-for="(elem, index) in inputsArr" :key="index"
-                      :validFeedback="elem.validFeedback"
-                      :invalidFeedback="elem.invalidFeedback"
-                      :placeholder="elem.placeholder"
-                      :required="elem.required"
-                      :pattern="elem.pattern"
-                      :type="elem.type"
-                      :value="elem.value"
-                      :isValid="elem.isValid"
-                      :showError="elem.showError"
-                      @changedata="onChangeData(index, $event)">
-            </appInput>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="removeCatalog(removeCatalogIndex)">Удалить каталог</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Modal AddCatalog -->
-    <div class="modal fade info-modal" id="confirmAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleAddModalCenterTitle">
-              <div class="svg-c">
-                <!--svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="23px" height="23px">
-                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                        d="M11.500,23.000 C5.149,23.000 0.000,17.851 0.000,11.500 C0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM11.500,5.000 C10.672,5.000 10.000,5.671 10.000,6.500 C10.000,7.328 10.672,8.000 11.500,8.000 C12.328,8.000 13.000,7.328 13.000,6.500 C13.000,5.671 12.328,5.000 11.500,5.000 ZM13.000,10.500 C13.000,9.671 12.328,9.000 11.500,9.000 C10.672,9.000 10.000,9.671 10.000,10.500 L10.000,16.500 C10.000,17.328 10.672,18.000 11.500,18.000 C12.328,18.000 13.000,17.328 13.000,16.500 L13.000,10.500 Z"/>
-                </svg-->
-              </div>
-              <div class="txt">
-                Введите имя нового каталога
-              </div>
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <appInput v-for="(elem, index) in inputsAddArr" :key="index"
-                      :validFeedback="elem.validFeedback"
-                      :invalidFeedback="elem.invalidFeedback"
-                      :placeholder="elem.placeholder"
-                      :required="elem.required"
-                      :pattern="elem.pattern"
-                      :type="elem.type"
-                      :value="elem.value"
-                      :isValid="elem.isValid"
-                      :showError="elem.showError"
-                      @changedata="onChangeAddData(index, $event)">
-            </appInput>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-success" data-dismiss="modal" @click="addNewCatalog">Добавить каталог</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <appModal
+      :headerText="'Подтвердите удаление каталога'"
+      :keyId="'confirmDeleteModal'"
+      :deleteIcon="true"
+      :positiveActionText="'Удалить каталог'"
+      :negativeActionText="'Отмена'"
+      :actionIndex="removeCatalogIndex"
+      :inputsArr="inputsArr"
+      :necessaryEvent="'pageChange'"
+      @pageChange="removeCatalog(removeCatalogIndex)">
+    </appModal>
+    <!--Modal AddCatalog-->
+    <appModal
+      :headerText="'Введите имя нового каталога'"
+      :keyId="'confirmAddModal'"
+      :deleteIcon="false"
+      :positiveActionText="'Добавить каталог'"
+      :negativeActionText="'Отмена'"
+      :actionIndex="0"
+      :inputsArr="inputsAddArr"
+      :necessaryEvent="'pageChange'"
+      @pageChange="addNewCatalog">
+    </appModal>
   </div>
 </template>
 <!--todo: переделать ассоциативный массив на обычный -->
@@ -200,6 +136,7 @@
 
   import appCatalogItem from './catalogItem'
   import appInput from './inputValid';
+  import appModal from './modalWindow';
   import appPagination from './pagination'
   import {API_URL} from '../constants'
   import axios from 'axios'
@@ -423,6 +360,7 @@
       },
       onAddCatalog(){
         $('#confirmAddModal').modal();
+        //$('#id1232').modal();
       },
       //выполняется при переключении страницы
       onPageChange(){
@@ -434,7 +372,7 @@
         if(this.inputsArr[0].value === this.catalogList[index].catalogName){
           let payload = this.catalogList[index];
           this.stepOneActive(); // прогрессбар
-          axios({url: API_URL + '/removeCatalog', data: payload, method: 'POST' })
+          axios({url: API_URL + '/catalog/' + this.catalogList[index].id ,method: 'DELETE' })
             .then(resp => {
               const error = resp.data.error;
               this.stepLastActive(); // прогрессбар
@@ -460,9 +398,10 @@
         }
       },
       //выполняется при  изменении селекта
-      onChangeSelect(index){
+      onChangeSelect(index, event){
         //Делать запрос на сервер для копирования?
-        console.log('onChangeSelect');
+        console.log('onChangeSelect ', event);
+        this.catalogList[index].selectedUsers = event.value;
         this.falseCatalogSave(index);
       },
       // для компонента input
@@ -556,6 +495,7 @@
     components: {
       appCatalogItem,
       appInput,
+      appModal,
       appPagination
     },
     mounted(){
