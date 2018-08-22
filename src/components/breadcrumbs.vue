@@ -104,6 +104,7 @@
           //создание ивента, Создание нового каталога
           createNewCatalog(catalogName){
             this.$emit('createNewCatalog', {'value': catalogName});
+            this.newCatalogName = '';
           },
           //Создание ивента, скрыть не в наличии
           hideNotOwned(){

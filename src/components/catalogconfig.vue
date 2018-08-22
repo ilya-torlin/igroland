@@ -807,9 +807,36 @@
             // добавляем категория к нашему каталогу, проверяем если не выбранны в колонке слева категории, то добавляем
             // в корневую папку и родительскую категорию не ставим, иначе ставим
             console.log('create new catalog', catalogName);
-            if(this.foldersCont.catalogFolder.catalogSelectedItemId === 0){
-
+            let payload = {
+              name: catalogName,
+              parentId: 0,
+              catalogId: this.currentCatalogId,
+            };
+            if(+this.foldersCont.catalogFolder.catalogSelectedItemId !== 0){
+              payload.parentId = +this.foldersCont.catalogFolder.catalogSelectedItemId;
             }
+            this.stepOneActive(); // прогрессбар
+            axios({url: API_URL + '/category', data: payload, method: 'POST' })
+              .then(resp => {
+                const error = resp.data.error;
+                console.log(resp);
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при добавлении категории: ' + errorTxt);
+                }else{
+                  this.setSuccesAlertShow(true);
+                  this.setSuccesAlertMsg('Категория добавлен');
+                  this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при добавлении категории ');
+                this.stepLastActive(); // прогрессбар
+                console.log(err);
+              });
             //заглушка, вставляем папку с сервера
             //this.foldersCont.catalogFolder.rootCatalogFolders.push(new singleFolder({}));
             //this.$refs['catalogFolder'].setRootCatalogFoldersComp(this.foldersCont.catalogFolder.rootCatalogFolders);
@@ -906,6 +933,7 @@
           //Добавить папку/категорию в каталог/категорию
           onAddCatalogFolder(){
             console.log('API пока не готово');
+
           },
           //поиск среди папок
           findGoods(){
