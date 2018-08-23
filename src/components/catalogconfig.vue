@@ -951,7 +951,7 @@
                 parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
               };
               console.log('Req pay --', payload);
-              let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider);
+              let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider, +this.currentCatalogId);
               categoryRequest.then(
                 result => { // всё ок
                   console.log('categoryRequest result -->>', result);
@@ -1032,11 +1032,77 @@
               this.setErrorAlertMsg('Вы не выбрали категорию в пользовательском каталоге');
             }
           },
+          // возвращает активную вкладку
+          getActiveTab(){
+            if(this.tabValue === 'provider')
+              return {  obj: this.foldersCont.providerFolder,
+                        selectedId: +this.foldersCont.providerFolder.catalogSelectedItemId,
+                        selectedIndex: this.foldersCont.providerFolder.catalogSelectedItemIndex,
+              };
+            else if(this.tabValue === 'find')
+              return {  obj: this.foldersCont.findResFolder,
+                        selectedId: +this.foldersCont.findResFolder.catalogSelectedItemId,
+                        selectedIndex: this.foldersCont.findResFolder.catalogSelectedItemIndex,
+              };
+            //else if(this.tabValue === 'goods')
+            else
+              return {  obj: {},
+                selectedId: 0,
+                selectedIndex: 0,
+              };
+
+
+          },
           // Привязка категорий
           onAttachFolderToCategory(){
-            // todo: проверить активную вкладку, найти на ней селектед Id, проверить выбрано ли что-то
-            // todo: проверить пользовательский каталог, выбрано ли там что-то
-            // todo: отправить запрос на сервер
+            // todocomplete: проверить активную вкладку, найти на ней селектед Id, проверить выбрано ли что-то
+            // todocomplete: проверить пользовательский каталог, выбрано ли там что-то
+            // todocomplete: отправить запрос на сервер
+            let activeTab = this.getActiveTab();
+            let catalogCategory = {
+              selectedId: +this.foldersCont.catalogFolder.catalogSelectedItemId,
+              selectedIndex: this.foldersCont.catalogFolder.catalogSelectedItemIndex
+            };
+            console.log(activeTab,catalogCategory);
+            if (catalogCategory.selectedId) {
+              if (activeTab.selectedId) {
+                let payload = {
+                  category_id: catalogCategory.selectedId,
+                  attached_category_id: activeTab.selectedId
+                };
+                this.stepOneActive(); // прогрессбар
+                axios({url: API_URL + '/categoryattach', data: payload, method: 'POST' })
+                  .then(resp => {
+                    const error = resp.data.error;
+                    console.log(resp);
+                    this.stepLastActive(); // прогрессбар
+                    if(error){
+                      let errorTxt = resp.data.data.msgClient;
+                      this.setErrorAlertShow(true);
+                      this.setErrorAlertMsg('Ошибка при привязке категорий: ' + errorTxt);
+                    }else{
+                      this.setSuccesAlertShow(true);
+                      this.setSuccesAlertMsg('Категории привязаны');
+                      this.$delete(activeTab.obj.rootCatalogFolders, activeTab.selectedIndex, activeTab.obj.rootCatalogFolders[activeTab.selectedIndex]);
+                      this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                    }
+                  })
+                  .catch(err => {
+                    this.setErrorAlertShow(true);
+                    this.setErrorAlertMsg('Ошибка при привязке категорий');
+                    this.stepLastActive(); // прогрессбар
+                    console.log(err);
+                  });
+              }
+              else {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Не выбрана категория в каталоге производителей');
+              }
+            }
+            else{
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Не выбрана категория в пользовательском каталоге');
+            }
             console.log('attach to category');
           },
           //поиск среди папок

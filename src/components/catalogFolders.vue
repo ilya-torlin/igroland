@@ -230,7 +230,7 @@
               e.preventDefault();
           },
           // запрос категории/каталога по ид, возвращает промис
-          requestCategory(idCategory, lvlFolder, parentFolderId, selectedProvider){
+          requestCategory(idCategory, lvlFolder, parentFolderId, selectedProvider, catalogId){
             //после вызова в promise вызывать this.setFolders().. для перезаписи каталога в родительском компоненте
             return new Promise((resolve, reject) => {
               let payload = {
@@ -238,7 +238,8 @@
                 lvlFolder: lvlFolder, // уровень вложенности
                 id: idCategory || '', // ид папки
                 catalog_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
-                parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
+                parentFolderId: parentFolderId || '0', // ид родительской папки, вроде не используется, надо сделать ревью
+                catalogId: catalogId || ''
               };
               this.folderPending = true; // пока идёт запрос контейнер с папками блокируется
               this.stepOneActive(); // прогрессбар
