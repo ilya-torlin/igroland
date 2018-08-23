@@ -136,6 +136,9 @@
                     <div class="tab-i" :class="{'active': tabValue === 'goods'}" @click="tabChangeVal('goods')">
                       Товары
                     </div>
+                    <div class="tab-i" :class="{'active': tabValue === 'attach'}" @click="tabChangeVal('attach')" v-show="showAttachedTab">
+                      Привязанные категории
+                    </div>
                   </div>
               </div>
               <div class="row att-folders-r">
@@ -235,6 +238,7 @@
                                 @setFolders = 'onSetFolders($event, "findResFolder")'
                                 @showParamFolder = 'onSetFolders($event)'
                                 @setSelectedItem = 'onSetSelectItem($event, "findResFolder")'
+                                @attachFolderToCategory='onAttachFolderToCategory'
                                 ref="findResFolder"
                               >
                               </appCatalogFolders>
@@ -425,6 +429,49 @@
                             </div>
                           </div>
                         </div>
+                        <div key="catalog-attach-tab" class="att-folders-i folders-wt" v-show="tabValue == 'attach'">
+                        <div class="upper-s">
+                          <div class="find-folder-i">
+                            <div class="txt-f">
+                              Выбранная категория: <span class="provider-txt">{{ 1 }}</span>
+                            </div>
+                            <!--<div class="find-b justify-content-start d-flex">-->
+                            <!--<div class="input-group ">-->
+                            <!--<input v-model.lazy="findFolderStr" v-on:keyup.enter="findFolder" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">-->
+                            <!--<div class="input-group-append">-->
+                            <!--<button class="btn btn-outline-secondary" type="button" @click="findFolder">-->
+                            <!--<svg-->
+                            <!--xmlns="http://www.w3.org/2000/svg"-->
+                            <!--xmlns:xlink="http://www.w3.org/1999/xlink"-->
+                            <!--width="17px" height="17px">-->
+                            <!--<path fill-rule="evenodd"  fill="rgb(131, 147, 167)"-->
+                            <!--d="M15.919,15.813 C15.525,16.207 14.887,16.207 14.494,15.813 L11.403,12.723 C10.235,13.594 8.792,14.117 7.223,14.117 C3.357,14.117 0.223,10.983 0.223,7.117 C0.223,3.251 3.357,0.117 7.223,0.117 C11.088,0.117 14.222,3.251 14.222,7.117 C14.222,8.686 13.700,10.130 12.828,11.298 L15.919,14.388 C16.312,14.782 16.312,15.420 15.919,15.813 ZM7.223,2.117 C4.461,2.117 2.222,4.355 2.222,7.117 C2.222,9.879 4.461,12.117 7.223,12.117 C9.984,12.117 12.223,9.879 12.223,7.117 C12.223,4.355 9.984,2.117 7.223,2.117 Z"/>-->
+                            <!--</svg>-->
+                            <!--</button>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                          </div>
+                          <!--appCatalogFolders
+                            :folderH = 'foldersCont.providerFolder.folderH'
+                            :sideFolder = 'foldersCont.providerFolder.sideFolder'
+                            :lastUpdateTxt = 'foldersCont.providerFolder.lastUpdateTxt'
+                            :contextMenu = 'foldersCont.providerFolder.contextMenu'
+                            :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
+                            :selectedProvider = 'selectedProvider'
+                            @setFolders = 'onSetFolders($event, "providerFolder")'
+                            @setSelectedItem = 'onSetSelectItem($event, "providerFolder")'
+                            ref="attachCont"
+                          >
+                          </appCatalogFolders-->
+                        </div>
+                        <div class="bottom-s">
+                          <div class="btn-c d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary">Показать товары</button>
+                            <button type="button" class="btn btn-outline-secondary">Привязать</button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -579,7 +626,7 @@
                       },
                       {
                         title: 'Привязать',//заголовок
-                        eventName: 'attachFolder', // имя ивента, который вызывается при нажатии на пункт меню
+                        eventName: 'attachFolderToCategory', // имя ивента, который вызывается при нажатии на пункт меню
                         iconId: 2,
                         //Подумать как передавать payload, при нажатии на папку
                       },
@@ -631,6 +678,9 @@
                   catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
                   catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
                 },
+                attachFolder:{
+                  showAttachedTab: false,
+                }
               },
               //Goods categoryGoods.pagination.countItemsPage
               categoryGoods: { // товары выбранной категории
@@ -729,6 +779,9 @@
           },
           currentCatalogId(){
             return +this.$route.params.id || null;
+          },
+          showAttachedTab(){
+            return this.foldersCont.attachFolder.showAttachedTab;
           }
         },
         components: {
@@ -780,6 +833,8 @@
             this.foldersCont.catalogFolder.catalogSelectedItemIndex = 0;
             this.$set(this,'breadcrumbs',[]);
             console.log('delete breadcrumbs');
+            // скрываем вкладку Привязанные товары
+            this.foldersCont.attachFolder.showAttachedTab = false;
           },
           //запись новых значений в объект по которому кликнули (выдяеляется желтым)
           onSetSelectItem(e, keyFolder){
@@ -818,6 +873,8 @@
               //console.log(newBreadcrumbs);
               newBreadcrumbs.reverse();
               this.$set(this,'breadcrumbs',newBreadcrumbs);
+              // открываем вкладку Привязанные товары
+              this.foldersCont.attachFolder.showAttachedTab = true;
             }
           },
           //поиск среди папок по подстроке
@@ -1034,12 +1091,12 @@
           },
           // возвращает активную вкладку
           getActiveTab(){
-            if(this.tabValue === 'provider')
+            if(this.tabValue == 'provider')
               return {  obj: this.foldersCont.providerFolder,
                         selectedId: +this.foldersCont.providerFolder.catalogSelectedItemId,
                         selectedIndex: this.foldersCont.providerFolder.catalogSelectedItemIndex,
               };
-            else if(this.tabValue === 'find')
+            else if(this.tabValue == 'find')
               return {  obj: this.foldersCont.findResFolder,
                         selectedId: +this.foldersCont.findResFolder.catalogSelectedItemId,
                         selectedIndex: this.foldersCont.findResFolder.catalogSelectedItemIndex,
@@ -1083,7 +1140,7 @@
                     }else{
                       this.setSuccesAlertShow(true);
                       this.setSuccesAlertMsg('Категории привязаны');
-                      this.$delete(activeTab.obj.rootCatalogFolders, activeTab.selectedIndex, activeTab.obj.rootCatalogFolders[activeTab.selectedIndex]);
+                      activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
                       this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                     }
                   })
