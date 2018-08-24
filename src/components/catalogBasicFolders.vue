@@ -1,11 +1,6 @@
 <!--Каталог с привязанными категориями-->
 <template>
     <!--catalogBasicFolders.vue-->
-
-    <!--
-      todo: скрывать/удалять папку после привязки
-    -->
-
   <!--
     Логика работы компонента ↓↓↓
       Данные
@@ -27,24 +22,24 @@
 
   <div class=" catalog-folder white-bg" >
     <div class="bb">
-      <div class="folder-h" v-show="folderH">
-        <div class="title-h">
-          {{folderH}}
-        </div>
-      </div>
+      <!--<div class="folder-h" v-show="folderH">-->
+        <!--<div class="title-h">-->
+          <!--{{folderH}}-->
+        <!--</div>-->
+      <!--</div>-->
       <div class="folder-b">
         <div class="folder-c">
           <ul class="folder-list folder-list-main" v-if="rootCatalogFoldersComp.length > 0">
             <li v-for="(catFolder, index) in rootCatalogFoldersComp"
-                @click="setSelectItem(catFolder, index)"
+                @click="setSelectItem(catFolder, index, 'setSelectedItem')"
                 :class="{'isActive' : (catFolder.attached_category_id == selectedItemObjectId)}"
             >
               <!--:key - параметр для сортировки-->
-              <div class="folder-title" @click.right = "contextOpen($event, catFolder )" >
+              <div class="folder-title" @click.right = "" >
                 <div class="folder-name ">
                   <div class="folder-controls-c">
                     <!-- todo: по клику удалять связь категорий -->
-                    <button class="btn-icon-tr" @click="">
+                    <button class="btn-icon-tr" @click="setSelectItem(catFolder, index, 'removeAttachedItem')">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -179,22 +174,27 @@
           setFolders(){
             this.$emit('setFolders', {'value': this.rootCatalogFoldersComp });
           },
-          setSelectItem(catalog, index){
-            if( this.selectedItemObjectId === catalog.folderId && this.selectedItemObjectIndex === index){
+          removeFromRoot(index){
+            this.$delete(this.rootCatalogFoldersComp, index);
+          },
+          setSelectItem(catalog, index, action){
+
+            if( this.selectedItemObjectId === catalog.id && this.selectedItemObjectIndex === index){
               this.selectedItemObjectId = 0;
               this.selectedItemObjectIndex = 0;
               //this.setSelectRoot();
             }else{
-              this.selectedItemObjectId = catalog.folderId;
+              this.selectedItemObjectId = catalog.id;
               this.selectedItemObjectIndex = index;
             }
-            this.$emit('setSelectedItem', {'value': {
-                id : this.selectedItemObjectId,
-                index : this.selectedItemObjectIndex,
-                name: catalog.name,
-                lvlFolder: catalog.lvlFolder
+            this.$emit(action, {'value': {
+                id : catalog.id,
+                index : index,
+                name: catalog.attached_category_title,
+                catalogId: +catalog.attached_category_id,
               } });
           },
+
         },
         props:[
           'folderH', // заголовок каталога

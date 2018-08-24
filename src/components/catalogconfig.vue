@@ -108,6 +108,7 @@
                   :lastUpdateTxt = 'foldersCont.catalogFolder.lastUpdateTxt'
                   :contextMenu = 'foldersCont.catalogFolder.contextMenu'
                   :rootCatalogFolders = 'foldersCont.catalogFolder.rootCatalogFolders'
+                  :userCatalogId = 'currentCatalogId'
                   @setFolders = 'onSetFolders($event, "catalogFolder")'
                   @addCatalogFolder = 'onAddCatalogFolder'
                   @removeCatalogFolder = 'onRemoveCatalogFolder'
@@ -136,7 +137,7 @@
                     <div class="tab-i" :class="{'active': tabValue === 'goods'}" @click="tabChangeVal('goods')">
                       Товары
                     </div>
-                    <div class="tab-i" :class="{'active': tabValue === 'attach'}" @click="tabChangeVal('attach')" v-show="showAttachedTab">
+                    <div class="tab-i" :class="{'active': tabValue === 'attach'}" @click="tabChangeVal('attach')" v-show="foldersCont.attachFolder.showAttachedTab">
                       Привязанные категории
                     </div>
                   </div>
@@ -184,7 +185,7 @@
                           <div class="bottom-s">
                             <div class="btn-c d-flex justify-content-between">
                               <button type="button" class="btn btn-outline-secondary">Показать товары</button>
-                              <button type="button" class="btn btn-outline-secondary">Привязать</button>
+                              <button type="button" class="btn btn-outline-secondary" @click="onAttachFolderToCategory">Привязать</button>
                             </div>
                           </div>
                         </div>
@@ -246,7 +247,7 @@
                             <div class="bottom-s">
                               <div class="btn-c d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline-secondary">Показать товары</button>
-                                <button type="button" class="btn btn-outline-secondary">Привязать</button>
+                                <button type="button" class="btn btn-outline-secondary" @click="onAttachFolderToCategory">Привязать</button>
                               </div>
                             </div>
                           </div>
@@ -433,37 +434,18 @@
                         <div class="upper-s">
                           <div class="find-folder-i">
                             <div class="txt-f">
-                              Выбранная категория: <span class="provider-txt">{{ 1 }}</span>
+                              Выбранная категория: <span class="provider-txt">{{ foldersCont.attachFolder.folderH }}</span>
                             </div>
-                            <!--<div class="find-b justify-content-start d-flex">-->
-                            <!--<div class="input-group ">-->
-                            <!--<input v-model.lazy="findFolderStr" v-on:keyup.enter="findFolder" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">-->
-                            <!--<div class="input-group-append">-->
-                            <!--<button class="btn btn-outline-secondary" type="button" @click="findFolder">-->
-                            <!--<svg-->
-                            <!--xmlns="http://www.w3.org/2000/svg"-->
-                            <!--xmlns:xlink="http://www.w3.org/1999/xlink"-->
-                            <!--width="17px" height="17px">-->
-                            <!--<path fill-rule="evenodd"  fill="rgb(131, 147, 167)"-->
-                            <!--d="M15.919,15.813 C15.525,16.207 14.887,16.207 14.494,15.813 L11.403,12.723 C10.235,13.594 8.792,14.117 7.223,14.117 C3.357,14.117 0.223,10.983 0.223,7.117 C0.223,3.251 3.357,0.117 7.223,0.117 C11.088,0.117 14.222,3.251 14.222,7.117 C14.222,8.686 13.700,10.130 12.828,11.298 L15.919,14.388 C16.312,14.782 16.312,15.420 15.919,15.813 ZM7.223,2.117 C4.461,2.117 2.222,4.355 2.222,7.117 C2.222,9.879 4.461,12.117 7.223,12.117 C9.984,12.117 12.223,9.879 12.223,7.117 C12.223,4.355 9.984,2.117 7.223,2.117 Z"/>-->
-                            <!--</svg>-->
-                            <!--</button>-->
-                            <!--</div>-->
-                            <!--</div>-->
-                            <!--</div>-->
                           </div>
-                          <!--appCatalogFolders
-                            :folderH = 'foldersCont.providerFolder.folderH'
-                            :sideFolder = 'foldersCont.providerFolder.sideFolder'
-                            :lastUpdateTxt = 'foldersCont.providerFolder.lastUpdateTxt'
-                            :contextMenu = 'foldersCont.providerFolder.contextMenu'
-                            :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
-                            :selectedProvider = 'selectedProvider'
-                            @setFolders = 'onSetFolders($event, "providerFolder")'
-                            @setSelectedItem = 'onSetSelectItem($event, "providerFolder")'
+                          <appBasicCatalogFolders
+                            :folderH = 'foldersCont.attachFolder.folderH'
+                            :rootCatalogFolders = 'foldersCont.attachFolder.rootCatalogFolders'
+                            @setFolders = 'onSetFolders($event, "attachFolder")'
+                            @setSelectedItem = 'onSetSelectItem($event, "attachFolder")'
+                            @removeAttachedItem='onRemoveAttachedItemModal($event, "attachFolder")'
                             ref="attachCont"
                           >
-                          </appCatalogFolders-->
+                          </appBasicCatalogFolders>
                         </div>
                         <div class="bottom-s">
                           <div class="btn-c d-flex justify-content-between">
@@ -492,6 +474,21 @@
           :necessaryEvent="'pageChange'"
           @pageChange="contextRemoveCatalog">
         </appModal>
+        <!-- Modal DeAttach Category -->
+        <appModal
+          :headerText="'Подтвердите отвязывание категории'"
+          :keyId="'confirmDeAttachModal'"
+          :deleteIcon="true"
+          :positiveActionText="'Отвязать категорию'"
+          :textField="remoteTextLabel"
+          :isNotifyModal="true"
+          :negativeActionText="'Отмена'"
+          :actionIndex="0"
+          :inputsArr="inputsArr"
+          :buttonClass="'btn-danger'"
+          :necessaryEvent="'pageChange'"
+          @pageChange="removeAttachedCategory">
+        </appModal>
         <!--Modal AddCatalog-->
         <appModal
           :headerText="'Введите имя новой категории'"
@@ -512,6 +509,7 @@
     import appCatalogFolders from './catalogFolders.vue'
     import appBreadcrumbs from './breadcrumbs.vue'
     import appModal from './modalWindow.vue';
+    import appBasicCatalogFolders from './catalogBasicFolders.vue'
 
     import {API_URL, IMAGE_URL} from '../constants';
     import axios from 'axios';
@@ -679,7 +677,19 @@
                   catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
                 },
                 attachFolder:{
+                  folderH: '',
                   showAttachedTab: false,
+                  /* rootCatalogFolders Item
+                  {
+                    attached_category_id:"34359",
+                    attached_category_title:"Бытовая химия. Уход и красота. Гигиена",
+                    id:"5"
+                  }
+                  */
+                  rootCatalogFolders: [],
+                  catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  catalogSelectedItemCategoryId: 0  // id категории, которую отвязвыем
                 }
               },
               //Goods categoryGoods.pagination.countItemsPage
@@ -748,10 +758,10 @@
                   }
                 ],
                 dropzoneOptions: { // опции для dropzone
-                  url: 'https://httpbin.org/post',
+                  url: API_URL + '/product/' + 0 + '/addgallery',
                   thumbnailWidth: 150,
                   maxFilesize: 0.5,
-                  headers: { "My-Awesome-Header": "header value" },
+                  headers: { Authorization: 'Bearer ' + localStorage.getItem('user-token') },
                   addRemoveLinks: true,
                   //для перевода
                   dictFileTooBig: 'Загружаемый файл слишком большой',
@@ -787,6 +797,7 @@
         components: {
           Multiselect,
           appCatalogFolders,
+          appBasicCatalogFolders,
           appBreadcrumbs,
           appPagination,
           appSwitcher,
@@ -832,18 +843,30 @@
             this.foldersCont.catalogFolder.catalogSelectedItemId = 0;
             this.foldersCont.catalogFolder.catalogSelectedItemIndex = 0;
             this.$set(this,'breadcrumbs',[]);
-            console.log('delete breadcrumbs');
             // скрываем вкладку Привязанные товары
             this.foldersCont.attachFolder.showAttachedTab = false;
           },
+          // действия с привязанными товарами
+          setAttachAction(keyFolder,index){
+            // для привязанных товаров
+            // открываем вкладку Привязанные товары
+            this.foldersCont.attachFolder.showAttachedTab = true;
+            this.$refs['attachCont'].setRootCatalogFoldersComp(this.foldersCont[keyFolder].rootCatalogFolders[index].attachedCategories);
+            //this.foldersCont.attachFolder.rootCatalogFolders = this.foldersCont[keyFolder].rootCatalogFolders[index].attachedCategories;
+            this.foldersCont.attachFolder.folderH = this.foldersCont[keyFolder].rootCatalogFolders[index].name;
+          },
           //запись новых значений в объект по которому кликнули (выдяеляется желтым)
           onSetSelectItem(e, keyFolder){
-            console.log(e);
+            //console.log(e);
             this.foldersCont[keyFolder].catalogSelectedItemId = e.value.id;
             this.foldersCont[keyFolder].catalogSelectedItemIndex = e.value.index;
             if(keyFolder === 'catalogFolder'){
+
+              // для списка категорий
               let newBreadcrumbs = [];
               if(e.value.lvlFolder > 0 && e.value.id !== 0){
+                this.setAttachAction(keyFolder, e.value.index);
+
                 let indexLvlFolder = e.value.lvlFolder - 1;
                 newBreadcrumbs.push(e.value);
                 for(let ind = e.value.index; ind >= 0 || indexLvlFolder === 0; ind--){ // Пока не дошли до самой первой папки, или пока не проверили последнего родителя
@@ -865,17 +888,90 @@
                 }
               }
               else if(e.value.id === 0){
+                if(this.tabValue === 'attach')
+                  this.tabChangeVal('provider');
                 this.onSetSelectRoot();
               }
               else {
                 newBreadcrumbs.push(e.value);
+                this.setAttachAction(keyFolder, e.value.index);
               }
               //console.log(newBreadcrumbs);
               newBreadcrumbs.reverse();
               this.$set(this,'breadcrumbs',newBreadcrumbs);
-              // открываем вкладку Привязанные товары
-              this.foldersCont.attachFolder.showAttachedTab = true;
             }
+          },
+          // находим индекс массива по свойствам элемента
+          findCategoryIndex(categoryArray,categoryId){
+            console.log('categoryId', categoryId);
+            console.log('categoryArray', categoryArray);
+            return categoryArray.findIndex( element => +categoryId == +element.folderId );
+          },
+          // вызываем всплывашку отвязки категорий
+          onRemoveAttachedItemModal(e, keyFolder){
+            this.foldersCont[keyFolder].catalogSelectedItemId = e.value.id;
+            this.foldersCont[keyFolder].catalogSelectedItemIndex = e.value.index;
+            this.foldersCont[keyFolder].catalogSelectedItemCategoryId = e.value.catalogId;
+            if(+this.foldersCont.attachFolder.catalogSelectedItemId !== 0){
+              let categoryName = e.value.name;
+              this.remoteTextLabel = 'Вы действительно хотите отвязать категорию - "' +  categoryName + '"?';
+              //console.log(this.foldersCont.attachFolder,e.value);
+              $('#confirmDeAttachModal').modal();
+            }else{
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Вы не выбрали привязанную категорию');
+            }
+          },
+          removeAttachedCategory(){
+            let activeTab = this.getActiveTab();
+            let categoryId = this.foldersCont.attachFolder.catalogSelectedItemId;
+            console.log(this.foldersCont.attachFolder);
+            this.stepOneActive(); // прогрессбар
+            axios({url: API_URL + '/categoryattach/' + categoryId ,method: 'DELETE' })
+              .then(resp => {
+                const error = resp.data.error;
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при отвязывании категории: ' + errorTxt);
+                }else{
+                  //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
+                  let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
+                  updateCategory.then(
+                    result => { // всё ок
+                      // сохраняем вложенность
+                      result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
+                      this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                      this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
+                      let catalogKey = '';
+                      if(this.tabValue == 'provider')
+                        catalogKey = 'providerFolder';
+                      else if(this.tabValue == 'find')
+                        catalogKey = 'findResFolder';
+
+                      let newIndex = this.findCategoryIndex(this.foldersCont[catalogKey].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
+                      console.log('newIndex ',newIndex);
+                      this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
+                    },
+                    error =>{ // всё не ок
+                      console.log('error', error);
+                    }
+                  );
+
+                  // удаляем из списка компонента привязаных товаров выбранную категорию
+                  this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
+                  //this.setAttachAction('catalogFolder',this.foldersCont['catalogFolder'].catalogSelectedItemIndex);
+                  this.setSuccesAlertShow(true);
+                  this.setSuccesAlertMsg('Категория отвязана');
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при отвязывании категории ');
+                this.stepLastActive(); // прогрессбар
+                console.log(err);
+              });
           },
           //поиск среди папок по подстроке
           findFolder(){
@@ -1008,12 +1104,13 @@
                 parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
               };
               console.log('Req pay --', payload);
-              let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider, +this.currentCatalogId);
+              let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider);
               categoryRequest.then(
                 result => { // всё ок
                   console.log('categoryRequest result -->>', result);
                   this.foldersCont[folderKey].rootCatalogFolders = result.catalogFolders;
                   //Перезаписываем значение в компоненте
+                  console.log('componentRefKey -->>', componentRefKey);
                   this.$refs[componentRefKey].setRootCatalogFoldersComp(result.catalogFolders);
                 },
                 error =>{ // всё не ок
@@ -1037,14 +1134,19 @@
               // this.updateFolderCont(null, null, null, this.selectedProvider.id, 'providerFolder', 'providerCont');
             }
           },
-          //инициализация всех папок/категорий
-          allFoldersInit(){
+          // инициализация вкладок с категориями и товарами не созданных с пользователем
+          notUserCreatedFoldersInit(){
             //папка с поставщиком
             this.updateFolderCont(null, null, null, null, 'providerFolder', 'providerCont');
             //папка с результатами поиска
             this.updateFolderCont(null, null, null, null, 'findResFolder', 'findResFolder');
+            // todo: инициализация товаров
+          },
+          //инициализация всех папок/категорий
+          allFoldersInit(){
+            this.notUserCreatedFoldersInit();
             //папка каталога пользователя
-            //todo: будет новый метод на беке,
+            //todocomplete: будет новый метод на беке,
             this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
 
           },
@@ -1082,7 +1184,7 @@
             if(+this.foldersCont.catalogFolder.catalogSelectedItemId !== 0){
               console.log(this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont.catalogFolder.catalogSelectedItemIndex]);
               let categoryName = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont.catalogFolder.catalogSelectedItemIndex].name;
-              this.remoteTextLabel = 'Вы действительно хотите удалить категорию - "' +  categoryName + '"';
+              this.remoteTextLabel = 'Вы действительно хотите удалить категорию - "' +  categoryName + '"?';
               $('#confirmDeleteModal').modal();
             }else{
               this.setErrorAlertShow(true);
@@ -1107,20 +1209,40 @@
                 selectedId: 0,
                 selectedIndex: 0,
               };
-
-
+          },
+          // получить категорию по Ид
+          getCategoryById(categoryId){
+            return new Promise((resolve, reject) => {
+              axios({url: API_URL + '/category/' + categoryId, data: {}, method: 'GET' })
+                .then(resp => {
+                  const error = resp.data.error;
+                  console.log('resp.error',resp.data.error);
+                  this.stepLastActive(); // прогрессбар
+                  if(error){
+                    reject(resp.data.data);
+                    let errorTxt = resp.data.data.msgClient;
+                    this.setErrorAlertShow(true);
+                    this.setErrorAlertMsg('Ошибка при обновлении категории: ' + errorTxt);
+                  }else{
+                    resolve(resp.data.data);
+                  }
+                })
+                .catch(err => {
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при обновлении категории');
+                  this.stepLastActive(); // прогрессбар
+                  reject(err);
+                });
+            });
           },
           // Привязка категорий
           onAttachFolderToCategory(){
-            // todocomplete: проверить активную вкладку, найти на ней селектед Id, проверить выбрано ли что-то
-            // todocomplete: проверить пользовательский каталог, выбрано ли там что-то
-            // todocomplete: отправить запрос на сервер
             let activeTab = this.getActiveTab();
             let catalogCategory = {
               selectedId: +this.foldersCont.catalogFolder.catalogSelectedItemId,
               selectedIndex: this.foldersCont.catalogFolder.catalogSelectedItemIndex
             };
-            console.log(activeTab,catalogCategory);
+            //console.log(activeTab,catalogCategory);
             if (catalogCategory.selectedId) {
               if (activeTab.selectedId) {
                 let payload = {
@@ -1141,7 +1263,20 @@
                       this.setSuccesAlertShow(true);
                       this.setSuccesAlertMsg('Категории привязаны');
                       activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
-                      this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                      //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                      // обновляем список привязанных категорий у выбранного id
+                      let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
+                      updateCategory.then(
+                        result => { // всё ок
+                          // сохраняем вложенность
+                          result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
+                          this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                          this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
+                        },
+                        error =>{ // всё не ок
+                          console.log('error', error);
+                        }
+                      );
                     }
                   })
                   .catch(err => {
@@ -1244,7 +1379,7 @@
                 // this.categoryGoods.pagination.countPage;
                 //this.categoryGoods.goodsListArr[0];
                 this.setProduct(this.categoryGoods.goodsListArr[0].id, 0); // инициализируем первый товар
-
+                this.categoryGoods.dropzoneOptions.url =  API_URL + '/product/' + this.categoryGoods.goodsListArr[0].id + '/addgallery';
               }
               this.stepLastActive(); // прогрессбар
             })

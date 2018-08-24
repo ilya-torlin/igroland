@@ -230,7 +230,7 @@
               e.preventDefault();
           },
           // запрос категории/каталога по ид, возвращает промис
-          requestCategory(idCategory, lvlFolder, parentFolderId, selectedProvider, catalogId){
+          requestCategory(idCategory, lvlFolder, parentFolderId, selectedProvider){
             //после вызова в promise вызывать this.setFolders().. для перезаписи каталога в родительском компоненте
             return new Promise((resolve, reject) => {
               let payload = {
@@ -239,7 +239,6 @@
                 id: idCategory || '', // ид папки
                 catalog_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
                 parentFolderId: parentFolderId || '0', // ид родительской папки, вроде не используется, надо сделать ревью
-                catalogId: catalogId || ''
               };
               this.folderPending = true; // пока идёт запрос контейнер с папками блокируется
               this.stepOneActive(); // прогрессбар
@@ -303,7 +302,7 @@
 
               this.setFolders();
             }else{
-              let categoryRequest = this.requestCategory(folderId, lvlFolder, parentFolderId);
+              let categoryRequest = this.requestCategory(folderId, lvlFolder, parentFolderId, this.userCatalogId);
               categoryRequest.then(
 
                 result => { // всё ок
@@ -390,6 +389,7 @@
           'selectedProvider', //выбранный поставщик (объект {name, id})
           'selectedItemId', // выбранный каталог (по которому кликнули, выделяется желтым цветом объект id)
           'selectedItemIndex', // выбранный каталог (по которому кликнули, выделяется желтым цветом объект index)
+          'userCatalogId',  // Id каталога пользователя
         ],
         mounted(){
             let varthis = this;
