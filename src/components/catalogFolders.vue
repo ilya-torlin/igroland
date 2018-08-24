@@ -26,8 +26,8 @@
   -->
 
   <!--
-    todo: in left sidebar, create default empty folder... after attach event, upload this folder
-    todo: breadcrumbs left sidebar
+    todocomplete: in left sidebar, create default empty folder... after attach event, upload this folder
+    todocomplete: breadcrumbs left sidebar
   -->
 
   <div class=" catalog-folder white-bg" :class="{'side-catalog-f': sideFolder}" >

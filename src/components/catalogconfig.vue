@@ -47,10 +47,10 @@
 
     todo: В хлебных крошках ↓↓↓
       todo: написать обработчик для тригера "Скрыть не в наличии"
-      todo: Добавить "Новую категорию"
+      todocomplete: Добавить "Новую категорию"
 
     todo: Каталог (панель слева)
-      todo: В контекстное меню Добавить "Отвязать товар", если товар уже привязан (поидее такого не может быть, т.к. при привязке товара, он удаляется из массива т.е. он не виден для пользователя)
+      todocomplete: В контекстное меню Добавить "Отвязать товар", если товар уже привязан (поидее такого не может быть, т.к. при привязке товара, он удаляется из массива т.е. он не виден для пользователя)
       todo: В контекстное меню Добавить "Заблокировать" в контекстное меню каталога, то что было в 3м столбце (иконка замочек)
       todocomplete: при клике на папку в каталоге, изменить хлебные крошки
       todo: Сделать возможность изменения родителя (придумать как сделать), скорее всего в настройках категории
@@ -66,13 +66,13 @@
       todocompete: сделать выделение каталога при клике (завести отдельную переменную с индексом и ид выделенного каталога), смотри как сделанно во вкладке "Товары"
       todo: контекстное меню
         todo: Товары - показать товары
-        todo: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
+        todocomplete: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
       todo: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
 
     todo: Вкладка "Поиск"
       todo: контекстное меню
         todo: Товары - показать товары
-        todo: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
+        todocomplete: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
       todo: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
 
     todo: Вкладка "Товары"
@@ -274,6 +274,7 @@
                                 </div>
                               </div>
                             </div>
+                            <!--
                             <div class="goods-cont">
                               <div class="row">
                                 <div class="col-4">
@@ -316,17 +317,12 @@
                                   </h6>
 
                                   <appSwitcher class="mb-3"  txt="Использовать галерею по умолчанию"
-                                                :switcherActive="categoryGoods.useDefaultImagesSwitch"
-                                                @switchToogle="onUseDefaultImages">
+                                               :switcherActive="categoryGoods.useDefaultImagesSwitch"
+                                               @switchToogle="onUseDefaultImages">
                                   </appSwitcher>
                                   <div class="image-galery mb-3">
                                     <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in categoryGoods.goodsListArr[categoryGoods.productSelectedIndex].images">
-                                    <!--<img src="../assets/img/dodik2.png" alt="">-->
-                                    <!--<img src="../assets/img/imageTmp.png" alt="">-->
-                                    <!--<img src="../assets/img/dodik2.png" alt="">-->
-                                    <!--<img src="../assets/img/imageTmp.png" alt="">-->
-                                    <!--<img src="../assets/img/dodik2.png" alt="">-->
-                                    <!--<img src="../assets/img/imageTmp.png" alt="">-->
+
                                   </div>
                                   <appSwitcher class="mb-3" txt="Использовать свои изображения"
                                                :switcherActive="categoryGoods.useOwnImagesSwitch"
@@ -410,7 +406,7 @@
                                           <div class="i-t gray-txt">
                                             {{itemParam.val}}
                                           </div>
-                                          <!--todo: Добавить краткое описание товара-->
+
                                         </div>
                                       </div>
 
@@ -419,6 +415,11 @@
                                 </div>
                               </div>
                             </div>
+                            -->
+                            <appCatalogCategoryGoods
+                              :categoryGoods="categoryGoods"
+                              ref="productsCatalog"
+                            ></appCatalogCategoryGoods>
                           </div>
                           <div class="bottom-s">
                             <div class="row">
@@ -510,6 +511,7 @@
     import appBreadcrumbs from './breadcrumbs.vue'
     import appModal from './modalWindow.vue';
     import appBasicCatalogFolders from './catalogBasicFolders.vue'
+    import appCatalogCategoryGoods from './catalogCategoryGoods'
 
     import {API_URL, IMAGE_URL} from '../constants';
     import axios from 'axios';
@@ -798,6 +800,7 @@
           Multiselect,
           appCatalogFolders,
           appBasicCatalogFolders,
+          appCatalogCategoryGoods,
           appBreadcrumbs,
           appPagination,
           appSwitcher,
@@ -1327,33 +1330,33 @@
               });
           },
           //event смены страницы товара (пагинация)
-          onGoodsPageChange(e){
-            console.log('onGoodsPageChange ', e.value);
-            this.categoryGoods.pagination.currentPage = e.value.currentPage;
-          },
+          // onGoodsPageChange(e){
+          //   console.log('onGoodsPageChange ', e.value);
+          //   this.categoryGoods.pagination.currentPage = e.value.currentPage;
+          // },
           //Использовать свои изображения, переключатель
-          onUseOwnImages(){
-            this.categoryGoods.useOwnImagesSwitch = !this.categoryGoods.useOwnImagesSwitch;
-            if (this.categoryGoods.useOwnImagesSwitch){
-              this.categoryGoods.useDefaultImagesSwitch = false;// 1 из 2х, должен быть активен
-            }else {
-              this.categoryGoods.useDefaultImagesSwitch = true;// 1 из 2х, должен быть активен
-            }
-          },
+          // onUseOwnImages(){
+          //   this.categoryGoods.useOwnImagesSwitch = !this.categoryGoods.useOwnImagesSwitch;
+          //   if (this.categoryGoods.useOwnImagesSwitch){
+          //     this.categoryGoods.useDefaultImagesSwitch = false;// 1 из 2х, должен быть активен
+          //   }else {
+          //     this.categoryGoods.useDefaultImagesSwitch = true;// 1 из 2х, должен быть активен
+          //   }
+          // },
           //Использовать изображения по умолчанию, переключатель
-          onUseDefaultImages(){
-            this.categoryGoods.useDefaultImagesSwitch = !this.categoryGoods.useDefaultImagesSwitch;
-            if(this.categoryGoods.useDefaultImagesSwitch){
-              this.categoryGoods.useOwnImagesSwitch = false;// 1 из 2х, должен быть активен
-            } else {
-              this.categoryGoods.useOwnImagesSwitch = true;// 1 из 2х, должен быть активен
-            }
-          },
+          // onUseDefaultImages(){
+          //   this.categoryGoods.useDefaultImagesSwitch = !this.categoryGoods.useDefaultImagesSwitch;
+          //   if(this.categoryGoods.useDefaultImagesSwitch){
+          //     this.categoryGoods.useOwnImagesSwitch = false;// 1 из 2х, должен быть активен
+          //   } else {
+          //     this.categoryGoods.useOwnImagesSwitch = true;// 1 из 2х, должен быть активен
+          //   }
+          // },
           // для компонента input, изменение родителя
-          onChangeDataParcent(data){
-            this.categoryGoods.profitPercentInput.value = data.value;
-            this.categoryGoods.profitPercentInput.isValid = data.valid;
-          },
+          // onChangeDataParcent(data){
+          //   this.categoryGoods.profitPercentInput.value = data.value;
+          //   this.categoryGoods.profitPercentInput.isValid = data.valid;
+          // },
           //запрос списка товара в определённой категории
           getProducts(){
             let payload = {
@@ -1390,40 +1393,40 @@
               });
           },
           //запрос информации о конкретном товаре и выделение товара в списке товаров
-          setProduct(prodId, categoryGoodsIndex){
-            this.categoryGoods.productSelectedId = prodId;
-            this.categoryGoods.productSelectedIndex = categoryGoodsIndex;
-
-            let payload = {
-              id: prodId || this.categoryGoods.categoryId || null,
-            };
-            this.stepOneActive(); // прогрессбар
-            axios.get( API_URL + `/product/${this.categoryGoods.productSelectedId}`, {
-              params: {
-
-              },
-            }).then(resp => {
-              const error = resp.data.error;
-              if(error){
-                let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
-                this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
-              }else{
-                //this.$set(this.categoryGoods.goodsListArr[categoryGoodsIndex], 'params', resp.data.data.params);
-                this.categoryGoods.goodsListArr[categoryGoodsIndex] = resp.data.data;
-                this.categoryGoods.productSelectedId = resp.data.data.id;
-              }
-              this.stepLastActive(); // прогрессбар
-            })
-            .catch(err => {
-              this.setErrorAlertShow(true);
-              this.setErrorAlertMsg('Ошибка при запросе товаров');
-              this.stepLastActive(); // прогрессбар
-            });
-          },
+          // setProduct(prodId, categoryGoodsIndex){
+          //   this.categoryGoods.productSelectedId = prodId;
+          //   this.categoryGoods.productSelectedIndex = categoryGoodsIndex;
+          //
+          //   let payload = {
+          //     id: prodId || this.categoryGoods.categoryId || null,
+          //   };
+          //   this.stepOneActive(); // прогрессбар
+          //   axios.get( API_URL + `/product/${this.categoryGoods.productSelectedId}`, {
+          //     params: {
+          //
+          //     },
+          //   }).then(resp => {
+          //     const error = resp.data.error;
+          //     if(error){
+          //       let errorTxt = resp.data.data.msgClient;
+          //       this.setErrorAlertShow(true);
+          //       this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
+          //     }else{
+          //       //this.$set(this.categoryGoods.goodsListArr[categoryGoodsIndex], 'params', resp.data.data.params);
+          //       this.categoryGoods.goodsListArr[categoryGoodsIndex] = resp.data.data;
+          //       this.categoryGoods.productSelectedId = resp.data.data.id;
+          //     }
+          //     this.stepLastActive(); // прогрессбар
+          //   })
+          //   .catch(err => {
+          //     this.setErrorAlertShow(true);
+          //     this.setErrorAlertMsg('Ошибка при запросе товаров');
+          //     this.stepLastActive(); // прогрессбар
+          //   });
+          // },
           //Переименование товара
-          renameGoods(){
-          },
+          // renameGoods(){
+          // },
           // получаем информацию по текущему пользовательскому каталогу
           getMyCatalogInfo(){
             this.stepOneActive(); // прогрессбар

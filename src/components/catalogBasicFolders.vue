@@ -38,7 +38,7 @@
               <div class="folder-title" @click.right = "" >
                 <div class="folder-name ">
                   <div class="folder-controls-c">
-                    <!-- todo: по клику удалять связь категорий -->
+                    <!-- todocomplete: по клику удалять связь категорий -->
                     <button class="btn-icon-tr" @click="setSelectItem(catFolder, index, 'removeAttachedItem')">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
