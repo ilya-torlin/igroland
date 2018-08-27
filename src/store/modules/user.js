@@ -109,7 +109,8 @@ const actions = {
                 };
 
             commit('setName', userData.name ? userData.name : '',); // !!! .name
-            commit('setRole', userData.role.name);
+            //commit('setRole', userData.role.name);
+            commit('setRole', userData.role);
             commit('setAvatar', userData.photo ? userData.photo : 'src/assets/img/avatar.png'); //
             commit('setId', userData.id);
             commit('setApplicationList', userData.applicationList ? userData.applicationList : '');
