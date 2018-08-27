@@ -47,6 +47,7 @@
         :isOn="catalogItem.isOn"
         :description="catalogItem.description"
         :selectedUsers="catalogItem.selectedUsers"
+        :userRole="userRole"
         @configToogle = "onConfigToogle(index)"
         @switchToogle = "onSwitchToogle(index)"
         @isOnToogle = "onIsOnToogle(index)"
@@ -99,7 +100,7 @@
   import appInput from './inputValid';
   import appModal from './modalWindow';
   import appPagination from './pagination'
-  import {API_URL} from '../constants'
+  import {API_URL, USER_ADMIN} from '../constants'
   import axios from 'axios'
 
   import {mapGetters} from 'vuex';
@@ -177,7 +178,14 @@
       ...mapGetters('progress', {
         progStateWidth: 'progStateWidth',
         progShow: 'progShow'
-      })
+      }),
+      ...mapGetters('user',
+        {
+          avatar: 'avatar',
+          userName: 'name',
+          userRole: 'role',
+          userProfile: 'profile'
+        }),
     },
     methods: {
       ...mapMutations('alerts',{
@@ -433,6 +441,10 @@
       },
       // подгрузка списка пользователей с сервера
       initUserList(){
+        // если пользователь не суперадмин, то не запрашивать каталог
+        if (USER_ADMIN !== this.userRole.id){
+          return
+        }
         this.stepOneActive(); // прогрессбар
         axios({url: API_URL + '/user', method: 'GET' })
           .then(resp => {
