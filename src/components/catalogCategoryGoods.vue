@@ -497,7 +497,7 @@
         this.getProducts();
         //let varthis = this;
         $(document).click( () => {
-          if(!$(this).hasClass('folder-title')){
+          if(!$(this).hasClass('goods-title')){
             this.contextMenu.contextMenuOpen = false;
           }
         });

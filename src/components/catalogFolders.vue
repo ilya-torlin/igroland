@@ -44,7 +44,6 @@
                 @click="setSelectItem(catFolder, index)"
                 :class="[ {'is-active' : catFolder.isOpen }, {'isActive' : (catFolder.folderId == selectedItemObjectId)} ]"
                 :style="{'paddingLeft': catFolder.lvlFolder * 28 + 'px'}"
-
                 v-if="!catFolder.hideFolder"
             >
               <!--:key - параметр для сортировки-->
