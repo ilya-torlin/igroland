@@ -86,7 +86,7 @@
                   </div>
                 </div>
                 <div class="col-md-5">
-                  <div class="item-b justify-content-start">
+                  <div class="item-b justify-content-start" v-if="userRole.id === adminRoleId">
                     <div class="user-txt">
                       Доступен для пользователей
                     </div>
@@ -127,7 +127,7 @@
 </template>
 
 <script>
-
+  import {USER_ADMIN} from '../constants'
   import Multiselect from 'vue-multiselect'
   import appSwitcher from './switcher'
 
@@ -148,7 +148,8 @@
       'isActive',
       'isOn',
       'description',
-      'selectedUsers'
+      'selectedUsers',
+      'userRole'
     ],
     components: {
       Multiselect,
@@ -157,6 +158,9 @@
     computed: {
       opt(){
         return this.userList;
+      },
+      adminRoleId(){
+        return USER_ADMIN;
       }
     },
     methods:{
