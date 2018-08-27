@@ -43,8 +43,8 @@
                   :searchable="false"
                   placeholder="Выбрать поставщика"
                   selectedLabel="Выбрано"
-                  label="name"
-                  track-by="name"
+                  label="catalogName"
+                  track-by="id"
                   selectLabel="Выбрать"
                   deselectLabel=""
                   @input = "onChangeProvider($event, 'thisSelectedProvider')" >
@@ -116,7 +116,7 @@
             let selectedProvider = {
               code: event.code,
               id: event.id,
-              name: event.name
+              catalogName: event.catalogName
             };
             this[selectResKey] = selectedProvider;
             this.$emit('changeProvider', {'value': this.thisSelectedProvider})
