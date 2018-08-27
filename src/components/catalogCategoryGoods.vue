@@ -48,27 +48,32 @@
           Галерея
         </h6>
         <template v-if="productSelectedId > 0">
-          <appSwitcher class="mb-3"  txt="Использовать галерею по умолчанию"
-                       :switcherActive="useDefaultImagesSwitch"
-                       @switchToogle="onUseDefaultImages">
-          </appSwitcher>
-          <div class="image-galery mb-3">
-            <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in goodsListArr[productSelectedIndex].images">
-          </div>
-          <appSwitcher class="mb-3" txt="Использовать свои изображения"
-                       :switcherActive="useOwnImagesSwitch"
-                       @switchToogle="onUseOwnImages">
-          </appSwitcher>
-          <transition name="vue-fade" mode="out-in"
-                      enter-active-class="animated zoomIn"
-                      leave-active-class="animated zoomOut">
-            <div v-if="useOwnImagesSwitch">
-              <vue-dropzone class="mb-3" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
-              <div class="image-galery mb-3">
-                <img src="../assets/img/dodik.png" alt="">
-              </div>
-            </div>
-          </transition>
+          <appAdminGallery
+              :imagelist="goodsListArr[productSelectedIndex].images"
+              :product="productSelectedId"
+              :dropzoneOptions="dropzoneOptions"
+          ></appAdminGallery>
+          <!--<appSwitcher class="mb-3"  txt="Использовать галерею по умолчанию"-->
+                       <!--:switcherActive="useDefaultImagesSwitch"-->
+                       <!--@switchToogle="onUseDefaultImages">-->
+          <!--</appSwitcher>-->
+          <!--<div class="image-galery mb-3">-->
+            <!--<img :src="IMAGE_URL + item" alt="" v-for="(item, index) in goodsListArr[productSelectedIndex].images">-->
+          <!--</div>-->
+          <!--<appSwitcher class="mb-3" txt="Использовать свои изображения"-->
+                       <!--:switcherActive="useOwnImagesSwitch"-->
+                       <!--@switchToogle="onUseOwnImages">-->
+          <!--</appSwitcher>-->
+          <!--<transition name="vue-fade" mode="out-in"-->
+                      <!--enter-active-class="animated zoomIn"-->
+                      <!--leave-active-class="animated zoomOut">-->
+            <!--<div v-if="useOwnImagesSwitch">-->
+              <!--<vue-dropzone class="mb-3" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>-->
+              <!--<div class="image-galery mb-3">-->
+                <!--<img src="../assets/img/dodik.png" alt="">-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</transition>-->
         </template>
       </div>
       <div class="col-4">
@@ -211,6 +216,7 @@
   import appSwitcher from './switcher'
   import appInput from './inputValid'
   import vue2Dropzone from 'vue2-dropzone'
+  import appAdminGallery from './adminGallery'
 
     export default {
       name: 'catalogCategoryGoods',
@@ -288,7 +294,8 @@
         Multiselect,
         appSwitcher,
         appInput,
-        vueDropzone: vue2Dropzone
+        vueDropzone: vue2Dropzone,
+        appAdminGallery
       },
       methods: {
         ...mapMutations('alerts',{

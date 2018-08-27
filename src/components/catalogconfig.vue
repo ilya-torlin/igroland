@@ -170,7 +170,7 @@
                           </div>
                           <div class="bottom-s">
                             <div class="btn-c d-flex justify-content-between">
-                              <button type="button" class="btn btn-outline-secondary">Показать товары</button>
+                              <button type="button" class="btn btn-outline-secondary" @click="onTabShowGoods">Показать товары</button>
                               <button type="button" class="btn btn-outline-secondary" @click="onAttachFolderToCategory">Привязать</button>
                             </div>
                           </div>
@@ -233,7 +233,7 @@
                             </div>
                             <div class="bottom-s">
                               <div class="btn-c d-flex justify-content-between">
-                                <button type="button" class="btn btn-outline-secondary">Показать товары</button>
+                                <button type="button" class="btn btn-outline-secondary" @click="onTabShowGoods">Показать товары</button>
                                 <button type="button" class="btn btn-outline-secondary" @click="onAttachFolderToCategory">Привязать</button>
                               </div>
                             </div>
