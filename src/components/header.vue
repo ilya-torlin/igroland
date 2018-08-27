@@ -49,7 +49,7 @@
                       </template>
                     </div>
                     <div class="h-user-role">
-                      {{userRole}}
+                      {{userRole.name}}
                     </div>
                   </div>
                   <div class="user-control-menu">
