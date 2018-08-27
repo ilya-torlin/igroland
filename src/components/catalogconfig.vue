@@ -114,6 +114,7 @@
                   @removeCatalogFolder = 'onRemoveCatalogFolder'
                   @setSelectedItem = 'onSetSelectItem($event, "catalogFolder")'
                   @setSelectRoot = 'onSetSelectRoot'
+                  @showGoods="onCatalogShowGoods"
                   ref="catalogFolder"
                 >
                 </appCatalogFolders>
@@ -151,22 +152,6 @@
                               <div class="txt-f">
                                 Выбранный каталог: <span class="provider-txt">{{selectedProvider.name}}</span>
                               </div>
-                              <!--<div class="find-b justify-content-start d-flex">-->
-                              <!--<div class="input-group ">-->
-                              <!--<input v-model.lazy="findFolderStr" v-on:keyup.enter="findFolder" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">-->
-                              <!--<div class="input-group-append">-->
-                              <!--<button class="btn btn-outline-secondary" type="button" @click="findFolder">-->
-                              <!--<svg-->
-                              <!--xmlns="http://www.w3.org/2000/svg"-->
-                              <!--xmlns:xlink="http://www.w3.org/1999/xlink"-->
-                              <!--width="17px" height="17px">-->
-                              <!--<path fill-rule="evenodd"  fill="rgb(131, 147, 167)"-->
-                              <!--d="M15.919,15.813 C15.525,16.207 14.887,16.207 14.494,15.813 L11.403,12.723 C10.235,13.594 8.792,14.117 7.223,14.117 C3.357,14.117 0.223,10.983 0.223,7.117 C0.223,3.251 3.357,0.117 7.223,0.117 C11.088,0.117 14.222,3.251 14.222,7.117 C14.222,8.686 13.700,10.130 12.828,11.298 L15.919,14.388 C16.312,14.782 16.312,15.420 15.919,15.813 ZM7.223,2.117 C4.461,2.117 2.222,4.355 2.222,7.117 C2.222,9.879 4.461,12.117 7.223,12.117 C9.984,12.117 12.223,9.879 12.223,7.117 C12.223,4.355 9.984,2.117 7.223,2.117 Z"/>-->
-                              <!--</svg>-->
-                              <!--</button>-->
-                              <!--</div>-->
-                              <!--</div>-->
-                              <!--</div>-->
                             </div>
                             <appCatalogFolders
                               :folderH = 'foldersCont.providerFolder.folderH'
@@ -178,6 +163,7 @@
                               @setFolders = 'onSetFolders($event, "providerFolder")'
                               @setSelectedItem = 'onSetSelectItem($event, "providerFolder")'
                               @attachFolderToCategory='onAttachFolderToCategory'
+                              @showGoods="onTabShowGoods"
                               ref="providerCont"
                             >
                             </appCatalogFolders>
@@ -240,6 +226,7 @@
                                 @showParamFolder = 'onSetFolders($event)'
                                 @setSelectedItem = 'onSetSelectItem($event, "findResFolder")'
                                 @attachFolderToCategory='onAttachFolderToCategory'
+                                @showGoods="onTabShowGoods"
                                 ref="findResFolder"
                               >
                               </appCatalogFolders>
@@ -255,7 +242,7 @@
                           <div class="upper-s">
                             <div class="find-folder-i">
                               <div class="txt-f">
-                                Товары в категории: <span class="provider-txt">{{categoryGoods.category.name}}</span>
+                                Товары в категории: <span class="provider-txt">{{categoryGoods.selectedTitle}}</span>
                               </div>
                               <div class="find-b justify-content-start d-flex">
                                 <div class="input-group ">
@@ -560,6 +547,7 @@
               //Goods categoryGoods.pagination.countItemsPage
               categoryGoods: { // товары выбранной категории
                 findGoodsStr: '',
+                selectedTitle:'',
                 categoryId: 33472,//для запроса товаров
                 supplier_id: '',//для запроса товаров
                 limit: '',//для запроса товаров
@@ -1205,6 +1193,30 @@
                 this.stepLastActive(); // прогрессбар
               });
           },
+          // показываем товары отпределенной категориии
+          onCatalogShowGoods(){
+            let catalogCategory = {
+              selectedId: +this.foldersCont.catalogFolder.catalogSelectedItemId,
+              selectedIndex: this.foldersCont.catalogFolder.catalogSelectedItemIndex
+            };
+            if (catalogCategory.selectedId) {
+              this.categoryGoods.categoryId = catalogCategory.selectedId;
+              this.categoryGoods.selectedTitle = this.foldersCont.catalogFolder.rootCatalogFolders[catalogCategory.selectedIndex].name;
+              console.log('onCatalogShowGoods');
+              this.$refs['productsCatalog'].getProducts(catalogCategory.selectedId);
+              this.tabChangeVal('goods');
+            }
+          },
+          onTabShowGoods(){
+            let activeTab = this.getActiveTab();
+            if (activeTab.selectedId) {
+              this.categoryGoods.categoryId = activeTab.selectedId;
+              this.categoryGoods.selectedTitle = activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].name;
+              console.log('onTabShowGoods');
+              this.$refs['productsCatalog'].getProducts(activeTab.selectedId);
+              this.tabChangeVal('goods');
+            }
+          }
         },
         mounted(){
           this.getProvider();

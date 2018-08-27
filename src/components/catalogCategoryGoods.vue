@@ -406,13 +406,13 @@
           }
         },
         //запрос списка товара в определённой категории
-        getProducts(){
+        getProducts(categoryId){
           // проверяем если передается категория 0, то не выполняем запрос на получение товаров
-          if (this.categoryId === 0)
+          if (categoryId === 0)
             return;
 
           let payload = {
-            category_id: this.categoryId || null,
+            category_id: categoryId || null,
             supplier_id: this.supplierId || null,
             limit: this.limit || null,
             offset: this.offset || null,
@@ -494,7 +494,7 @@
         },
       },
       mounted(){
-        this.getProducts();
+        this.getProducts(this.categoryId);
         //let varthis = this;
         $(document).click( () => {
           if(!$(this).hasClass('goods-title')){
