@@ -429,12 +429,14 @@
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
             }else{
+              console.log(resp);
               this.goodsListArr = resp.data.data.items;
               // this.categoryGoods.pagination.countItemsPage;
               // this.categoryGoods.pagination.countPage;
               //this.categoryGoods.goodsListArr[0];
               //this.setProduct(this.goodsListArr[0].id, 0); // инициализируем первый товар
-              this.dropzoneOptions.url =  API_URL + '/product/' + this.goodsListArr[0].id + '/addgallery';
+              if (this.goodsListArr.length > 0)
+                this.dropzoneOptions.url =  API_URL + '/product/' + this.goodsListArr[0].id + '/addgallery';
             }
             this.stepLastActive(); // прогрессбар
           })
