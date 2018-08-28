@@ -108,6 +108,7 @@
                         :isValid="profitPercentInput.isValid"
                         :showError="profitPercentInput.showError"
                         @changedata="onChangeDataParcent($event)"
+                        ref="tradeMarkup"
               >
               </appInput>
             </div>
@@ -208,7 +209,7 @@
             alternativeGoodsName: '',
             useOwnImagesSwitch: false,
             useDefaultImagesSwitch: true,
-            limit: 50,//для запроса товаров
+            limit: 20,//для запроса товаров
             productSelectedId: 0,// id выбранного товара
             productSelectedIndex: 0,
             profitPercentInput: {
@@ -219,7 +220,7 @@
               placeholder: "Наценка, %",
               type: "text",
               required: "false",
-              pattern: /^[0-9,.]{1,15}$/,
+              pattern: /^[0-9,.]{1,2}$/,
               value: '',
               isValid: false
             },
@@ -372,6 +373,11 @@
               this.productSelectedId = resp.data.data.id;
               this.alternativeGoodsName = resp.data.data.name;
               this.dropzoneOptions.url =  API_URL + '/product/' + this.productSelectedId + '/addgallery';
+              if(resp.data.data.tradeMarkup)
+                this.profitPercentInput.value = resp.data.data.tradeMarkup.value;
+              else
+                this.profitPercentInput.value = '';
+              this.$refs['tradeMarkup'].activated = false;
               // говорим компоненту родителю, что выделили продукт
               this.$emit('setSelectedProduct', {
                 id: this.productSelectedId,
@@ -386,12 +392,35 @@
               this.stepLastActive(); // прогрессбар
             });
         },
-        // для компонента input, изменение родителя
+        // для компонента input, изменение родителя, установка наценки на товар
         onChangeDataParcent(data){
           this.profitPercentInput.value = data.value;
           this.profitPercentInput.isValid = data.valid;
           if(this.profitPercentInput.isValid){
-            // обновляем данные товара
+            let payload = {
+              value: this.profitPercentInput.value,
+            };
+            this.stepOneActive(); // прогрессбар
+            axios({url: API_URL + '/product/' + this.productSelectedId + '/settrademarkup', data: payload, method: 'POST' })
+              .then(resp => {
+                const error = resp.data.error;
+                console.log(resp);
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при изменении наценки: ' + errorTxt);
+                }else{
+                  this.setSuccesAlertShow(true);
+                  this.setSuccesAlertMsg('Наценка изменена');
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при изменении наценки');
+                this.stepLastActive(); // прогрессбар
+                console.log(err);
+              });
           }
         },
         //запрос списка товара в определённой категории
