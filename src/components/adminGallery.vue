@@ -6,8 +6,8 @@
                    :switcherActive="useDefaultImagesSwitch"
                    @switchToogle="onUseDefaultImages">
       </appSwitcher>
-      <div class="image-galery mb-3">
-        <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist">
+      <div class="image-galery mb-3" v-if="imagelist.SUPPLIER">
+        <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist.SUPPLIER" :key="index">
       </div>
       <appSwitcher class="mb-3" txt="Использовать свои изображения"
                    :switcherActive="useOwnImagesSwitch"
@@ -18,8 +18,8 @@
                   leave-active-class="animated zoomOut">
         <div v-if="useOwnImagesSwitch">
           <vue-dropzone class="mb-3" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
-          <div class="image-galery mb-3">
-            <img src="../assets/img/dodik.png" alt="">
+          <div class="image-galery mb-3" v-if="imagelist.ADMIN">
+            <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist.ADMIN" :key="index">
           </div>
         </div>
       </transition>
@@ -41,8 +41,8 @@
       data () {
           return {
             IMAGE_URL,
-            useOwnImagesSwitch: false,
-            useDefaultImagesSwitch: true,
+            // useOwnImagesSwitch: false,
+            // useDefaultImagesSwitch: true,
           }
       },
       computed: {
@@ -54,11 +54,18 @@
           progStateWidth: 'progStateWidth',
           progShow: 'progShow'
         }),
+        useOwnImagesSwitch(){
+          return this.useAdminGallery;
+        },
+        useDefaultImagesSwitch(){
+          return !this.useAdminGallery;
+        },
       },
       props: [
         'imagelist',
         'product',
-        'dropzoneOptions'
+        'dropzoneOptions',
+        'useAdminGallery'
       ],
       components: {
         appSwitcher,
@@ -79,26 +86,32 @@
           stepLastActive: 'stepLastActive',
         }),
         //Использовать изображения по умолчанию, переключатель
-        onUseDefaultImages(){
-          this.useDefaultImagesSwitch = !this.useDefaultImagesSwitch;
-          if(this.useDefaultImagesSwitch){
-            this.useOwnImagesSwitch = false;// 1 из 2х, должен быть активен
-          } else {
-            this.useOwnImagesSwitch = true;// 1 из 2х, должен быть активен
-          }
+        onUseDefaultImages(e){
+          console.log('onUseDefaultImages',e);
+          // this.useDefaultImagesSwitch = !this.useDefaultImagesSwitch;
+          // if(this.useDefaultImagesSwitch){
+          //   this.useOwnImagesSwitch = false;// 1 из 2х, должен быть активен
+          // } else {
+          //   this.useOwnImagesSwitch = true;// 1 из 2х, должен быть активен
+          // }
+          this.onChangeUseOwnGallery(!e.switcherActive);
         },
         //Использовать свои изображения, переключатель
-        onUseOwnImages(){
-          this.useOwnImagesSwitch = !this.useOwnImagesSwitch;
-          if (this.useOwnImagesSwitch){
-            this.useDefaultImagesSwitch = false;// 1 из 2х, должен быть активен
-          }else {
-            this.useDefaultImagesSwitch = true;// 1 из 2х, должен быть активен
-          }
+        onUseOwnImages(e){
+          console.log('onUseOwnImages',e);
+          // this.useOwnImagesSwitch = !this.useOwnImagesSwitch;
+          // if (this.useOwnImagesSwitch){
+          //   this.useDefaultImagesSwitch = false;// 1 из 2х, должен быть активен
+          // }else {
+          //   this.useDefaultImagesSwitch = true;// 1 из 2х, должен быть активен
+          // }
+          this.onChangeUseOwnGallery(e.switcherActive);
         },
+        onChangeUseOwnGallery(value){
+          this.$emit('changeGallery', value);
+        }
       },
-      mounted(){
-      }
+      mounted(){},
     }
 </script>
 

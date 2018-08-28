@@ -427,8 +427,8 @@
                 id: ''
               },
               additionalFindProp: [
-                {catalogName: 'Каталог (панель слева)', id: '1234'},
-                {catalogName: 'Выделенная папка (панель слева)', id: '4453'},
+                // {catalogName: 'Каталог (панель слева)', id: '1234'},
+                // {catalogName: 'Выделенная папка (панель слева)', id: '4453'},
               ],
               foldersCont: { //массив со всеми папками для компонента catalogFolder
                 providerFolder: {
@@ -549,7 +549,7 @@
               categoryGoods: { // товары выбранной категории
                 findGoodsStr: '',
                 selectedTitle:'',
-                categoryId: 33472,//для запроса товаров
+                categoryId: 0,//для запроса товаров
                 supplier_id: '',//для запроса товаров
                 limit: '',//для запроса товаров
                 offset: '',//для запроса товаров
@@ -1117,41 +1117,41 @@
                 };
                 console.log(payload);
                 this.stepOneActive(); // прогрессбар
-                // axios({url: API_URL + '/productattach', data: payload, method: 'POST' })
-                //   .then(resp => {
-                //     const error = resp.data.error;
-                //     console.log(resp);
-                //     this.stepLastActive(); // прогрессбар
-                //     if(error){
-                //       let errorTxt = resp.data.data.msgClient;
-                //       this.setErrorAlertShow(true);
-                //       this.setErrorAlertMsg('Ошибка при привязке продукта: ' + errorTxt);
-                //     }else{
-                //       this.setSuccesAlertShow(true);
-                //       this.setSuccesAlertMsg('Продукт привязан');
-                //       //activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
-                //       //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
-                //       // обновляем список привязанных категорий у выбранного id
-                //       let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
-                //       updateCategory.then(
-                //         result => { // всё ок
-                //           // сохраняем вложенность
-                //           //result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                //           //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
-                //           //this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
-                //         },
-                //         error =>{ // всё не ок
-                //           console.log('error', error);
-                //         }
-                //       );
-                //     }
-                //   })
-                //   .catch(err => {
-                //     this.setErrorAlertShow(true);
-                //     this.setErrorAlertMsg('Ошибка при привязке продукта');
-                //     this.stepLastActive(); // прогрессбар
-                //     console.log(err);
-                //   });
+                axios({url: API_URL + '/productattach', data: payload, method: 'POST' })
+                  .then(resp => {
+                    const error = resp.data.error;
+                    console.log(resp);
+                    this.stepLastActive(); // прогрессбар
+                    if(error){
+                      let errorTxt = resp.data.data.msgClient;
+                      this.setErrorAlertShow(true);
+                      this.setErrorAlertMsg('Ошибка при привязке продукта: ' + errorTxt);
+                    }else{
+                      this.setSuccesAlertShow(true);
+                      this.setSuccesAlertMsg('Продукт привязан');
+                      //activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
+                      //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                      // обновляем список привязанных категорий у выбранного id
+                      // let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
+                      // updateCategory.then(
+                      //   result => { // всё ок
+                      //     // сохраняем вложенность
+                      //     //result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
+                      //     //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                      //     //this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
+                      //   },
+                      //   error =>{ // всё не ок
+                      //     console.log('error', error);
+                      //   }
+                      // );
+                    }
+                  })
+                  .catch(err => {
+                    this.setErrorAlertShow(true);
+                    this.setErrorAlertMsg('Ошибка при привязке продукта');
+                    this.stepLastActive(); // прогрессбар
+                    console.log(err);
+                  });
               }
               else {
                 this.setErrorAlertShow(true);

@@ -52,9 +52,11 @@
         </h6>
         <template v-if="productSelectedId > 0">
           <appAdminGallery
-              :imagelist="goodsListArr[productSelectedIndex].images"
+              :imagelist="selectedProduct.images"
               :product="productSelectedId"
+              :useAdminGallery="selectedProduct.useAdminGallery"
               :dropzoneOptions="dropzoneOptions"
+              @changeGallery="onChangeUseAdminGallery($event)"
           ></appAdminGallery>
         </template>
       </div>
@@ -207,8 +209,6 @@
           return {
             IMAGE_URL,
             alternativeGoodsName: '',
-            useOwnImagesSwitch: false,
-            useDefaultImagesSwitch: true,
             limit: 20,//для запроса товаров
             productSelectedId: 0,// id выбранного товара
             productSelectedIndex: 0,
@@ -224,6 +224,7 @@
               value: '',
               isValid: false
             },
+            selectedProduct:{},
             goodsListArr: [ // массив с товарами
             ],
             dropzoneOptions: { // опции для dropzone
@@ -294,24 +295,6 @@
           stepTwoActive: 'stepTwoActive',
           stepLastActive: 'stepLastActive',
         }),
-        //Использовать изображения по умолчанию, переключатель
-        onUseDefaultImages(){
-          this.useDefaultImagesSwitch = !this.useDefaultImagesSwitch;
-          if(this.useDefaultImagesSwitch){
-            this.useOwnImagesSwitch = false;// 1 из 2х, должен быть активен
-          } else {
-            this.useOwnImagesSwitch = true;// 1 из 2х, должен быть активен
-          }
-        },
-        //Использовать свои изображения, переключатель
-        onUseOwnImages(){
-          this.useOwnImagesSwitch = !this.useOwnImagesSwitch;
-          if (this.useOwnImagesSwitch){
-            this.useDefaultImagesSwitch = false;// 1 из 2х, должен быть активен
-          }else {
-            this.useDefaultImagesSwitch = true;// 1 из 2х, должен быть активен
-          }
-        },
         //Переименование товара
         renameGoods(){
           let payload = {
@@ -342,19 +325,13 @@
               console.log(err);
             });
         },
-        //запрос информации о конкретном товаре и выделение товара в списке товаров
-        setProduct(prodId, categoryGoodsIndex){
-          if (this.productSelectedId === prodId) {
-            this.productSelectedId = 0;
-            this.productSelectedIndex = 0;
-            return
-          }
+        // обновление продукта
+        updateProduct(prodId, categoryGoodsIndex){
           this.productSelectedId = prodId;
           this.productSelectedIndex = categoryGoodsIndex;
           // если id продукта 0, то не обрабатываем
           if (prodId === 0)
             return;
-
           let payload = {
             id: prodId || this.categoryId || null,
           };
@@ -368,8 +345,9 @@
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
             }else{
-              //this.$set(this.categoryGoods.goodsListArr[categoryGoodsIndex], 'params', resp.data.data.params);
-              this.goodsListArr[categoryGoodsIndex] = resp.data.data;
+              this.selectedProduct = resp.data.data;
+              //this.$set(this.goodsListArr, categoryGoodsIndex, resp.data.data);
+              //this.goodsListArr[categoryGoodsIndex] = resp.data.data;
               this.productSelectedId = resp.data.data.id;
               this.alternativeGoodsName = resp.data.data.name;
               this.dropzoneOptions.url =  API_URL + '/product/' + this.productSelectedId + '/addgallery';
@@ -391,6 +369,15 @@
               this.setErrorAlertMsg('Ошибка при запросе товаров');
               this.stepLastActive(); // прогрессбар
             });
+        },
+        //запрос информации о конкретном товаре и выделение товара в списке товаров
+        setProduct(prodId, categoryGoodsIndex){
+          if (this.productSelectedId === prodId) {
+            this.productSelectedId = 0;
+            this.productSelectedIndex = 0;
+            return
+          }
+          this.updateProduct(prodId, categoryGoodsIndex);
         },
         // для компонента input, изменение родителя, установка наценки на товар
         onChangeDataParcent(data){
@@ -450,6 +437,8 @@
               console.log(resp);
               this.goodsListArr = resp.data.data.items;
               this.$emit('updatePagination', Math.ceil(resp.data.data.data.count/this.limit));
+              this.productSelectedId = 0;
+              this.productSelectedIndex = 0;
               // this.categoryGoods.pagination.countItemsPage;
               // this.categoryGoods.pagination.countPage;
               //this.categoryGoods.goodsListArr[0];
@@ -517,6 +506,35 @@
         changeLimit(value){
           this.limit = value;
           this.getProducts(this.categoryId);
+        },
+        // изменить свойство "Использовать пользовательскую галерею"
+        onChangeUseAdminGallery(e){
+          let payload = {
+            value: e,
+          };
+          this.stepOneActive(); // прогрессбар
+          axios({url: API_URL + '/product/' + this.productSelectedId + '/setuseadmingallery', data: payload, method: 'POST' })
+            .then(resp => {
+              const error = resp.data.error;
+              console.log(resp);
+              this.stepLastActive(); // прогрессбар
+              if(error){
+                let errorTxt = resp.data.data.msgClient;
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при изменении галереи: ' + errorTxt);
+              }else{
+                this.updateProduct(this.productSelectedId,this.productSelectedIndex);
+                //this.$set(this.goodsListArr,this.productSelectedIndex,e);
+                this.setSuccesAlertShow(true);
+                this.setSuccesAlertMsg('Галерея изменена');
+              }
+            })
+            .catch(err => {
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Ошибка при изменении галереи');
+              this.stepLastActive(); // прогрессбар
+              console.log(err);
+            });
         },
       },
       watch:{
