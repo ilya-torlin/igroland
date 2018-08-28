@@ -1,7 +1,5 @@
 <!--Компонент вывода товаров из категории-->
-<!--todo: API - привязка товара -->
-<!--todo: API - обновление товара - наценка -->
-<!--todo: Пагинация для товаров и количество показов -->
+<!--todo: не выводить товары которые привязаны к пользовательской категории -->
 <template>
     <!--catalogCategoryGoods.vue-->
   <div class="goods-cont">
@@ -74,7 +72,7 @@
                 {{goodsListArr[productSelectedIndex].name}}
               </div>
             </div>
-            <div class="goods-i">
+            <div class="goods-i" v-if="userRole.id === adminRoleId">
               <div class="title-h">
                 Альтернативное наименование
               </div>
@@ -115,7 +113,7 @@
               </appInput>
             </div>
             <div class="goods-i">
-              <div class="atr-i" v-for="(itemParam, index) in goodsListArr[productSelectedIndex].params">
+              <div class="atr-i" v-for="(itemParam, index) in selectedProduct.params">
                 <div class="i-t title-h">
                   {{itemParam.key}}
                 </div>
@@ -125,7 +123,6 @@
                 <!--todo: Добавить краткое описание товара-->
               </div>
             </div>
-
           </div>
         </div>
       </div>
@@ -192,7 +189,7 @@
 
 <script>
 
-  import {API_URL, IMAGE_URL} from '../constants';
+  import {API_URL, IMAGE_URL,USER_ADMIN} from '../constants';
   import axios from 'axios';
   import {mapGetters} from 'vuex';
   import {mapMutations} from 'vuex';
@@ -266,6 +263,15 @@
           progStateWidth: 'progStateWidth',
           progShow: 'progShow'
         }),
+        ...mapGetters('user',{
+          avatar: 'avatar',
+          userName: 'name',
+          userRole: 'role',
+          userProfile: 'profile'
+        }),
+        adminRoleId(){
+          return USER_ADMIN;
+        }
       },
       props: [
         'categoryId',
@@ -415,7 +421,7 @@
           // проверяем если передается категория 0, то не выполняем запрос на получение товаров
           if (categoryId === 0)
             return;
-
+          // todo: проверить работает ли вывод товаров "только в наличии"
           let payload = {
             category_id: categoryId || null,
             supplier_id: this.supplierId || null,
