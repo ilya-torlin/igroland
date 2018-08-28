@@ -2,33 +2,40 @@
 <template>
     <!--adminGallery.vue-->
     <div>
-      <appSwitcher class="mb-3"  txt="Использовать галерею по умолчанию"
-                   :switcherActive="useDefaultImagesSwitch"
-                   @switchToogle="onUseDefaultImages">
-      </appSwitcher>
-      <div class="image-galery mb-3" v-if="imagelist.SUPPLIER">
-        <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist.SUPPLIER" :key="index">
-      </div>
-      <appSwitcher class="mb-3" txt="Использовать свои изображения"
-                   :switcherActive="useOwnImagesSwitch"
-                   @switchToogle="onUseOwnImages">
-      </appSwitcher>
-      <transition name="vue-fade" mode="out-in"
-                  enter-active-class="animated zoomIn"
-                  leave-active-class="animated zoomOut">
-        <div v-if="useOwnImagesSwitch">
-          <vue-dropzone class="mb-3" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
-          <div class="image-galery mb-3" v-if="imagelist.ADMIN">
-            <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist.ADMIN" :key="index">
-          </div>
+      <template v-if="userRole.id === adminRoleId">
+        <appSwitcher class="mb-3"  txt="Использовать галерею по умолчанию"
+                     :switcherActive="useDefaultImagesSwitch"
+                     @switchToogle="onUseDefaultImages">
+        </appSwitcher>
+        <div class="image-galery mb-3" v-if="imagelist.SUPPLIER">
+          <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist.SUPPLIER" :key="index">
         </div>
-      </transition>
+        <appSwitcher class="mb-3" txt="Использовать свои изображения"
+                     :switcherActive="useOwnImagesSwitch"
+                     @switchToogle="onUseOwnImages">
+        </appSwitcher>
+        <transition name="vue-fade" mode="out-in"
+                    enter-active-class="animated zoomIn"
+                    leave-active-class="animated zoomOut">
+          <div v-if="useOwnImagesSwitch">
+            <vue-dropzone class="mb-3" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
+            <div class="image-galery mb-3" v-if="imagelist.ADMIN">
+              <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist.ADMIN" :key="index">
+            </div>
+          </div>
+        </transition>
+      </template>
+      <template v-else>
+        <div class="image-galery mb-3" v-if="imagelist">
+          <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist" :key="index">
+        </div>
+      </template>
     </div>
 </template>
 
 <script>
 
-  import {API_URL,IMAGE_URL} from '../constants';
+  import {API_URL,IMAGE_URL,USER_ADMIN} from '../constants';
   import axios from 'axios';
   import {mapGetters} from 'vuex';
   import {mapMutations} from 'vuex';
@@ -54,12 +61,22 @@
           progStateWidth: 'progStateWidth',
           progShow: 'progShow'
         }),
+        ...mapGetters('user',
+          {
+            avatar: 'avatar',
+            userName: 'name',
+            userRole: 'role',
+            userProfile: 'profile'
+          }),
         useOwnImagesSwitch(){
           return this.useAdminGallery;
         },
         useDefaultImagesSwitch(){
           return !this.useAdminGallery;
         },
+        adminRoleId(){
+          return USER_ADMIN;
+        }
       },
       props: [
         'imagelist',
