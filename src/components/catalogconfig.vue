@@ -29,9 +29,9 @@
     удалить - удаление папки
 
     todo: API - в первую очередь ↓↓↓
-    todo: API - Запрос каталога в зависимости от выбранного поставщика
+    todocomplete: API - Запрос каталога в зависимости от выбранного поставщика
     todo: API - Вывод товаров каталога по ид
-    todo: API - Показать товары по ид папки
+    todocomplete: API - Показать товары по ид папки
 
     todo: API - Скрыть товары, которых нет в наличии у поставщика из селекта(по ид поставщика), в селекте может быть выбрано "все поставщики".
     todocomplete: API - запрос каталогов для селекта. Возвращает массив формата [{name: 'Игроленд', id: '1234'}, {} ...]
@@ -39,10 +39,10 @@
 
 
     todo: API - ТОВАРЫ ↓↓↓
-    todo: API - Поиск по товарам в определённой катагории, передаётся строка и ид категории, получаю соответствующий массив товаров
-    todo: API - Загрузка галереи пользователя через dropZone
-    todo: API - Добавить поле какую галерею использовать(по умолчанию или пользовательскую)
-    todo: API - добавить наценку, метод на подобие 'Альтернативное наименование'
+    todocomplete: API - Поиск по товарам в определённой катагории, передаётся строка и ид категории, получаю соответствующий массив товаров
+    todocomplete: API - Загрузка галереи пользователя через dropZone
+    todocomplete: API - Добавить поле какую галерею использовать(по умолчанию или пользовательскую)
+    todocomplete: API - добавить наценку, метод на подобие 'Альтернативное наименование'
 
 
     todo: В хлебных крошках ↓↓↓
@@ -58,32 +58,32 @@
       todocomplete: сделать выделение каталога при клике (завести отдельную переменную с индексом и ид выделенного каталога), смотри как сделанно во вкладке "Товары"
       todo: контекстное меню
         todo: Параметры - Параметры каталога, по типу окна "Показать товары" (не отрисованно) Поля: фото и описание, родительская категория
-        todo: Товары - кнопка  "Показать товары"
+        todocomlete: Товары - кнопка  "Показать товары"
         todocomplete: Добавить - добавить новую папку, пишем только название
         todocomplete: удалить - удаление папки
 
-    todo: Вкладка "Каталоги"
+    todocomplete: Вкладка "Каталоги"
       todocompete: сделать выделение каталога при клике (завести отдельную переменную с индексом и ид выделенного каталога), смотри как сделанно во вкладке "Товары"
-      todo: контекстное меню
-        todo: Товары - показать товары
+      todocomplete: контекстное меню
+        todocomplete: Товары - показать товары
         todocomplete: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
-      todo: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
+      todocomplete: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
 
-    todo: Вкладка "Поиск"
-      todo: контекстное меню
-        todo: Товары - показать товары
+    todocomplete: Вкладка "Поиск"
+      todocomplete: контекстное меню
+        todocomplete: Товары - показать товары
         todocomplete: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
-      todo: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
+      todocomplete: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
 
     todo: Вкладка "Товары"
-      todo: Поиск по товарам
-      todo: Загрузка изображений на сервер
-      todo: Переключение какую галерею использовать(по умолчанию или пользовательскую)
-      todo: Добавить обработчик для поля "Наценка"
-      Todo: Добавить обработчик для поля "Альтернативное наименование"
-      todo: Сделать пагинацию товаров, когда будет готова нормальная выгрузка (больше товаров)
-      todo: "Показать по", написать обработчик
-      todo: Сделать контекстное меню для привязки товара к каталогу или кнопку какую-то
+      todocomplete: Поиск по товарам
+      todocomplete: Загрузка изображений на сервер
+      todocomplete: Переключение какую галерею использовать(по умолчанию или пользовательскую)
+      todocomplete: Добавить обработчик для поля "Наценка"
+      Todocomplete: Добавить обработчик для поля "Альтернативное наименование"
+      todocomplete: Сделать пагинацию товаров, когда будет готова нормальная выгрузка (больше товаров)
+      todocomplete: "Показать по", написать обработчик
+      todocomplete: Сделать контекстное меню для привязки товара к каталогу или кнопку какую-то
 
   -->
 
@@ -109,6 +109,7 @@
                   :contextMenu = 'foldersCont.catalogFolder.contextMenu'
                   :rootCatalogFolders = 'foldersCont.catalogFolder.rootCatalogFolders'
                   :userCatalogId = 'currentCatalogId'
+                  :hideNotAvl="hideNotAvl"
                   @setFolders = 'onSetFolders($event, "catalogFolder")'
                   @addCatalogFolder = 'onAddCatalogFolder'
                   @removeCatalogFolder = 'onRemoveCatalogFolder'
@@ -160,6 +161,7 @@
                               :contextMenu = 'foldersCont.providerFolder.contextMenu'
                               :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
                               :selectedProvider = 'selectedProvider'
+                              :hideNotAvl="hideNotAvl"
                               @setFolders = 'onSetFolders($event, "providerFolder")'
                               @setSelectedItem = 'onSetSelectItem($event, "providerFolder")'
                               @attachFolderToCategory='onAttachFolderToCategory'
@@ -222,6 +224,7 @@
                                 :contextMenu = 'foldersCont.findResFolder.contextMenu'
                                 :rootCatalogFolders = 'foldersCont.findResFolder.rootCatalogFolders'
                                 :selectedProvider = 'selectedProvider'
+                                :hideNotAvl="hideNotAvl"
                                 @setFolders = 'onSetFolders($event, "findResFolder")'
                                 @showParamFolder = 'onSetFolders($event)'
                                 @setSelectedItem = 'onSetSelectItem($event, "findResFolder")'
@@ -364,7 +367,7 @@
     import appBasicCatalogFolders from './catalogBasicFolders.vue'
     import appCatalogCategoryGoods from './catalogCategoryGoods'
 
-    import {API_URL, IMAGE_URL} from '../constants';
+    import {API_URL, IMAGE_URL, USER_ADMIN} from '../constants';
     import axios from 'axios';
     import {mapGetters} from 'vuex';
     import {mapMutations} from 'vuex';
@@ -416,6 +419,7 @@
               tabValue: 'provider', // Значение таба: find, provider
               breadcrumbs: [],// Хлебные крошки
               selectedCatalogId: 12, // выбранный каталог из левой панели
+              hideNotAvl: false,
               providerList: [// поставщики для селекта
               ],
               selectedProvider: {
@@ -567,8 +571,8 @@
                   // supplier_id: "1",
                 },
                 pagination: { // параметры пагинации
-                  countPage: 12, // общее колличество страниц, делаем запрос к базе
-                  countItemsPage: 12, // колличество элементов на странице
+                  countPage: 2, // общее колличество страниц, делаем запрос к базе
+                  countItemsPage: 20, // колличество элементов на странице
                   routerOn: false, // отключение роутера, если включить, то надо настроить роутер
                   currentPage: 1
                 },
@@ -584,6 +588,9 @@
             progStateWidth: 'progStateWidth',
             progShow: 'progShow'
           }),
+          ...mapGetters('user',{
+              userRole: 'role',
+            }),
           //формирование опций для селекта с параметрами поиска, вкладка поиск
           findSelectOpt(){
             return this.providerList.concat(this.additionalFindProp);
@@ -890,11 +897,9 @@
           //Event handler: скрыть не в наличии
           onHideNotOwned(value){
             //todo: переключатель 'скрыть не в наличии', сейчас никак  не обрабатывается, доделать
-            if(value === true){ // скрываем товары, которых нет в наличии
-              console.log('скрываем товары, которых нет в наличии');
-            }else { // отображаем все товары
-
-            }
+            this.hideNotAvl = value;
+            //this.notUserCreatedFoldersInit();
+            this.onChangeProvider(this.selectedProvider);
           },
           //изменение значения setRootCatalogFoldersComp(массив папок), у дочернего компонента по ссылке ref
           updateFolderCont(idCategory, lvlFolder, parentFolderId, selectedProvider, folderKey, componentRefKey){
@@ -911,7 +916,7 @@
                 parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
               };
               console.log('Req pay --', payload);
-              let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider);
+              let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider, this.hideNotAvl);
               categoryRequest.then(
                 result => { // всё ок
                   console.log('categoryRequest result -->>', result);
@@ -956,6 +961,10 @@
             this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
 
           },
+          // фильтр поставщиков для алминистраторов
+          providerFilter(providerList){
+            return providerList.filter( value => value.id < 6 );
+          },
           //запрос списка поставщиков
           getProvider(){
             this.stepOneActive(); // прогрессбар
@@ -968,9 +977,16 @@
                   this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при запросе каталогов: ' + errorTxt);
                 }else {
-                  this.providerList = resp.data.data;
+                  // todocomplete: фильтровать данные для администраторов
+                  console.log('filtermassive',resp.data.data);
+                  if(this.userRole.id === USER_ADMIN)
+                    this.providerList = this.providerFilter(resp.data.data);
+                  else
+                    this.providerList = resp.data.data;
+
+                  //this.providerList = resp.data.data;
                   this.providerList.push({catalogName: 'Все каталоги', id: ''});
-                  //todo: при изменении провайдера вызывать!!
+                  //todo: при изменении провайдера вызывать!!??
                   this.selectedProvider = this.providerList[this.providerList.length-1]
                 }
                 this.stepLastActive(); // прогрессбар
