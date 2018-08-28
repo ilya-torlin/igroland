@@ -1,4 +1,7 @@
 <!--Компонент вывода товаров из категории-->
+<!--todo: API - привязка товара -->
+<!--todo: API - обновление товара - наценка -->
+<!--todo: Пагинация для товаров и количество показов -->
 <template>
     <!--catalogCategoryGoods.vue-->
   <div class="goods-cont">
@@ -10,13 +13,13 @@
               Показывать по:
             </div>
             <ul>
-              <li class="active"><a href="javascript:void(0)">
+              <li :class="{ active : (limit === 20) }" ><a @click="changeLimit(20)">
                 20
               </a></li>
-              <li><a href="javascript:void(0)">
+              <li :class="{ active : (limit === 50) }" ><a @click="changeLimit(50)">
                 50
               </a></li>
-              <li><a href="javascript:void(0)">
+              <li :class="{ active : (limit === 100) }" ><a @click="changeLimit(100)">
                 100
               </a></li>
             </ul>
@@ -53,27 +56,6 @@
               :product="productSelectedId"
               :dropzoneOptions="dropzoneOptions"
           ></appAdminGallery>
-          <!--<appSwitcher class="mb-3"  txt="Использовать галерею по умолчанию"-->
-                       <!--:switcherActive="useDefaultImagesSwitch"-->
-                       <!--@switchToogle="onUseDefaultImages">-->
-          <!--</appSwitcher>-->
-          <!--<div class="image-galery mb-3">-->
-            <!--<img :src="IMAGE_URL + item" alt="" v-for="(item, index) in goodsListArr[productSelectedIndex].images">-->
-          <!--</div>-->
-          <!--<appSwitcher class="mb-3" txt="Использовать свои изображения"-->
-                       <!--:switcherActive="useOwnImagesSwitch"-->
-                       <!--@switchToogle="onUseOwnImages">-->
-          <!--</appSwitcher>-->
-          <!--<transition name="vue-fade" mode="out-in"-->
-                      <!--enter-active-class="animated zoomIn"-->
-                      <!--leave-active-class="animated zoomOut">-->
-            <!--<div v-if="useOwnImagesSwitch">-->
-              <!--<vue-dropzone class="mb-3" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>-->
-              <!--<div class="image-galery mb-3">-->
-                <!--<img src="../assets/img/dodik.png" alt="">-->
-              <!--</div>-->
-            <!--</div>-->
-          <!--</transition>-->
         </template>
       </div>
       <div class="col-4">
@@ -226,7 +208,7 @@
             alternativeGoodsName: '',
             useOwnImagesSwitch: false,
             useDefaultImagesSwitch: true,
-            limit: '',//для запроса товаров
+            limit: 50,//для запроса товаров
             productSelectedId: 0,// id выбранного товара
             productSelectedIndex: 0,
             profitPercentInput: {
@@ -438,6 +420,7 @@
             }else{
               console.log(resp);
               this.goodsListArr = resp.data.data.items;
+              this.$emit('updatePagination', Math.ceil(resp.data.data.data.count/this.limit));
               // this.categoryGoods.pagination.countItemsPage;
               // this.categoryGoods.pagination.countPage;
               //this.categoryGoods.goodsListArr[0];
@@ -501,6 +484,16 @@
         contextMenuOptEvent(eventName){
           this.$emit(eventName);
         },
+        // обновление лимита показа товаров
+        changeLimit(value){
+          this.limit = value;
+          this.getProducts(this.categoryId);
+        },
+      },
+      watch:{
+        offset(){
+          this.getProducts(this.categoryId);
+        }
       },
       mounted(){
         this.getProducts(this.categoryId);

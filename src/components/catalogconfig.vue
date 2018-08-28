@@ -266,6 +266,7 @@
                               :categoryId="categoryGoods.categoryId"
                               :supplierId="categoryGoods.supplier_id"
                               :offset="categoryGoods.offset"
+                              @updatePagination="onUpdatePagination($event)"
                               @setSelectedProduct="onSetSelectProduct($event)"
                               @attachProductToCategory="onAttachProductToCategory"
                               ref="productsCatalog"
@@ -592,6 +593,9 @@
           },
           showAttachedTab(){
             return this.foldersCont.attachFolder.showAttachedTab;
+          },
+          currentPageCount(){
+            return this.categoryGoods.pagination.countPage;
           }
         },
         components: {
@@ -943,7 +947,6 @@
             this.updateFolderCont(null, null, null, null, 'providerFolder', 'providerCont');
             //папка с результатами поиска
             this.updateFolderCont(null, null, null, null, 'findResFolder', 'findResFolder');
-            // todo: инициализация товаров
           },
           //инициализация всех папок/категорий
           allFoldersInit(){
@@ -1167,6 +1170,15 @@
             this.stepOneActive(); // прогрессбар
             this.$refs['productsCatalog'].findGoods(this.categoryGoods.findGoodsStr);
             this.stepLastActive(); // прогрессбар
+          },
+          // изменяем текущую страницу
+          onGoodsPageChange(e){
+            this.categoryGoods.offset = e.value.currentPage;
+            //this.$refs['productsCatalog'].findGoods(this.categoryGoods.findGoodsStr);
+          },
+          // возвращаем количество старниц для пагинации
+          onUpdatePagination(e){
+            this.categoryGoods.pagination.countPage = e;
           },
           // получаем информацию по текущему пользовательскому каталогу
           getMyCatalogInfo(){
