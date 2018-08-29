@@ -252,9 +252,9 @@
                               </div>
                               <div class="find-b justify-content-start d-flex">
                                 <div class="input-group ">
-                                  <input v-model.lazy="categoryGoods.findGoodsStr" v-on:keyup.enter="onfindGoods" type="text" class="form-control" placeholder="Поиск товаров">
+                                  <input v-model.lazy="categoryGoods.findGoodsStr" v-on:keyup.enter="onFindGoods" type="text" class="form-control" placeholder="Поиск товаров">
                                   <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="button" @click="onfindGoods">
+                                    <button class="btn btn-outline-secondary" type="button" @click="onFindGoods">
                                       <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -313,12 +313,13 @@
                                 Выбранная категория: <span class="provider-txt">{{ foldersCont.attachFolder.folderH }}</span>
                               </div>
                             </div>
+                            <!--todo: проверить работоспособность когда будет выгрузка-->
                             <appBasicCatalogFolders
                               :folderH = 'foldersCont.attachProducts.folderH'
                               :rootCatalogFolders = 'foldersCont.attachProducts.rootProductFolders'
                               @setFolders = 'onSetFolders($event, "attachProducts")'
                               @setSelectedItem = 'onSetSelectItem($event, "attachProducts")'
-                              @removeAttachedItem='onRemoveAttachedItemModal($event, "attachProducts")'
+                              @removeAttachedItem='onRemoveAttachedProductModal($event, "attachProducts")'
                               ref="attachProd"
                             >
                             </appBasicCatalogFolders>
@@ -343,6 +344,21 @@
           :buttonClass="'btn-danger'"
           :necessaryEvent="'pageChange'"
           @pageChange="contextRemoveCatalog">
+        </appModal>
+        <!-- Modal DeAttach Product -->
+        <appModal
+          :headerText="'Подтвердите отвязывание продукта'"
+          :keyId="'confirmDeAttachProductModal'"
+          :deleteIcon="true"
+          :positiveActionText="'Отвязать продукт'"
+          :textField="remoteTextLabel"
+          :isNotifyModal="true"
+          :negativeActionText="'Отмена'"
+          :actionIndex="0"
+          :inputsArr="inputsArr"
+          :buttonClass="'btn-danger'"
+          :necessaryEvent="'pageChange'"
+          @pageChange="removeAttachedProduct">
         </appModal>
         <!-- Modal DeAttach Category -->
         <appModal
@@ -574,9 +590,9 @@
                   }
                   */
                   rootProductFolders: [],
-                  productSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
-                  productSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
-                  productSelectedItemCategoryId: 0  // id категории, которую отвязвыем
+                  catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  catalogSelectedItemCategoryId: 0  // id категории, которую отвязвыем
                 }
               },
               //Goods categoryGoods.pagination.countItemsPage
@@ -802,6 +818,72 @@
                       let newIndex = this.findCategoryIndex(this.foldersCont[catalogKey].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
                       console.log('newIndex ',newIndex);
                       this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
+                    },
+                    error =>{ // всё не ок
+                      console.log('error', error);
+                    }
+                  );
+
+                  // удаляем из списка компонента привязаных товаров выбранную категорию
+                  this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
+                  //this.setAttachAction('catalogFolder',this.foldersCont['catalogFolder'].catalogSelectedItemIndex);
+                  this.setSuccesAlertShow(true);
+                  this.setSuccesAlertMsg('Категория отвязана');
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при отвязывании категории ');
+                this.stepLastActive(); // прогрессбар
+                console.log(err);
+              });
+          },
+          // вызываем всплывашку отвязки продукта
+          onRemoveAttachedProductModal(e, keyFolder){
+            this.foldersCont[keyFolder].catalogSelectedItemId = e.value.id;
+            this.foldersCont[keyFolder].catalogSelectedItemIndex = e.value.index;
+            this.foldersCont[keyFolder].catalogSelectedItemCategoryId = e.value.catalogId;
+            if(+this.foldersCont[keyFolder].catalogSelectedItemId !== 0){
+              let categoryName = e.value.name;
+              this.remoteTextLabel = 'Вы действительно хотите отвязать категорию - "' +  categoryName + '"?';
+              $('#confirmDeAttachProductModal').modal();
+            }else{
+              this.setErrorAlertShow(true);
+              this.setErrorAlertMsg('Вы не выбрали привязанную категорию');
+            }
+          },
+          removeAttachedProduct(){
+            // todo: проверить работоспособность кода
+            let activeTab = this.getActiveTab();
+            let categoryId = this.foldersCont.attachProducts.catalogSelectedItemId;
+            console.log(this.foldersCont.attachProducts);
+            this.stepOneActive(); // прогрессбар
+            axios({url: API_URL + '/productattach/' + categoryId ,method: 'DELETE' })
+              .then(resp => {
+                const error = resp.data.error;
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при отвязывании категории: ' + errorTxt);
+                }else{
+                  //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
+                  let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
+                  updateCategory.then(
+                    result => { // всё ок
+                      // сохраняем вложенность
+                      result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
+                      this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                      this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
+                      // let catalogKey = '';
+                      // if(this.tabValue == 'provider')
+                      //   catalogKey = 'providerFolder';
+                      // else if(this.tabValue == 'find')
+                      //   catalogKey = 'findResFolder';
+                      //
+                      // let newIndex = this.findCategoryIndex(this.foldersCont[catalogKey].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
+                      // console.log('newIndex ',newIndex);
+                      // this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
                     },
                     error =>{ // всё не ок
                       console.log('error', error);
@@ -1216,7 +1298,7 @@
             console.log('attach to product category');
           },
           //поиск среди папок
-          onfindGoods(){
+          onFindGoods(){
             console.log('Поиск по подстроке - ', this.categoryGoods.findGoodsStr);
             this.stepOneActive(); // прогрессбар
             this.$refs['productsCatalog'].findGoods(this.categoryGoods.findGoodsStr);
