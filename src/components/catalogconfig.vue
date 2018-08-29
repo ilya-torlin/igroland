@@ -298,6 +298,9 @@
                             <appBasicCatalogFolders
                               :folderH = 'foldersCont.attachFolder.folderH'
                               :rootCatalogFolders = 'foldersCont.attachFolder.rootCatalogFolders'
+                              :emptyList="foldersCont.attachFolder.emptyList"
+                              :propId="'attached_category_id'"
+                              :propTitle="'attached_category_title'"
                               @setFolders = 'onSetFolders($event, "attachFolder")'
                               @setSelectedItem = 'onSetSelectItem($event, "attachFolder")'
                               @removeAttachedItem='onRemoveAttachedItemModal($event, "attachFolder")'
@@ -317,6 +320,9 @@
                             <appBasicCatalogFolders
                               :folderH = 'foldersCont.attachProducts.folderH'
                               :rootCatalogFolders = 'foldersCont.attachProducts.rootProductFolders'
+                              :emptyList="foldersCont.attachProducts.emptyList"
+                              :propId="'attached_product_id'"
+                              :propTitle="'attached_product_title'"
                               @setFolders = 'onSetFolders($event, "attachProducts")'
                               @setSelectedItem = 'onSetSelectItem($event, "attachProducts")'
                               @removeAttachedItem='onRemoveAttachedProductModal($event, "attachProducts")'
@@ -567,6 +573,7 @@
                 attachFolder:{
                   folderH: '',
                   showAttachedTab: false,
+                  emptyList: 'Категорий не найдено',
                   /* rootCatalogFolders Item
                   {
                     attached_category_id:"34359",
@@ -582,6 +589,7 @@
                 attachProducts:{
                   folderH: '',
                   showAttachedTab: false,
+                  emptyList: 'Продуктов не найдено',
                   /* rootProductFolders Item
                   {
                     attached_category_id:"34359",
@@ -845,11 +853,11 @@
             this.foldersCont[keyFolder].catalogSelectedItemCategoryId = e.value.catalogId;
             if(+this.foldersCont[keyFolder].catalogSelectedItemId !== 0){
               let categoryName = e.value.name;
-              this.remoteTextLabel = 'Вы действительно хотите отвязать категорию - "' +  categoryName + '"?';
+              this.remoteTextLabel = 'Вы действительно хотите отвязать продукт - "' +  categoryName + '"?';
               $('#confirmDeAttachProductModal').modal();
             }else{
               this.setErrorAlertShow(true);
-              this.setErrorAlertMsg('Вы не выбрали привязанную категорию');
+              this.setErrorAlertMsg('Вы не выбрали привязанный продукт');
             }
           },
           removeAttachedProduct(){
@@ -865,7 +873,7 @@
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
                   this.setErrorAlertShow(true);
-                  this.setErrorAlertMsg('Ошибка при отвязывании категории: ' + errorTxt);
+                  this.setErrorAlertMsg('Ошибка при отвязывании продукта: ' + errorTxt);
                 }else{
                   //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
                   let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
@@ -891,10 +899,10 @@
                   );
 
                   // удаляем из списка компонента привязаных товаров выбранную категорию
-                  this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
+                  //this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
                   //this.setAttachAction('catalogFolder',this.foldersCont['catalogFolder'].catalogSelectedItemIndex);
                   this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Категория отвязана');
+                  this.setSuccesAlertMsg('Продукт отвязан');
                 }
               })
               .catch(err => {
@@ -1265,18 +1273,18 @@
                       //activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
                       //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                       // обновляем список привязанных категорий у выбранного id
-                      // let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
-                      // updateCategory.then(
-                      //   result => { // всё ок
-                      //     // сохраняем вложенность
-                      //     //result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                      //     //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
-                      //     //this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
-                      //   },
-                      //   error =>{ // всё не ок
-                      //     console.log('error', error);
-                      //   }
-                      // );
+                      let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
+                      updateCategory.then(
+                        result => { // всё ок
+                          // сохраняем вложенность
+                          result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
+                          this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                          this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
+                        },
+                        error =>{ // всё не ок
+                          console.log('error', error);
+                        }
+                      );
                     }
                   })
                   .catch(err => {
