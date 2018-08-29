@@ -142,6 +142,9 @@
                     <div class="tab-i" :class="{'active': tabValue === 'attach'}" @click="tabChangeVal('attach')" v-show="foldersCont.attachFolder.showAttachedTab">
                       Привязанные категории
                     </div>
+                    <div class="tab-i" :class="{'active': tabValue === 'attachproduct'}" @click="tabChangeVal('attachproduct')" v-show="foldersCont.attachProducts.showAttachedTab">
+                      Привязанные продукты
+                    </div>
                   </div>
               </div>
               <div class="row att-folders-r">
@@ -286,29 +289,41 @@
                           </div>
                         </div>
                         <div key="catalog-attach-tab" class="att-folders-i folders-wt" v-show="tabValue == 'attach'">
-                        <div class="upper-s">
-                          <div class="find-folder-i">
-                            <div class="txt-f">
-                              Выбранная категория: <span class="provider-txt">{{ foldersCont.attachFolder.folderH }}</span>
+                          <div class="upper-s">
+                            <div class="find-folder-i">
+                              <div class="txt-f">
+                                Выбранная категория: <span class="provider-txt">{{ foldersCont.attachFolder.folderH }}</span>
+                              </div>
                             </div>
-                          </div>
-                          <appBasicCatalogFolders
-                            :folderH = 'foldersCont.attachFolder.folderH'
-                            :rootCatalogFolders = 'foldersCont.attachFolder.rootCatalogFolders'
-                            @setFolders = 'onSetFolders($event, "attachFolder")'
-                            @setSelectedItem = 'onSetSelectItem($event, "attachFolder")'
-                            @removeAttachedItem='onRemoveAttachedItemModal($event, "attachFolder")'
-                            ref="attachCont"
-                          >
-                          </appBasicCatalogFolders>
-                        </div>
-                        <div class="bottom-s">
-                          <div class="btn-c d-flex justify-content-between">
-                            <button type="button" class="btn btn-outline-secondary">Показать товары</button>
-                            <button type="button" class="btn btn-outline-secondary">Привязать</button>
+                            <appBasicCatalogFolders
+                              :folderH = 'foldersCont.attachFolder.folderH'
+                              :rootCatalogFolders = 'foldersCont.attachFolder.rootCatalogFolders'
+                              @setFolders = 'onSetFolders($event, "attachFolder")'
+                              @setSelectedItem = 'onSetSelectItem($event, "attachFolder")'
+                              @removeAttachedItem='onRemoveAttachedItemModal($event, "attachFolder")'
+                              ref="attachCont"
+                            >
+                            </appBasicCatalogFolders>
                           </div>
                         </div>
-                      </div>
+                        <div key="product-attach-tab" class="att-folders-i folders-wt" v-show="tabValue == 'attachproduct'">
+                          <div class="upper-s">
+                            <div class="find-folder-i">
+                              <div class="txt-f">
+                                Выбранная категория: <span class="provider-txt">{{ foldersCont.attachFolder.folderH }}</span>
+                              </div>
+                            </div>
+                            <appBasicCatalogFolders
+                              :folderH = 'foldersCont.attachProducts.folderH'
+                              :rootCatalogFolders = 'foldersCont.attachProducts.rootProductFolders'
+                              @setFolders = 'onSetFolders($event, "attachProducts")'
+                              @setSelectedItem = 'onSetSelectItem($event, "attachProducts")'
+                              @removeAttachedItem='onRemoveAttachedItemModal($event, "attachProducts")'
+                              ref="attachProd"
+                            >
+                            </appBasicCatalogFolders>
+                          </div>
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -547,6 +562,21 @@
                   catalogSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
                   catalogSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
                   catalogSelectedItemCategoryId: 0  // id категории, которую отвязвыем
+                },
+                attachProducts:{
+                  folderH: '',
+                  showAttachedTab: false,
+                  /* rootProductFolders Item
+                  {
+                    attached_category_id:"34359",
+                    attached_product_id:"Бытовая химия. Уход и красота. Гигиена",
+                    id:"5"
+                  }
+                  */
+                  rootProductFolders: [],
+                  productSelectedItemId: 0, // id выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  productSelectedItemIndex: 0,  // index выбранного каталога // объект выбранного каталога (выделяется желтым)
+                  productSelectedItemCategoryId: 0  // id категории, которую отвязвыем
                 }
               },
               //Goods categoryGoods.pagination.countItemsPage
@@ -657,15 +687,20 @@
             this.$set(this,'breadcrumbs',[]);
             // скрываем вкладку Привязанные товары
             this.foldersCont.attachFolder.showAttachedTab = false;
+            this.foldersCont.attachProducts.showAttachedTab = false;
           },
           // действия с привязанными товарами
           setAttachAction(keyFolder,index){
             // для привязанных товаров
             // открываем вкладку Привязанные товары
             this.foldersCont.attachFolder.showAttachedTab = true;
+            this.foldersCont.attachProducts.showAttachedTab = true;
             this.$refs['attachCont'].setRootCatalogFoldersComp(this.foldersCont[keyFolder].rootCatalogFolders[index].attachedCategories);
+            if(this.foldersCont[keyFolder].rootCatalogFolders[index].attachedProducts)
+              this.$refs['attachProd'].setRootCatalogFoldersComp(this.foldersCont[keyFolder].rootCatalogFolders[index].attachedProducts);
             //this.foldersCont.attachFolder.rootCatalogFolders = this.foldersCont[keyFolder].rootCatalogFolders[index].attachedCategories;
             this.foldersCont.attachFolder.folderH = this.foldersCont[keyFolder].rootCatalogFolders[index].name;
+            this.foldersCont.attachProducts.folderH = this.foldersCont[keyFolder].rootCatalogFolders[index].name;
           },
           //запись новых значений в объект по которому кликнули (выдяеляется желтым)
           onSetSelectItem(e, keyFolder){
