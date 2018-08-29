@@ -11,7 +11,7 @@
       <div class="col-12 mt-3">
       </div>
     </div>
-    <!--todo: вынести в отдельный компонент-->
+    <!--todocomplete: вынести в отдельный компонент-->
 
       <!--<template v-for="(catalogItem, index) in catalogList">-->
         <!--{{catalogItem.switcherActive}} {{index}} // <br>-->
@@ -22,7 +22,7 @@
           todo: Загрузка фото
           todo: Добавить редактирование имени каталога, справа от названия добавить кнопку с карандашиком. при нажатии на кнопку, заменять название на инпат(???)
           todo: добавить массив со страницами в состояние
-          todo: переделать массив каталогов из ассоциативного массива в обычный
+          todocomplete: переделать массив каталогов из ассоциативного массива в обычный
       -->
 
       <div class="row" v-if="Object.keys(catalogList).length == 0">
@@ -42,7 +42,7 @@
         :showConfig="catalogItem.showConfig"
         :userList="userList"
         :catalogName="catalogItem.catalogName"
-        :catalogId="index"
+        :catalogId="catalogItem.id"
         :isActive="catalogItem.isActive"
         :isOn="catalogItem.isOn"
         :description="catalogItem.description"
@@ -93,7 +93,7 @@
     </appModal>
   </div>
 </template>
-<!--todo: переделать ассоциативный массив на обычный -->
+<!--todocomplete: переделать ассоциативный массив на обычный -->
 <script>
 
   import appCatalogItem from './catalogItem'
@@ -130,7 +130,7 @@
           {name: 'user@gmail.com', id: '1234'},
         ]
         },*/
-        catalogList: {}, // ассоциативный массив объектов
+        catalogList: [], // ассоциативный массив объектов
         inputsArr:[
           {
             id: 'confirmDelete',
@@ -170,8 +170,7 @@
       }
     },
     computed: {
-      ...mapGetters('alerts',
-        {
+      ...mapGetters('alerts',{
           succesAlert: 'succesAlert',
           errorAlert: 'errorAlert'
         }),
@@ -179,8 +178,7 @@
         progStateWidth: 'progStateWidth',
         progShow: 'progShow'
       }),
-      ...mapGetters('user',
-        {
+      ...mapGetters('user', {
           avatar: 'avatar',
           userName: 'name',
           userRole: 'role',
@@ -215,7 +213,8 @@
         let payload = {
           value: Number(this.catalogList[index].isOn).toString()
         };
-        axios({url: API_URL + '/catalog/'+ index + '/setonoff', data: payload, method: 'POST' })
+        let catalogIndex = this.catalogList[index].id;
+        axios({url: API_URL + '/catalog/'+ catalogIndex + '/setonoff', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
             console.log(resp);
@@ -269,9 +268,11 @@
             }else{
               this.setSuccesAlertShow(true);
               this.setSuccesAlertMsg('Каталог скопирован');
-              indRand = resp.data.data.id;
-              this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
-              this.catalogList[indRand].id = indRand;
+
+              this.catalogList.push(Object.assign({}, this.catalogList[index]));
+              //this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
+              indRand = this.catalogList.length - 1;
+              this.catalogList[indRand].id = resp.data.data.id;
               this.catalogList[indRand].catalogName = payload.name;
               $("html, body").animate({ scrollTop: $('.pagination').offset().top - 120}, 600);
               // this.catalogList.splice(indRand, 1, this.catalogList[indRand]);
@@ -295,8 +296,9 @@
           this.setSuccesAlertMsg('Каталог сохранён');
         }else {
           let payload = this.catalogList[index];
+          let catalogIndex = this.catalogList[index].id;
           this.stepOneActive(); // прогрессбар
-          axios({url: API_URL + '/catalog/' +  index, data: payload, method: 'PUT' })
+          axios({url: API_URL + '/catalog/' +  catalogIndex, data: payload, method: 'PUT' })
             .then(resp => {
               const error = resp.data.error;
               this.stepLastActive(); // прогрессбар
@@ -338,7 +340,6 @@
       },
       // удаление каталога
       removeCatalog(index){
-
         if(this.inputsArr[0].value === this.catalogList[index].catalogName){
           let payload = this.catalogList[index];
           this.stepOneActive(); // прогрессбар
@@ -428,7 +429,8 @@
               let arrayList = resp.data.data;
               //this.catalogList = resp.data.data;
               arrayList.forEach(value => {
-                this.$set(this.catalogList, value.id, value);
+                this.catalogList.push(value);
+                //this.$set(this.catalogList, value.id, value);
               })
             }
           })
