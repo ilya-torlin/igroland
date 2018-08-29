@@ -30,7 +30,7 @@
 
     todo: API - в первую очередь ↓↓↓
     todocomplete: API - Запрос каталога в зависимости от выбранного поставщика
-    todo: API - Вывод товаров каталога по ид
+    todocomplete: API - Вывод товаров каталога по ид
     todocomplete: API - Показать товары по ид папки
 
     todo: API - Скрыть товары, которых нет в наличии у поставщика из селекта(по ид поставщика), в селекте может быть выбрано "все поставщики".
@@ -45,8 +45,8 @@
     todocomplete: API - добавить наценку, метод на подобие 'Альтернативное наименование'
 
 
-    todo: В хлебных крошках ↓↓↓
-      todo: написать обработчик для тригера "Скрыть не в наличии"
+    todocomplete: В хлебных крошках ↓↓↓
+      todocomplete: написать обработчик для тригера "Скрыть не в наличии"
       todocomplete: Добавить "Новую категорию"
 
     todo: Каталог (панель слева)
@@ -75,7 +75,7 @@
         todocomplete: Привязать - привязать товар к выделенному каталогу в панели слева, если ничего не выделено, то проинформировать пользователя что бы он выделил каталог в панели слева
       todocomplete: кнопки "Првязвть" и "Показать товары" в нижней панели(под папками)
 
-    todo: Вкладка "Товары"
+    todocomplete: Вкладка "Товары"
       todocomplete: Поиск по товарам
       todocomplete: Загрузка изображений на сервер
       todocomplete: Переключение какую галерею использовать(по умолчанию или пользовательскую)
@@ -316,7 +316,6 @@
                                 Выбранная категория: <span class="provider-txt">{{ foldersCont.attachFolder.folderH }}</span>
                               </div>
                             </div>
-                            <!--todo: проверить работоспособность когда будет выгрузка-->
                             <appBasicCatalogFolders
                               :folderH = 'foldersCont.attachProducts.folderH'
                               :rootCatalogFolders = 'foldersCont.attachProducts.rootProductFolders'
@@ -861,7 +860,7 @@
             }
           },
           removeAttachedProduct(){
-            // todo: проверить работоспособность кода
+            // todocomplete: проверить работоспособность кода
             let activeTab = this.getActiveTab();
             let categoryId = this.foldersCont.attachProducts.catalogSelectedItemId;
             console.log(this.foldersCont.attachProducts);
@@ -1021,7 +1020,7 @@
           },
           //Event handler: скрыть не в наличии
           onHideNotOwned(value){
-            //todo: переключатель 'скрыть не в наличии', сейчас никак  не обрабатывается, доделать
+            //todocomplete: переключатель 'скрыть не в наличии', сейчас никак  не обрабатывается, доделать
             this.hideNotAvl = value;
             //this.notUserCreatedFoldersInit();
             this.onChangeProvider(this.selectedProvider);
