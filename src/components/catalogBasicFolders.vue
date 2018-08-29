@@ -32,7 +32,7 @@
           <ul class="folder-list folder-list-main" v-if="rootCatalogFoldersComp.length > 0">
             <li v-for="(catFolder, index) in rootCatalogFoldersComp"
                 @click="setSelectItem(catFolder, index, 'setSelectedItem')"
-                :class="{'isActive' : (catFolder.attached_category_id == selectedItemObjectId)}"
+                :class="{'isActive' : (catFolder[propId] == selectedItemObjectId)}"
             >
               <!--:key - параметр для сортировки-->
               <div class="folder-title" @click.right = "" >
@@ -49,13 +49,13 @@
                       </svg>
                     </button>
                   </div>
-                  {{catFolder.attached_category_title}}
+                  {{catFolder[propTitle]}}
                 </div>
               </div>
             </li>
           </ul>
           <div class="empty-cat" v-else>
-            Категорий не найдено
+            {{ emptyList }}
           </div>
         </div>
       </div>
@@ -190,8 +190,8 @@
             this.$emit(action, {'value': {
                 id : catalog.id,
                 index : index,
-                name: catalog.attached_category_title,
-                catalogId: +catalog.attached_category_id,
+                name: catalog[this.propTitle],
+                catalogId: +catalog[this.propId],
               } });
           },
 
@@ -202,6 +202,9 @@
           'selectedProvider', //выбранный поставщик (объект {name, id})
           'selectedItemId', // выбранный каталог (по которому кликнули, выделяется желтым цветом объект id)
           'selectedItemIndex', // выбранный каталог (по которому кликнули, выделяется желтым цветом объект index)
+          'emptyList',  // вывод сообщения для пустого католога
+          'propTitle',
+          'propId',
         ],
         mounted(){
         }
