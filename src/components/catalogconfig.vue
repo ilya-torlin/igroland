@@ -154,7 +154,7 @@
                           <div class="upper-s">
                             <div class="find-folder-i">
                               <div class="txt-f">
-                                Выбранный каталог: <span class="provider-txt">{{selectedProvider.name}}</span>
+                                Выбранный каталог: <span class="provider-txt">{{ providerHeader }}</span>
                               </div>
                             </div>
                             <appCatalogFolders
@@ -272,6 +272,7 @@
                               :categoryId="categoryGoods.categoryId"
                               :supplierId="categoryGoods.supplier_id"
                               :offset="categoryGoods.offset"
+                              :hideNotAvl="hideNotAvl"
                               @updatePagination="onUpdatePagination($event)"
                               @setSelectedProduct="onSetSelectProduct($event)"
                               @attachProductToCategory="onAttachProductToCategory"
@@ -282,8 +283,9 @@
                             <div class="row">
                               <appPagination :countPage = "categoryGoods.pagination.countPage"
                                              :routerOn = "categoryGoods.pagination.routerOn"
+                                             :pageNum="categoryGoods.pagination.currentPage"
                                              @pageChange = "onGoodsPageChange($event)"
-                                             :pageNum="categoryGoods.pagination.currentPage">
+                                             >
                               </appPagination>
                             </div>
                           </div>
@@ -462,14 +464,8 @@
               },
               findFolderArr: { // Для вывода папок в блоке поиска
               },
-              selectedFind: { // Выбранный параметр для поиска во вкладке поиск
-                catalogName: 'Все каталоги',
-                id: ''
-              },
-              additionalFindProp: [
-                // {catalogName: 'Каталог (панель слева)', id: '1234'},
-                // {catalogName: 'Выделенная папка (панель слева)', id: '4453'},
-              ],
+              selectedFind: null,
+              additionalFindProp: null,
               foldersCont: { //массив со всеми папками для компонента catalogFolder
                 providerFolder: {
                   folderH: '', // заголовок каталога
@@ -646,7 +642,7 @@
             }),
           //формирование опций для селекта с параметрами поиска, вкладка поиск
           findSelectOpt(){
-            return this.providerList.concat(this.additionalFindProp);
+            return this.providerList;
           },
           currentCatalogId(){
             return +this.$route.params.id || null;
@@ -656,6 +652,9 @@
           },
           currentPageCount(){
             return this.categoryGoods.pagination.countPage;
+          },
+          providerHeader(){
+            return (this.selectedProvider.catalogName) ? this.selectedProvider.catalogName : 'Выберите поставщика';
           }
         },
         components: {
@@ -814,7 +813,8 @@
                     result => { // всё ок
                       // сохраняем вложенность
                       result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                      this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                      this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,this.foldersCont['catalogFolder'].catalogSelectedItemIndex,result);
+                      //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
                       this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
                       let catalogKey = '';
                       if(this.tabValue == 'provider')
@@ -880,7 +880,8 @@
                     result => { // всё ок
                       // сохраняем вложенность
                       result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                      this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                      this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,this.foldersCont['catalogFolder'].catalogSelectedItemIndex,result);
+                      //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
                       this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
                       // let catalogKey = '';
                       // if(this.tabValue == 'provider')
@@ -1024,6 +1025,8 @@
             this.hideNotAvl = value;
             //this.notUserCreatedFoldersInit();
             this.onChangeProvider(this.selectedProvider);
+            this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+            this.$refs['productsCatalog'].getProducts(this.foldersCont.catalogFolder.catalogSelectedItemId);
           },
           //изменение значения setRootCatalogFoldersComp(массив папок), у дочернего компонента по ссылке ref
           updateFolderCont(idCategory, lvlFolder, parentFolderId, selectedProvider, folderKey, componentRefKey){
@@ -1073,9 +1076,9 @@
           // инициализация вкладок с категориями и товарами не созданных с пользователем
           notUserCreatedFoldersInit(){
             //папка с поставщиком
-            this.updateFolderCont(null, null, null, null, 'providerFolder', 'providerCont');
+            //this.updateFolderCont(null, null, null, null, 'providerFolder', 'providerCont');
             //папка с результатами поиска
-            this.updateFolderCont(null, null, null, null, 'findResFolder', 'findResFolder');
+            //this.updateFolderCont(null, null, null, null, 'findResFolder', 'findResFolder');
           },
           //инициализация всех папок/категорий
           allFoldersInit(){
@@ -1111,7 +1114,7 @@
                   //this.providerList = resp.data.data;
                   this.providerList.push({catalogName: 'Все каталоги', id: ''});
                   //todo: при изменении провайдера вызывать!!??
-                  this.selectedProvider = this.providerList[this.providerList.length-1]
+                  //this.selectedProvider = this.providerList[this.providerList.length-1]
                 }
                 this.stepLastActive(); // прогрессбар
               })
@@ -1216,7 +1219,8 @@
                         result => { // всё ок
                           // сохраняем вложенность
                           result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                          this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                          this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,this.foldersCont['catalogFolder'].catalogSelectedItemIndex,result);
+                          //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
                           this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
                         },
                         error =>{ // всё не ок
@@ -1277,7 +1281,8 @@
                         result => { // всё ок
                           // сохраняем вложенность
                           result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                          this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                          this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,this.foldersCont['catalogFolder'].catalogSelectedItemIndex,result);
+                          //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
                           this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
                         },
                         error =>{ // всё не ок
@@ -1365,7 +1370,7 @@
               this.categoryGoods.categoryId = activeTab.selectedId;
               this.categoryGoods.selectedTitle = activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].name;
               console.log('onTabShowGoods');
-              this.$refs['productsCatalog'].getProducts(activeTab.selectedId);
+              this.$refs['productsCatalog'].getProducts(activeTab.selectedId,);
               this.tabChangeVal('goods');
             }
           }
