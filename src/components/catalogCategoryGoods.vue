@@ -278,7 +278,8 @@
         'supplierId',
         'offset',
         'category',
-        'findGoodsStr'
+        'findGoodsStr',
+        'hideNotAvl'
       ],
       components: {
         Multiselect,
@@ -378,7 +379,8 @@
         },
         //запрос информации о конкретном товаре и выделение товара в списке товаров
         setProduct(prodId, categoryGoodsIndex){
-          if (this.productSelectedId === prodId) {
+          console.log(prodId, this.productSelectedId);
+          if (this.productSelectedId === +prodId) {
             this.productSelectedId = 0;
             this.productSelectedIndex = 0;
             return
@@ -427,6 +429,7 @@
             supplier_id: this.supplierId || null,
             limit: this.limit || null,
             offset: this.offset || null,
+            hideNotAvl: this.hideNotAvl
           };
           this.stepOneActive(); // прогрессбар
           axios.get( API_URL + '/product', {
