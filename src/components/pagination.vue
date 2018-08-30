@@ -17,7 +17,7 @@
                          class="page-item"
                          :key="value"
                          :class="{'is-active': value === currentPage}"
-                         v-for="(value, index) in (1, countPage)">
+                         v-for="(value, index) in paginationArray">
               <a class="page-link" href="#" @click= "$emit('pageChange')" >{{value}}</a>
             </router-link>
             <router-link :to="routerLink + nextPagePag"
@@ -48,20 +48,20 @@
           <ul class="pagination" v-else>
 
             <li class="page-item">
-              <a class="page-link" @click.prevent= "pageChange" href="#" aria-label="Previous" >
+              <a class="page-link" @click.prevent= "pageChange(prevPage)" href="#" aria-label="Previous" >
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Предыдущая</span>
               </a>
             </li>
             <li class="page-item"
                 :class="{'is-active': value === currentPage}"
-                v-for="(value, index) in (1, countPage)">
+                v-for="(value, index) in paginationArray">
                 <a class="page-link" href="#" @click.prevent= "pageChange(value)" >
                   {{value}}
                 </a>
             </li>
             <li class="page-item">
-              <a class="page-link" @click.prevent= "pageChange" href="#" aria-label="Next">
+              <a class="page-link" @click.prevent= "pageChange(nextPagePag)" href="#" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Следующая</span>
               </a>
@@ -78,7 +78,7 @@
     data () {
       return {
         msg: 'pagination',
-        pageCur: 0
+        pageCur: 1
       }
     },
     computed: {
@@ -97,10 +97,22 @@
         let page = (+this.currentPage == +this.countPage) ? this.countPage : this.currentPage + 1;
         return page;
       },
+      paginationArray(){
+        if (this.countPage === 1)
+          return [this.pageNum];
+        if (this.countPage === 2)
+          return [1,2];
+        if (this.currentPage === 1)
+          return [this.currentPage,this.nextPagePag,this.nextPagePag+1];
+        if (this.currentPage === this.countPage)
+          return [this.prevPage-1,this.prevPage,this.currentPage];
+        return [this.prevPage,this.currentPage,this.nextPagePag];
+      }
     },
     methods: {
       //изменение страницы
       pageChange(clickedPage){
+        console.log('clickedPage',clickedPage);
         this.pageCur = clickedPage || 1;
         let resVal = {
           currentPage: this.currentPage,
@@ -113,7 +125,8 @@
     props: [
       'countPage',
       'routerLink',
-      'routerOn'
+      'routerOn',
+      'pageNum'
     ]
 
   }
