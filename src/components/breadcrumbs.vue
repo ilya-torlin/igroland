@@ -35,7 +35,7 @@
 
               <div class="d-flex align-items-center selectLabeled" cont="">
                 <multiselect
-                  :value="selectedProvider"
+                  :value="thisSelectedProvider"
                   :options="providerList"
                   :multiple="false"
                   :close-on-select="true"
@@ -84,7 +84,7 @@
             return {
               hideNotOwnedSwitch: true, //переключатель, скрыть в наличии
               newCatalogName: '', // новое имя каталога
-              thisSelectedProvider: {},
+              thisSelectedProvider: null,
             }
         },
         components:{
@@ -119,7 +119,7 @@
               catalogName: event.catalogName
             };
             this[selectResKey] = selectedProvider;
-            this.$emit('changeProvider', {'value': this.thisSelectedProvider})
+            this.$emit('changeProvider', {'value': selectedProvider})
           },
         },
         mounted(){
