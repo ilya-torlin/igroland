@@ -11,10 +11,10 @@
             :value="value"
             @input="onInput">
 
-    <!--todo: Сделать каждый инпат как отдельный компонент, для упращения валидации
+    <!--todocomplete: Сделать каждый инпат как отдельный компонент, для упращения валидации
         todo: Для инпатов создать массив инпатов со значениями, и выводить компонент через v-for
         f.e. <input-component v-for="(singleInput, index) in inputsArr" :key="index"><input-component>
-        todo: данные в компонент передавать через :atribute , в самом компоненте прописать - props: ['atribute']
+        todotodocomplete: данные в компонент передавать через :atribute , в самом компоненте прописать - props: ['atribute']
         в инпате у дочернего компонента, НЕ прописывать v-bind, использовать event @input="someMethod", и объявить someMethod() у дочернего компонента
 
 
