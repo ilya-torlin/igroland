@@ -7,9 +7,12 @@
                      :switcherActive="useDefaultImagesSwitch"
                      @switchToogle="onUseDefaultImages">
         </appSwitcher>
-        <div class="image-galery mb-3" v-if="imagelist.SUPPLIER">
-          <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist.SUPPLIER" :key="index">
-        </div>
+        <!-- нужно для рендеринга, иначе выдает ошибку, рендерить раньше чем подгружает с сервера -->
+        <template v-if="imagelist">
+          <div class="image-galery mb-3" v-if="imagelist['SUPPLIER']">
+            <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist['SUPPLIER']" :key="index">
+          </div>
+        </template>
         <appSwitcher class="mb-3" txt="Использовать свои изображения"
                      :switcherActive="useOwnImagesSwitch"
                      @switchToogle="onUseOwnImages">
@@ -19,9 +22,12 @@
                     leave-active-class="animated zoomOut">
           <div v-if="useOwnImagesSwitch">
             <vue-dropzone class="mb-3" ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
-            <div class="image-galery mb-3" v-if="imagelist.ADMIN">
-              <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist.ADMIN" :key="index">
-            </div>
+            <!-- нужно для рендеринга, иначе выдает ошибку, рендерить раньше чем подгружает с сервера -->
+            <template v-if="imagelist">
+              <div class="image-galery mb-3" v-if="imagelist['ADMIN']">
+                <img :src="IMAGE_URL + item" alt="" v-for="(item, index) in imagelist['ADMIN']" :key="index">
+              </div>
+            </template>
           </div>
         </transition>
       </template>
