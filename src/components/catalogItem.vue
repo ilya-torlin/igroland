@@ -87,6 +87,22 @@
               <div class="row">
                 <div class="col-md-5">
                   <div class="item-b">
+                    <div class="input-group input-margin">
+                      <input :value="catalogName"
+                             @change="onChangeName($event)"
+                             type="text" class="form-control" placeholder="">
+                      <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" @click="onChangeNameButton">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="15px" height="15px">
+                            <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
+                                  d="M14.410,3.414 L13.938,3.886 L11.108,1.054 L11.579,0.582 C12.361,-0.200 13.628,-0.200 14.410,0.582 C15.192,1.364 15.192,2.632 14.410,3.414 ZM5.190,12.639 L2.360,9.807 L10.164,1.998 L12.995,4.830 L5.190,12.639 ZM3.775,14.055 L0.001,14.999 L0.944,11.223 L1.416,10.751 L4.247,13.583 L3.775,14.055 Z"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
                     <textarea  @change="$emit('changeDescr', {'value': $event.target.value})" name="" id="discr1" placeholder="Описание" cols="30" rows="5">{{description}}</textarea>
                   </div>
                 </div>
@@ -142,9 +158,11 @@
       return {
         msg: 'catalogItem',
         thisSelectedUsers: {},
+        thisCatalogName: ''
       }
     },
-    props: ['selected',
+    props: [
+      'selected',
       'switcherActive',
       'showConfig',
       'userList',
@@ -167,7 +185,7 @@
       },
       adminRoleId(){
         return USER_ADMIN;
-      }
+      },
     },
     methods:{
       onChangeUsers(event, selectResKey){
@@ -175,6 +193,16 @@
         this[selectResKey] = event;
         this.$emit('changeSelect', {'value': this.thisSelectedUsers});
       },
+      onChangeName(event){
+        console.log('onChangeName',event.target.value);
+        this.thisCatalogName = event.target.value;
+        // this.$emit('changeName', {'value': this.thisSelectedUsers});
+      },
+      onChangeNameButton(){
+        console.log('onChangeNameButton',this.thisCatalogName);
+        if (this.thisCatalogName !== '')
+          this.$emit('changeName', {'value': this.thisCatalogName});
+      }
     },
   }
 </script>

@@ -354,6 +354,7 @@
                                           @switchToogle = "onSwitchToogle"
                                           @isOnToogle = "onIsOnToogle"
                                           @changeDescr = "onChangeDescr($event)"
+                                          @changeName="onChangeName($event)"
                                           @copyCatalog = ""
                                           @saveCatalog = "onSaveCatalog"
                                           @changeSelect = "onChangeSelect($event)"
@@ -1517,6 +1518,10 @@
             this.paramsFolder.description = e.value;
             this.falseCatalogSave();
           },
+          onChangeName(e){
+            this.paramsFolder.catalogName = e.value;
+            this.falseCatalogSave();
+          },
           onChangeSelect(event){
             this.paramsFolder.selectedUsers = event.value;
             this.falseCatalogSave();
@@ -1540,6 +1545,7 @@
                     this.setErrorAlertMsg('Ошибка при сохранении каталога: ' + errorTxt);
                   }else {
                     this.paramsFolder.catalogSaved = true;
+                    this.foldersCont.catalogFolder.folderH = this.paramsFolder.catalogName;
                     this.setSuccesAlertShow(true);
                     this.setSuccesAlertMsg('Каталог сохранён');
                   }
