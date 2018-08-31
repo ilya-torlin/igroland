@@ -25,7 +25,7 @@
                   </svg>
                 </div>
               </div>
-              <div class="title" v-if="!useCatalogParams">
+              <div class="title" v-if="useCatalogParams">
                 <div class="txt-link">
                   {{catalogName}}
                 </div>
