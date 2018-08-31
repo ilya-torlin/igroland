@@ -48,6 +48,7 @@
         :description="catalogItem.description"
         :selectedUsers="catalogItem.selectedUsers"
         :userRole="userRole"
+        :useCatalogParams="false"
         @configToogle = "onConfigToogle(index)"
         @switchToogle = "onSwitchToogle(index)"
         @isOnToogle = "onIsOnToogle(index)"
@@ -179,10 +180,7 @@
         progShow: 'progShow'
       }),
       ...mapGetters('user', {
-          avatar: 'avatar',
-          userName: 'name',
           userRole: 'role',
-          userProfile: 'profile'
         }),
     },
     methods: {
@@ -458,6 +456,7 @@
               this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
             }else{
               this.userList = resp.data.data;
+              console.log('userList',resp.data.data);
             }
           })
           .catch(err => {
