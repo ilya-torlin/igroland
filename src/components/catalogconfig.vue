@@ -1486,10 +1486,9 @@
                   this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
                 }else{
                   //let currentUserList = resp.data.data;
-                  if (USER_ADMIN !== this.userRole.id){
-                    //this.currentUserList = this.currentUserList.filter( element )
-                  }
-                  this.userList = resp.data.data;
+                  if (this.userRole.id === USER_ADMIN)
+                    this.userList = resp.data.data;
+                  console.log('condition',this.userRole.id === USER_ADMIN);
                   console.log('userList',resp.data.data);
                 }
               })
