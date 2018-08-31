@@ -460,6 +460,7 @@
               hideNotAvl: false,
               providerList: [// поставщики для селекта
               ],
+              catalogList:[],
               selectedProvider: {
               },
               findFolderArr: { // Для вывода папок в блоке поиска
@@ -808,28 +809,37 @@
                   this.setErrorAlertMsg('Ошибка при отвязывании категории: ' + errorTxt);
                 }else{
                   //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
-                  let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
-                  updateCategory.then(
-                    result => { // всё ок
-                      // сохраняем вложенность
-                      result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                      this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,this.foldersCont['catalogFolder'].catalogSelectedItemIndex,result);
-                      //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
-                      this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
-                      let catalogKey = '';
-                      if(this.tabValue == 'provider')
-                        catalogKey = 'providerFolder';
-                      else if(this.tabValue == 'find')
-                        catalogKey = 'findResFolder';
+                  let usedCategories = this.getParentsCategoryId();
+                  console.log('parents categories ------------->',usedCategories);
+                  let updateCategory;
+                  for(let ind = 0; ind<usedCategories.length; ind++) {
+                    updateCategory = this.getCategoryById(+usedCategories[ind].id);
+                    updateCategory.then(
+                      result => { // всё ок
+                        // сохраняем вложенность
+                        result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].lvlFolder;
+                        // обновляем текущую категорию
+                        this.$set(this.foldersCont.catalogFolder.rootCatalogFolders, usedCategories[ind].index, result);
+                        //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                        // обновляем привязанные категорию только у того выбранного
+                        if (ind === 0)
+                          this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
 
-                      let newIndex = this.findCategoryIndex(this.foldersCont[catalogKey].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
-                      console.log('newIndex ',newIndex);
-                      this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
-                    },
-                    error =>{ // всё не ок
-                      console.log('error', error);
-                    }
-                  );
+                        let catalogKey = '';
+                        if (this.tabValue == 'provider')
+                          catalogKey = 'providerFolder';
+                        else if (this.tabValue == 'find')
+                          catalogKey = 'findResFolder';
+
+                        let newIndex = this.findCategoryIndex(this.foldersCont[catalogKey].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
+                        console.log('newIndex ', newIndex);
+                        this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
+                      },
+                      error => { // всё не ок
+                        console.log('error', error);
+                      }
+                    );
+                  }
 
                   // удаляем из списка компонента привязаных товаров выбранную категорию
                   this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
@@ -875,28 +885,34 @@
                   this.setErrorAlertMsg('Ошибка при отвязывании продукта: ' + errorTxt);
                 }else{
                   //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
-                  let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
-                  updateCategory.then(
-                    result => { // всё ок
-                      // сохраняем вложенность
-                      result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                      this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,this.foldersCont['catalogFolder'].catalogSelectedItemIndex,result);
-                      //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
-                      this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
-                      // let catalogKey = '';
-                      // if(this.tabValue == 'provider')
-                      //   catalogKey = 'providerFolder';
-                      // else if(this.tabValue == 'find')
-                      //   catalogKey = 'findResFolder';
-                      //
-                      // let newIndex = this.findCategoryIndex(this.foldersCont[catalogKey].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
-                      // console.log('newIndex ',newIndex);
-                      // this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
-                    },
-                    error =>{ // всё не ок
-                      console.log('error', error);
-                    }
-                  );
+                  let usedCategories = this.getParentsCategoryId();
+                  console.log('parents categories ------------->',usedCategories);
+                  let updateCategory;
+                  for(let ind = 0; ind<usedCategories.length; ind++) {
+                    updateCategory = this.getCategoryById(+usedCategories[ind].id);
+                    updateCategory.then(
+                      result => { // всё ок
+                        // сохраняем вложенность
+                        result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].lvlFolder;
+                        this.$set(this.foldersCont.catalogFolder.rootCatalogFolders, usedCategories[ind].index, result);
+                        //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                        if(ind === 0)
+                          this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
+                        // let catalogKey = '';
+                        // if(this.tabValue == 'provider')
+                        //   catalogKey = 'providerFolder';
+                        // else if(this.tabValue == 'find')
+                        //   catalogKey = 'findResFolder';
+                        //
+                        // let newIndex = this.findCategoryIndex(this.foldersCont[catalogKey].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
+                        // console.log('newIndex ',newIndex);
+                        // this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
+                      },
+                      error => { // всё не ок
+                        console.log('error', error);
+                      }
+                    );
+                  }
 
                   // удаляем из списка компонента привязаных товаров выбранную категорию
                   //this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
@@ -1184,6 +1200,24 @@
                 });
             });
           },
+          // ищет все родительские категории в ползьзовательском каталоге
+          getParentsCategoryId(){
+            let selected = {  id: this.foldersCont.catalogFolder.catalogSelectedItemId,
+                              index: this.foldersCont.catalogFolder.catalogSelectedItemIndex
+                            };
+            let categoryArray = [selected];
+            let indexLvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[selected.index].lvlFolder - 1;
+            for(let ind = selected.index; ind >= 0 || indexLvlFolder === 0; ind--){
+              if(indexLvlFolder === this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder){
+                console.log('find parent');
+                categoryArray.push({id :this.foldersCont.catalogFolder.rootCatalogFolders[ind].folderId,
+                                    index: ind
+                                  });
+                indexLvlFolder--;
+              }
+            }
+            return categoryArray;
+          },
           // Привязка категорий
           onAttachFolderToCategory(){
             let activeTab = this.getActiveTab();
@@ -1213,20 +1247,28 @@
                       this.setSuccesAlertMsg('Категории привязаны');
                       activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
                       //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
-                      // обновляем список привязанных категорий у выбранного id
-                      let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
-                      updateCategory.then(
-                        result => { // всё ок
-                          // сохраняем вложенность
-                          result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                          this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,this.foldersCont['catalogFolder'].catalogSelectedItemIndex,result);
-                          //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
-                          this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
-                        },
-                        error =>{ // всё не ок
-                          console.log('error', error);
-                        }
-                      );
+                      let usedCategories = this.getParentsCategoryId();
+                      console.log('parents categories ------------->',usedCategories);
+                      let updateCategory;
+                      for(let ind = 0; ind<usedCategories.length; ind++){
+                        // обновляем список привязанных категорий у выбранного id
+                        updateCategory = this.getCategoryById(+usedCategories[ind].id);
+                        updateCategory.then(
+                          result => { // всё ок
+                            // сохраняем вложенность
+                            result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].lvlFolder;
+                            this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,usedCategories[ind].index,result);
+                            //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                            if (ind === 0)
+                              this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
+                          },
+                          error =>{ // всё не ок
+                            console.log('error', error);
+                          }
+                        );
+                      }
+
+
                     }
                   })
                   .catch(err => {
@@ -1275,20 +1317,26 @@
                       this.setSuccesAlertMsg('Продукт привязан');
                       //activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
                       //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
-                      // обновляем список привязанных категорий у выбранного id
-                      let updateCategory = this.getCategoryById(+this.foldersCont['catalogFolder'].catalogSelectedItemId);
-                      updateCategory.then(
-                        result => { // всё ок
-                          // сохраняем вложенность
-                          result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex].lvlFolder;
-                          this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,this.foldersCont['catalogFolder'].catalogSelectedItemIndex,result);
-                          //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
-                          this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
-                        },
-                        error =>{ // всё не ок
-                          console.log('error', error);
-                        }
-                      );
+                      let usedCategories = this.getParentsCategoryId();
+                      console.log('parents categories ------------->',usedCategories);
+                      let updateCategory;
+                      for(let ind = 0; ind<usedCategories.length; ind++) {
+                        // обновляем список привязанных категорий у выбранного id
+                        updateCategory = this.getCategoryById(+usedCategories[ind].id);
+                        updateCategory.then(
+                          result => { // всё ок
+                            // сохраняем вложенность
+                            result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].lvlFolder;
+                            this.$set(this.foldersCont.catalogFolder.rootCatalogFolders, usedCategories[ind].index, result);
+                            //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
+                            if (ind === 0)
+                              this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
+                          },
+                          error => { // всё не ок
+                            console.log('error', error);
+                          }
+                        );
+                      }
                     }
                   })
                   .catch(err => {
