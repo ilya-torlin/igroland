@@ -1560,7 +1560,7 @@
                 });
             }
           },
-          falseCatalogSave(index){
+          falseCatalogSave(){
             this.paramsFolder.catalogSaved = false;
           },
         },
