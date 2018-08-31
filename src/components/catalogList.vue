@@ -56,6 +56,7 @@
         @copyCatalog = "onCopyCatalog(index)"
         @saveCatalog = "onSaveCatalog(index)"
         @changeSelect = "onChangeSelect(index, $event)"
+        @changeName="onChangeName(index, $event)"
         @removeCatalog = "onOpenRemoveCatalogWindow(index)">
       </appCatalogItem>
 
@@ -243,6 +244,11 @@
       // изменение описания
       onChangeDescr(index, e){
         this.catalogList[index].description = e.value;
+        this.falseCatalogSave(index);
+      },
+      // изменение имени
+      onChangeName(index, e){
+        this.catalogList[index].catalogName = e.value;
         this.falseCatalogSave(index);
       },
       // копирование каталога
