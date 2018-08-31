@@ -1100,10 +1100,16 @@
               categoryRequest.then(
                 result => { // всё ок
                   console.log('categoryRequest result -->>', result);
-                  this.foldersCont[folderKey].rootCatalogFolders = result.catalogFolders;
+                  // фильтр каталогов с нулевыми остатками
+                  let notNullArray = result.catalogFolders;
+                  console.log('length',notNullArray.length);
+                  if (this.hideNotAvl)
+                    notNullArray = result.catalogFolders.filter( (element) => +element.goodsCount > 0);
+                  console.log('length',notNullArray.length);
+                  this.foldersCont[folderKey].rootCatalogFolders = notNullArray;
                   //Перезаписываем значение в компоненте
                   console.log('componentRefKey -->>', componentRefKey);
-                  this.$refs[componentRefKey].setRootCatalogFoldersComp(result.catalogFolders);
+                  this.$refs[componentRefKey].setRootCatalogFoldersComp(notNullArray);
                 },
                 error =>{ // всё не ок
                   console.log('error');
@@ -1474,7 +1480,8 @@
           // подгрузка списка пользователей с сервера
           initUserList(){
             // если пользователь не суперадмин, то не запрашивать каталог
-
+            if (this.userRole.id !== USER_ADMIN)
+              return ;
             this.stepOneActive(); // прогрессбар
             axios({url: API_URL + '/user', method: 'GET' })
               .then(resp => {

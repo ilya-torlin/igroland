@@ -82,7 +82,7 @@
         name: 'breadcrumbs',
         data () {
             return {
-              hideNotOwnedSwitch: true, //переключатель, скрыть в наличии
+              hideNotOwnedSwitch: false, //переключатель, скрыть в наличии
               newCatalogName: '', // новое имя каталога
               thisSelectedProvider: null,
             }
