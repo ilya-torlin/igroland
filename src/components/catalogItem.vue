@@ -65,7 +65,7 @@
                   </div>
                 </button>
               </div>
-              <div class="item">
+              <div class="item" v-if="!useCatalogParams">
                 <button :class="{isOnTr: isOn}" class="trIsOnB" @click="$emit('isOnToogle')" data-toggle="tooltip" data-placement="top" :data-original-title="isOn ? 'Выключить':'Включить'" >
                   <div class="svg-c">
                     <svg
