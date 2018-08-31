@@ -1517,9 +1517,7 @@
             this.paramsFolder.selectedUsers = event.value;
             this.falseCatalogSave();
           },
-          onOpenRemoveCatalogWindow(){
-            //$('#confirmDeleteModal').modal();
-          },
+          onOpenRemoveCatalogWindow(){},
           onSaveCatalog(){
             if(this.paramsFolder.catalogSaved){
               this.setSuccesAlertShow(true);
@@ -1549,6 +1547,9 @@
                   console.log(err);
                 });
             }
+          },
+          falseCatalogSave(index){
+            this.paramsFolder.catalogSaved = false;
           },
         },
         mounted(){
