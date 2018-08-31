@@ -116,6 +116,7 @@
                   @setSelectedItem = 'onSetSelectItem($event, "catalogFolder")'
                   @setSelectRoot = 'onSetSelectRoot'
                   @showGoods="onCatalogShowGoods"
+                  @showParamFolder="onShowParamFolder"
                   ref="catalogFolder"
                 >
                 </appCatalogFolders>
@@ -144,6 +145,9 @@
                     </div>
                     <div class="tab-i" :class="{'active': tabValue === 'attachproduct'}" @click="tabChangeVal('attachproduct')" v-show="foldersCont.attachProducts.showAttachedTab">
                       Привязанные продукты
+                    </div>
+                    <div class="tab-i" :class="{'active': tabValue === 'params'}" @click="tabChangeVal('params')">
+                      Параметры каталога
                     </div>
                   </div>
               </div>
@@ -332,6 +336,31 @@
                             </appBasicCatalogFolders>
                           </div>
                         </div>
+                        <div key="params-tab" class="att-folders-i folders-wt" v-show="tabValue == 'params'">
+                        <div class="upper-s">
+                          <appCatalogItem :selected="paramsFolder.selected"
+                                          :switcherActive="paramsFolder.switcherActive"
+                                          :showConfig="true"
+                                          :userList="userList"
+                                          :catalogName="paramsFolder.catalogName"
+                                          :catalogId="paramsFolder.id"
+                                          :isActive="paramsFolder.isActive"
+                                          :isOn="paramsFolder.isOn"
+                                          :description="paramsFolder.description"
+                                          :selectedUsers="paramsFolder.selectedUsers"
+                                          :userRole="userRole"
+                                          :useCatalogParams="true"
+                                          @configToogle = "onConfigToogle"
+                                          @switchToogle = "onSwitchToogle"
+                                          @isOnToogle = "onIsOnToogle"
+                                          @changeDescr = "onChangeDescr($event)"
+                                          @copyCatalog = ""
+                                          @saveCatalog = "onSaveCatalog"
+                                          @changeSelect = "onChangeSelect($event)"
+                                          @removeCatalog = "onOpenRemoveCatalogWindow(index)">
+                          </appCatalogItem>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -404,6 +433,7 @@
     import appModal from './modalWindow.vue';
     import appBasicCatalogFolders from './catalogBasicFolders.vue'
     import appCatalogCategoryGoods from './catalogCategoryGoods'
+    import appCatalogItem from './catalogItem'
 
     import {API_URL, IMAGE_URL, USER_ADMIN} from '../constants';
     import axios from 'axios';
@@ -599,6 +629,10 @@
                   catalogSelectedItemCategoryId: 0  // id категории, которую отвязвыем
                 }
               },
+              paramsFolder:{
+
+              },
+              userList: [],
               //Goods categoryGoods.pagination.countItemsPage
               categoryGoods: { // товары выбранной категории
                 findGoodsStr: '',
@@ -660,6 +694,7 @@
         },
         components: {
           Multiselect,
+          appCatalogItem,
           appCatalogFolders,
           appBasicCatalogFolders,
           appCatalogCategoryGoods,
@@ -1396,8 +1431,9 @@
                 this.setErrorAlertMsg('Ошибка при запросе информации о каталоге: ' + errorTxt);
               }else{
                 console.log(resp.data.data);
-                this.foldersCont.catalogFolder.folderH = resp.data.data.catalogName;
-                this.foldersCont.catalogFolder.lastUpdateTxt = 'Последнее изменение ' + resp.data.data.lastUpdate;
+                this.paramsFolder = resp.data.data;
+                this.foldersCont.catalogFolder.folderH = this.paramsFolder.catalogName;
+                this.foldersCont.catalogFolder.lastUpdateTxt = 'Последнее изменение ' + this.paramsFolder.lastUpdate;
               }
               this.stepLastActive(); // прогрессбар
               })
@@ -1406,6 +1442,10 @@
                 this.setErrorAlertMsg('Ошибка при запросе информации о каталоге');
                 this.stepLastActive(); // прогрессбар
               });
+          },
+          // показываем вкладку "параметры каталога"
+          onShowParamFolder(){
+
           },
           // показываем товары отпределенной категориии
           onCatalogShowGoods(){
@@ -1430,12 +1470,92 @@
               this.$refs['productsCatalog'].getProducts(activeTab.selectedId,);
               this.tabChangeVal('goods');
             }
-          }
+          },
+          // подгрузка списка пользователей с сервера
+          initUserList(){
+            // если пользователь не суперадмин, то не запрашивать каталог
+
+            this.stepOneActive(); // прогрессбар
+            axios({url: API_URL + '/user', method: 'GET' })
+              .then(resp => {
+                const error = resp.data.error;
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
+                }else{
+                  //let currentUserList = resp.data.data;
+                  if (USER_ADMIN !== this.userRole.id){
+                    //this.currentUserList = this.currentUserList.filter( element )
+                  }
+                  this.userList = resp.data.data;
+                  console.log('userList',resp.data.data);
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertShow(true);
+                this.setErrorAlertMsg('Ошибка при получении списка каталогов');
+                this.stepLastActive(); // прогрессбар
+                console.log(err);
+              });
+          },
+          // методы для изменения параметров каталога
+          onConfigToogle(){
+            this.paramsFolder.showConfig = !this.paramsFolder.showConfig;
+          },
+          onSwitchToogle(){
+            this.paramsFolder.switcherActive = !this.paramsFolder.switcherActive;
+            this.falseCatalogSave();
+          },
+          onIsOnToogle(){},
+          onChangeDescr(e){
+            this.paramsFolder.description = e.value;
+            this.falseCatalogSave();
+          },
+          onChangeSelect(event){
+            this.paramsFolder.selectedUsers = event.value;
+            this.falseCatalogSave();
+          },
+          onOpenRemoveCatalogWindow(){
+            //$('#confirmDeleteModal').modal();
+          },
+          onSaveCatalog(){
+            if(this.paramsFolder.catalogSaved){
+              this.setSuccesAlertShow(true);
+              this.setSuccesAlertMsg('Каталог сохранён');
+            }else {
+              let payload = this.paramsFolder;
+              let catalogIndex = this.paramsFolder.id;
+              this.stepOneActive(); // прогрессбар
+              axios({url: API_URL + '/catalog/' +  catalogIndex, data: payload, method: 'PUT' })
+                .then(resp => {
+                  const error = resp.data.error;
+                  this.stepLastActive(); // прогрессбар
+                  if(error){
+                    let errorTxt = resp.data.data.msgClient;
+                    this.setErrorAlertShow(true);
+                    this.setErrorAlertMsg('Ошибка при сохранении каталога: ' + errorTxt);
+                  }else {
+                    this.paramsFolder.catalogSaved = true;
+                    this.setSuccesAlertShow(true);
+                    this.setSuccesAlertMsg('Каталог сохранён');
+                  }
+                })
+                .catch(err => {
+                  this.setErrorAlertShow(true);
+                  this.setErrorAlertMsg('Ошибка при сохранении каталога');
+                  this.stepLastActive(); // прогрессбар
+                  console.log(err);
+                });
+            }
+          },
         },
         mounted(){
           this.getProvider();
           this.allFoldersInit();
           this.getMyCatalogInfo();
+          this.initUserList();
         }
     }
 </script>
