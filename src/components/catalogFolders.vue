@@ -306,8 +306,12 @@
               categoryRequest.then(
 
                 result => { // всё ок
+                  // фильтр каталогов с нулевыми остатками
+                  let notNullArray = result.catalogFolders;
+                  if (this.hideNotAvl)
+                    notNullArray = result.catalogFolders.filter( (element) => +element.goodsCount > 0);
                   // console.log('!!!!!!categoryRequest SUB result ---------', result);
-                  for (let item of result.catalogFolders) {
+                  for (let item of notNullArray) {
                     // с позиции index
                     // удалить 0
                     // вставить item
