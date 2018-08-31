@@ -338,6 +338,8 @@
                         </div>
                         <div key="params-tab" class="att-folders-i folders-wt" v-show="tabValue == 'params'">
                         <div class="upper-s">
+                          <div class="find-folder-i">
+                          </div>
                           <appCatalogItem :selected="paramsFolder.selected"
                                           :switcherActive="paramsFolder.switcherActive"
                                           :showConfig="true"
@@ -1450,7 +1452,7 @@
           },
           // показываем вкладку "параметры каталога"
           onShowParamFolder(){
-
+            this.tabValue = 'params';
           },
           // показываем товары отпределенной категориии
           onCatalogShowGoods(){
