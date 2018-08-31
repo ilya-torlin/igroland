@@ -824,22 +824,24 @@
                         // обновляем привязанные категорию только у того выбранного
                         if (ind === 0)
                           this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
-
-                        let catalogKey = '';
-                        if (this.tabValue == 'provider')
-                          catalogKey = 'providerFolder';
-                        else if (this.tabValue == 'find')
-                          catalogKey = 'findResFolder';
-
-                        let newIndex = this.findCategoryIndex(this.foldersCont[catalogKey].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
-                        console.log('newIndex ', newIndex);
-                        this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
                       },
                       error => { // всё не ок
                         console.log('error', error);
                       }
                     );
                   }
+                  // Открываем папку для просмотра, если она есть в каталогах
+                  let catalogArray = ['providerFolder','findResFolder'];
+                  for (let catInd = 0; catInd < catalogArray.length; catInd++) {
+                    if(this.foldersCont[catalogArray[catInd]].rootCatalogFolders.length > 0){
+                      let newIndex = this.findCategoryIndex(this.foldersCont[catalogArray[catInd]].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
+                      if(newIndex !== -1)
+                        this.foldersCont[catalogArray[catInd]].rootCatalogFolders[newIndex].hideFolder = false;
+                    }
+
+                  }
+                  // newIndex = this.findCategoryIndex(this.foldersCont['findResFolder'].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
+                  // this.foldersCont['findResFolder'].rootCatalogFolders[newIndex].hideFolder = false;
 
                   // удаляем из списка компонента привязаных товаров выбранную категорию
                   this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
@@ -1245,7 +1247,13 @@
                     }else{
                       this.setSuccesAlertShow(true);
                       this.setSuccesAlertMsg('Категории привязаны');
-                      activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
+                      let currentFolder = activeTab.obj.rootCatalogFolders[activeTab.selectedIndex];
+                      currentFolder.hideFolder = true;
+                      if(currentFolder.isOpen){
+                        for (let ind = 1; ind <= currentFolder.childCount; ind++){
+                          activeTab.obj.rootCatalogFolders[activeTab.selectedIndex+ind].hideFolder = true;
+                        }
+                      }
                       //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                       let usedCategories = this.getParentsCategoryId();
                       console.log('parents categories ------------->',usedCategories);
@@ -1389,6 +1397,7 @@
               }else{
                 console.log(resp.data.data);
                 this.foldersCont.catalogFolder.folderH = resp.data.data.catalogName;
+                this.foldersCont.catalogFolder.lastUpdateTxt = 'Последнее изменение ' + resp.data.data.lastUpdate;
               }
               this.stepLastActive(); // прогрессбар
               })
