@@ -25,7 +25,12 @@
                   </svg>
                 </div>
               </div>
-              <div class="title">
+              <div class="title" v-if="!useCatalogParams">
+                <div class="txt-link">
+                  {{catalogName}}
+                </div>
+              </div>
+              <div class="title" v-else>
                 <router-link class="" :to="'/catalogconfig/'+catalogId">
                   <div class="txt-link">
                     {{catalogName}}
@@ -47,7 +52,7 @@
                   </div>
                 </button>
               </div>
-              <div class="item">
+              <div class="item" v-if="!useCatalogParams">
                 <button @click="$emit('configToogle')" data-toggle="tooltip" data-placement="top" data-original-title="Настройки">
                   <div class="svg-c">
                     <svg
@@ -111,9 +116,9 @@
                 <div class="col-md-2">
                   <div class="item-b">
                     <div class=" upload-btn">
-                      <button @click="$emit('copyCatalog', {})" type="button" class="btn btn-outline-secondary">Скопировать</button>
+                      <button @click="$emit('copyCatalog', {})" type="button" class="btn btn-outline-secondary" v-if="!useCatalogParams">Скопировать</button>
                       <button @click="$emit('saveCatalog', {})" type="button" class="btn btn-success">Сохранить</button>
-                      <button @click="$emit('removeCatalog', {})" type="button" class="btn btn-danger">Удалить</button>
+                      <button @click="$emit('removeCatalog', {})" type="button" class="btn btn-danger" v-if="!useCatalogParams">Удалить</button>
                     </div>
                   </div>
                 </div>
@@ -149,7 +154,8 @@
       'isOn',
       'description',
       'selectedUsers',
-      'userRole'
+      'userRole',
+      'useCatalogParams'
     ],
     components: {
       Multiselect,
