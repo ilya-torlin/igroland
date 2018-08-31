@@ -412,7 +412,6 @@
                 console.log('error');
               }
             );*/
-
         }
     }
 </script>
