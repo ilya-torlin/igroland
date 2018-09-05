@@ -1,19 +1,13 @@
 import Vue from 'vue'
 
-//todo: Сделать массив аллертов (очередь)
-
 const state = {
+  /*{
+   msg: 'Всё хорошо',
+   show: false
+},*/
   succesAlert: [
-    // {
-    //   msg: 'Всё хорошо',
-    //   show: false
-    // },
   ],
   errorAlert: [
-    // {
-    //   msg: 'Чёт пошло не так!',
-    //   show: false
-    // }
   ]
 };
 
@@ -59,14 +53,11 @@ const actions = {
         show: true
       };
       commit('setErrorAlertMsg', payload);
-      setTimeout(() => {
-        commit('setErrorAlertShow');
-      }, 5000);
+      setTimeout(() => { commit('setErrorAlertShow'); }, 5000);
       resolve();
     });
   },
 };
-
 
 export default {
   namespaced: true,
