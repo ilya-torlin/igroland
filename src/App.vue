@@ -8,7 +8,7 @@
     <div class="container">
       <div class="row">
         <!--<div class="col-12">-->
-          <!--<appUiKit></appUiKit>-->
+        <!--<appUiKit></appUiKit>-->
         <!--</div>-->
         <div class="col-12">
           <!-- отображаем тут компонент, для которого совпадает маршрут -->
@@ -31,7 +31,8 @@
 
   import {mapGetters} from 'vuex';
   import {mapMutations} from 'vuex';
-  import { mapActions } from 'vuex';
+  import {mapActions} from 'vuex';
+  import {SUCCES_AUTH_STATUS} from './constants';
 
   import appHeader from './components/header'
   import appAlerts from './components/alerts'
@@ -70,6 +71,9 @@
       appAlerts
     },
     computed: {
+      ...mapGetters('user', {
+        authStatus: 'status',
+      }),
       ...mapGetters('progress', {
         progStateWidth: 'progStateWidth',
         progShow: 'progShow'
@@ -82,16 +86,14 @@
     mounted(){
       $('[data-toggle="tooltip"]').tooltip();
       //вызываем метод для запроса информации о пользователе
-      this.userRequest()
-        .then(result => {
-          //this.setSuccessAlertMsg(error);
-        })
-        .catch(error => {
-          //this.setErrorAlertMsg(error.message);
-        });
-
-      //this.setSuccessAlertMsg('Ошибка при запросе информации о каталоге 1');
-
+      if(this.authStatus === SUCCES_AUTH_STATUS)
+        this.userRequest()
+          .then(result => {
+            this.setSuccessAlertMsg('Добро пожаловать, ' + result.data.data.login);
+          })
+          .catch(error => {
+            this.setErrorAlertMsg(error.message);
+          });
     }
   }
 

@@ -45,7 +45,7 @@ const ifAuthenticated = (to, from, next) => {
   $('[data-toggle="tooltip"]').tooltip();
   if (store.getters.isAuthenticated) {
     store.commit('config/setHeaderStatus', true); // что бы была видна шапка для авторизованных пользователей
-
+    store.commit('user/USER_SUCCESS');
     next();
     return
   }

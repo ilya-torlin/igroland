@@ -33,6 +33,7 @@ const getters = {
   profile: state => state.profile,
   id: state => state.id,
   isProfileLoaded: state => !!state.profile.email,
+  status: state => state.status,
 };
 
 const mutations = {
@@ -71,10 +72,10 @@ const mutations = {
     state.status = 'success';
     // Vue.set(state, 'profile', resp);
   },
-    [USER_ERROR]: (state) => {
+  [USER_ERROR]: (state) => {
     state.status = 'error';
   },
-    [AUTH_LOGOUT]: (state) => {
+  [AUTH_LOGOUT]: (state) => {
     state.profile = {}
   }
 };

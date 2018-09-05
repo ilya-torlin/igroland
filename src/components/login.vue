@@ -68,7 +68,8 @@
 </template>
 
 <script>
-
+  import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import appInput from './inputValid';
   import {AUTH_REQUEST} from '../store/actions/auth'
 
@@ -118,6 +119,14 @@
       appInput
     },
     methods: {
+      ...mapGetters('config',{
+        showHeader: 'showHeader',
+        logedIn: 'logedIn',
+        setHeaderStatus: 'setHeaderStatus',
+      }),
+      ...mapActions('auth',{
+        authRequest: 'AUTH_REQUEST',
+      }),
       //Авторизация
       getLogIn(){
         if(this.formValid){
@@ -125,8 +134,8 @@
           let password = this.inputsArr[1].value;
           const loginData = { email: username, password: password };
           //Action в Vuex возвращает Promise
-          this.$store.dispatch(AUTH_REQUEST, loginData).then(promSucces => {
-            this.$store.commit('config/setHeaderStatus', true);
+          this.authRequest(loginData).then(promSucces => {
+            this.setHeaderStatus(true);
             this.$router.push({name: 'profileconfig'});
           }, promError => {
             this.errorText = promError.data.msgClient;
