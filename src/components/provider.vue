@@ -190,9 +190,9 @@
         },
         methods: {
           ...mapMutations('alerts',{
-            setSuccesAlertShow: 'setSuccesAlertShow',
+            setSuccessAlertShow: 'setSuccessAlertShow',
             setErrorAlertShow: 'setErrorAlertShow',
-            setSuccesAlertMsg: 'setSuccesAlertMsg',
+            setSuccessAlertMsg: 'setSuccessAlertShow',
             setErrorAlertMsg: 'setErrorAlertMsg'
           }),
           ...mapMutations('progress',{
@@ -224,8 +224,8 @@
                   this.setErrorAlertMsg('Ошибка при блокировке/разблокировке поставщика: ' + errorTxt);
                 }else {
                   this.providerList[index].isOn = !this.providerList[index].isOn;
-                  this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Изменения сохранены');
+                  this.setSuccessAlertShow(true);
+                  this.setSuccessAlertMsg('Изменения сохранены');
                 }
               })
               .catch(err => {
@@ -259,8 +259,8 @@
           // сохранение провайдера
           onSaveProvider(index){
             if(this.providerList[index].catalogSaved){
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Каталог сохранён');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Каталог сохранён');
             }else {
               if(this.FormValid(this.providerList[index].inputsArr, 'profit-percent')){
                 let payload = this.providerList[index];
@@ -275,8 +275,8 @@
                       this.setErrorAlertMsg('Ошибка при сохранении поставщика: ' + errorTxt);
                     }else {
                       this.providerList[index].catalogSaved = true;
-                      this.setSuccesAlertShow(true);
-                      this.setSuccesAlertMsg('Поставщик');
+                      this.setSuccessAlertShow(true);
+                      this.setSuccessAlertMsg('Поставщик');
                     }
                   })
                   .catch(err => {

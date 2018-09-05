@@ -286,9 +286,9 @@
     },
     methods:{
       ...mapMutations('alerts',{
-        setSuccesAlertShow: 'setSuccesAlertShow',
+        setSuccessAlertShow: 'setSuccessAlertShow',
         setErrorAlertShow: 'setErrorAlertShow',
-        setSuccesAlertMsg: 'setSuccesAlertMsg',
+        setSuccessAlertMsg: 'setSuccessAlertShow',
         setErrorAlertMsg: 'setErrorAlertMsg'
       }),
       ...mapMutations('progress',{
@@ -321,8 +321,8 @@
               this.setErrorAlertMsg('Ошибка при генерации ключа: ' + errorTxt);
             }else{
               this.API = resp.data.data.api;//в зависимости от того, что вернёт api
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Ключ сгенерирован');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Ключ сгенерирован');
             }
           })
           .catch(err => {
@@ -337,8 +337,8 @@
         copyText.select();
         document.execCommand("copy");
 
-        this.setSuccesAlertShow(true);
-        this.setSuccesAlertMsg('Текст скопирован в буфер обмена');
+        this.setSuccessAlertShow(true);
+        this.setSuccessAlertMsg('Текст скопирован в буфер обмена');
       },
       onChangeData(key, data){ // для компонента input
         this[key].value = data.value;
@@ -379,8 +379,8 @@
                 this.setErrorAlertMsg('Ошибка при удалении приложения: ' + errorTxt);
               }else{
 
-                this.setSuccesAlertShow(true);
-                this.setSuccesAlertMsg('Приложение удалёно');
+                this.setSuccessAlertShow(true);
+                this.setSuccessAlertMsg('Приложение удалёно');
               }
             })
             .catch(err => {
@@ -396,8 +396,8 @@
       },
       saveApplication(){
         if(this.appSaved){
-          this.setSuccesAlertShow(true);
-          this.setSuccesAlertMsg('Приложение сохранёно');
+          this.setSuccessAlertShow(true);
+          this.setSuccessAlertMsg('Приложение сохранёно');
         }else {
           if(this.siteInput.isValid && this.profitPercentInput.isValid){
             let payload = {
@@ -419,8 +419,8 @@
                   this.setErrorAlertMsg('Ошибка при сохранении приложения: ' + errorTxt);
                 }else {
                   this.catalogList[index].catalogSaved = true;
-                  this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Приложение сохранёно');
+                  this.setSuccessAlertShow(true);
+                  this.setSuccessAlertMsg('Приложение сохранёно');
                 }
               })
               .catch(err => {

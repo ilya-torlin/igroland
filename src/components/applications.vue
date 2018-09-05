@@ -221,9 +221,9 @@
     },
     methods: {
       ...mapMutations('alerts',{
-        setSuccesAlertShow: 'setSuccesAlertShow',
+        setSuccessAlertShow: 'setSuccessAlertShow',
         setErrorAlertShow: 'setErrorAlertShow',
-        setSuccesAlertMsg: 'setSuccesAlertMsg',
+        setSuccessAlertMsg: 'setSuccessAlertShow',
         setErrorAlertMsg: 'setErrorAlertMsg'
       }),
       ...mapMutations('progress',{
@@ -252,8 +252,8 @@
               this.stepLastActive();
               this.switcherActive = !this.switcherActive;
               this.applicationList[index].blocked = !this.applicationList[index].blocked;
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Пользователи отфильтрованы');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Пользователи отфильтрованы');
             }
           })
           .catch(err => {
@@ -279,8 +279,8 @@
               this.setErrorAlertMsg('Ошибка при блокировке приложения: ' + errorTxt);
             }else {
               this.applicationList[index].blocked = !this.applicationList[index].blocked;
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Приложение заблокировано');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Приложение заблокировано');
             }
           })
           .catch(err => {
@@ -306,8 +306,8 @@
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg(`Ошибка при поиске приложения по запросу '${this.findAppStr}'; ${errorTxt}`);
             }else {
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg(`Пользователи по запросу '${this.findAppStr}'`);
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg(`Пользователи по запросу '${this.findAppStr}'`);
             }
           })
           .catch(err => {
@@ -332,8 +332,8 @@
                 this.setErrorAlertMsg('Ошибка при удалении приложения: ' + errorTxt);
               }else{
                 this.$delete(this.applicationList, index, this.applicationList[index]);
-                this.setSuccesAlertShow(true);
-                this.setSuccesAlertMsg('Приложение удалёно');
+                this.setSuccessAlertShow(true);
+                this.setSuccessAlertMsg('Приложение удалёно');
               }
             })
             .catch(err => {

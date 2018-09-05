@@ -327,9 +327,9 @@
             stepLastActive: 'stepLastActive',
           }),
           ...mapMutations('alerts',{
-            setSuccesAlertShow: 'setSuccesAlertShow',
+            setSuccessAlertShow: 'setSuccessAlertShow',
             setErrorAlertShow: 'setErrorAlertShow',
-            setSuccesAlertMsg: 'setSuccesAlertMsg',
+            setSuccessAlertMsg: 'setSuccessAlertShow',
             setErrorAlertMsg: 'setErrorAlertMsg'
           }),
           //проверка на валидацию всех полей в форме, возвращает true если все поля валидны
@@ -369,8 +369,8 @@
                   this.stepLastActive();
                   this.switcherActive = !this.switcherActive;
                   this.usersList[index].blocked = !this.usersList[index].blocked;
-                  this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Профиль обновлён');
+                  this.setSuccessAlertShow(true);
+                  this.setSuccessAlertMsg('Профиль обновлён');
                 }
               })
               .catch(err => {
@@ -405,8 +405,8 @@
                     this.setErrorAlertMsg('Ошибка при обновлении профиля: ' + errorTxt);
                   }else {
                     this.stepLastActive();
-                    this.setSuccesAlertShow(true);
-                    this.setSuccesAlertMsg('Профиль обновлён');
+                    this.setSuccessAlertShow(true);
+                    this.setSuccessAlertMsg('Профиль обновлён');
                   }
                 })
                 .catch(err => {

@@ -186,9 +186,9 @@
     },
     methods: {
       ...mapMutations('alerts',{
-        setSuccesAlertShow: 'setSuccesAlertShow',
+        setSuccessAlertShow: 'setSuccessAlertShow',
         setErrorAlertShow: 'setErrorAlertShow',
-        setSuccesAlertMsg: 'setSuccesAlertMsg',
+        setSuccessAlertMsg: 'setSuccessAlertShow',
         setErrorAlertMsg: 'setErrorAlertMsg'
       }),
       ...mapMutations('progress',{
@@ -223,8 +223,8 @@
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при изменении состояния каталога: ' + errorTxt);
             }else{
-              this.setSuccesAlertShow(true);
-              (this.catalogList[index].isOn) ? this.setSuccesAlertMsg('Каталог включен') : this.setSuccesAlertMsg('Каталог отключен');
+              this.setSuccessAlertShow(true);
+              (this.catalogList[index].isOn) ? this.setSuccessAlertMsg('Каталог включен') : this.setSuccessAlertMsg('Каталог отключен');
               //this.falseCatalogSave(index);
             }
           })
@@ -270,8 +270,8 @@
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при копировании каталога: ' + errorTxt);
             }else{
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Каталог скопирован');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Каталог скопирован');
 
               this.catalogList.push(Object.assign({}, this.catalogList[index]));
               //this.$set(this.catalogList, indRand, Object.assign({}, this.catalogList[index]));
@@ -296,8 +296,8 @@
       // сохранение каталога
       onSaveCatalog(index){
         if(this.catalogList[index].catalogSaved){
-          this.setSuccesAlertShow(true);
-          this.setSuccesAlertMsg('Каталог сохранён');
+          this.setSuccessAlertShow(true);
+          this.setSuccessAlertMsg('Каталог сохранён');
         }else {
           let payload = this.catalogList[index];
           let catalogIndex = this.catalogList[index].id;
@@ -312,8 +312,8 @@
                 this.setErrorAlertMsg('Ошибка при сохранении каталога: ' + errorTxt);
               }else {
                 this.catalogList[index].catalogSaved = true;
-                this.setSuccesAlertShow(true);
-                this.setSuccesAlertMsg('Каталог сохранён');
+                this.setSuccessAlertShow(true);
+                this.setSuccessAlertMsg('Каталог сохранён');
               }
             })
             .catch(err => {
@@ -357,8 +357,8 @@
                 this.setErrorAlertMsg('Ошибка при удалении каталога: ' + errorTxt);
               }else{
                 this.$delete(this.catalogList, index, this.catalogList[index]);
-                this.setSuccesAlertShow(true);
-                this.setSuccesAlertMsg('Каталог удалён');
+                this.setSuccessAlertShow(true);
+                this.setSuccessAlertMsg('Каталог удалён');
               }
             })
             .catch(err => {
@@ -406,8 +406,8 @@
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при добавлении каталога: ' + errorTxt);
             }else{
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Каталог добавлен');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Каталог добавлен');
               this.initMyCatalog();
             }
           })

@@ -710,9 +710,9 @@
         },
         methods: {
           ...mapMutations('alerts',{
-            setSuccesAlertShow: 'setSuccesAlertShow',
+            setSuccessAlertShow: 'setSuccessAlertShow',
             setErrorAlertShow: 'setErrorAlertShow',
-            setSuccesAlertMsg: 'setSuccesAlertMsg',
+            setSuccessAlertMsg: 'setSuccessAlertShow',
             setErrorAlertMsg: 'setErrorAlertMsg'
           }),
           ...mapMutations('progress',{
@@ -884,8 +884,8 @@
                   // удаляем из списка компонента привязаных товаров выбранную категорию
                   this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
                   //this.setAttachAction('catalogFolder',this.foldersCont['catalogFolder'].catalogSelectedItemIndex);
-                  this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Категория отвязана');
+                  this.setSuccessAlertShow(true);
+                  this.setSuccessAlertMsg('Категория отвязана');
                 }
               })
               .catch(err => {
@@ -957,8 +957,8 @@
                   // удаляем из списка компонента привязаных товаров выбранную категорию
                   //this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
                   //this.setAttachAction('catalogFolder',this.foldersCont['catalogFolder'].catalogSelectedItemIndex);
-                  this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Продукт отвязан');
+                  this.setSuccessAlertShow(true);
+                  this.setSuccessAlertMsg('Продукт отвязан');
                 }
               })
               .catch(err => {
@@ -1024,8 +1024,8 @@
                 }else{
                   //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
                   this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
-                  this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Категория удалёна');
+                  this.setSuccessAlertShow(true);
+                  this.setSuccessAlertMsg('Категория удалёна');
 
                 }
               })
@@ -1060,8 +1060,8 @@
                   this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при добавлении категории: ' + errorTxt);
                 }else{
-                  this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Категория добавлена');
+                  this.setSuccessAlertShow(true);
+                  this.setSuccessAlertMsg('Категория добавлена');
                   this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                 }
               })
@@ -1287,8 +1287,8 @@
                       this.setErrorAlertShow(true);
                       this.setErrorAlertMsg('Ошибка при привязке категорий: ' + errorTxt);
                     }else{
-                      this.setSuccesAlertShow(true);
-                      this.setSuccesAlertMsg('Категории привязаны');
+                      this.setSuccessAlertShow(true);
+                      this.setSuccessAlertMsg('Категории привязаны');
                       let currentFolder = activeTab.obj.rootCatalogFolders[activeTab.selectedIndex];
                       currentFolder.hideFolder = true;
                       if(currentFolder.isOpen){
@@ -1363,8 +1363,8 @@
                       this.setErrorAlertShow(true);
                       this.setErrorAlertMsg('Ошибка при привязке продукта: ' + errorTxt);
                     }else{
-                      this.setSuccesAlertShow(true);
-                      this.setSuccesAlertMsg('Продукт привязан');
+                      this.setSuccessAlertShow(true);
+                      this.setSuccessAlertMsg('Продукт привязан');
                       //activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
                       //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                       let usedCategories = this.getParentsCategoryId();
@@ -1416,7 +1416,7 @@
           },
           // изменяем текущую страницу
           onGoodsPageChange(e){
-            this.categoryGoods.offset = e.value.currentPage;
+            this.categoryGoods.offset = e.value.currentPage * this.categoryGoods.limit;
             //this.$refs['productsCatalog'].findGoods(this.categoryGoods.findGoodsStr);
           },
           // возвращаем количество старниц для пагинации
@@ -1531,8 +1531,8 @@
           onOpenRemoveCatalogWindow(){},
           onSaveCatalog(){
             if(this.paramsFolder.catalogSaved){
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Каталог сохранён');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Каталог сохранён');
             }else {
               let payload = this.paramsFolder;
               let catalogIndex = this.paramsFolder.id;
@@ -1548,8 +1548,8 @@
                   }else {
                     this.paramsFolder.catalogSaved = true;
                     this.foldersCont.catalogFolder.folderH = this.paramsFolder.catalogName;
-                    this.setSuccesAlertShow(true);
-                    this.setSuccesAlertMsg('Каталог сохранён');
+                    this.setSuccessAlertShow(true);
+                    this.setSuccessAlertMsg('Каталог сохранён');
                   }
                 })
                 .catch(err => {

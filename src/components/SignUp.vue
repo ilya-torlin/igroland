@@ -127,9 +127,9 @@
             stepLastActive: 'stepLastActive',
           }),
           ...mapMutations('alerts',{
-            setSuccesAlertShow: 'setSuccesAlertShow',
+            setSuccessAlertShow: 'setSuccessAlertShow',
             setErrorAlertShow: 'setErrorAlertShow',
-            setSuccesAlertMsg: 'setSuccesAlertMsg',
+            setSuccessAlertMsg: 'setSuccessAlertShow',
             setErrorAlertMsg: 'setErrorAlertMsg'
           }),
           //регистрация пользователя
@@ -172,8 +172,8 @@
 
                   }else {
                     this.stepLastActive();
-                    this.setSuccesAlertShow(true);
-                    this.setSuccesAlertMsg('Пользователь зарегистрирован');
+                    this.setSuccessAlertShow(true);
+                    this.setSuccessAlertMsg('Пользователь зарегистрирован');
                     //авторизуем пользователя
                     // let username = payload.email;
                     // let password = payload.password;

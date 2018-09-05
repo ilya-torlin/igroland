@@ -3,14 +3,18 @@ import Vue from 'vue'
 //todo: Сделать массив аллертов (очередь)
 
 const state = {
-  succesAlert: {
-    msg: 'Всё хорошо',
-    show: false
-  },
-  errorAlert: {
-    msg: 'Чёт пошло не так!',
-    show: false
-  }
+  succesAlert: [
+    // {
+    //   msg: 'Всё хорошо',
+    //   show: false
+    // },
+  ],
+  errorAlert: [
+    // {
+    //   msg: 'Чёт пошло не так!',
+    //   show: false
+    // }
+  ]
 };
 
 const getters = {
@@ -19,28 +23,51 @@ const getters = {
 };
 
 const mutations = {
-  setSuccesAlertMsg(state, payload){
-    state.succesAlert.msg = payload;
+  setSuccessAlertMsg(state, payload){
+    let message = {
+        msg: payload,
+        show: false
+    };
+    state.succesAlert.push(message);
+    // возвращаем индекс алерта
+    //return state.succesAlert.length - 1;
   },
   setErrorAlertMsg(state, payload){
-    state.errorAlert.msg = payload;
+    let message = {
+      msg: payload,
+      show: false
+    };
+    state.errorAlert.push(message);
   },
-  setSuccesAlertShow(state, payload){
+  setSuccessAlertShow(state, payload){
+    let length = state.succesAlert.length - 1;
     if (payload === true){
-      setTimeout(()=>{ state.succesAlert.show = false }, 5000);
+      setTimeout(()=>{
+        state.succesAlert[length].show = false;
+        //state.succesAlert.shift();
+      }, 5000);
     }
-    state.succesAlert.show = payload;
+    state.succesAlert[length].show = payload;
   },
   setErrorAlertShow(state, payload){
+    let length = state.errorAlert.length - 1;
     if (payload === true){
-      setTimeout(()=>{ state.errorAlert.show = false }, 5000);
+      setTimeout(()=>{
+        state.errorAlert[length].show = false;
+        //state.errorAlert.shift();
+        console.log(state.errorAlert);
+      }, 5000);
     }
-    state.errorAlert.show = payload;
+    state.errorAlert[length].show = payload;
   }
 };
 
 const actions = {
+  setSuccessAlertMsg({commit, dispatch},message){
+    return new Promise((resolve,reject) => {
 
+    });
+  },
 };
 
 

@@ -20,7 +20,10 @@
       </div>
     </div>
     <!--alerts-->
-    <appAlerts></appAlerts>
+    <div class="fixed-alert-c">
+      <appAlerts v-for="(error,index) in errorAlert" :message="error" :alertClass="true" :key="'d'+index"></appAlerts>
+      <appAlerts v-for="(success,index) in succesAlert" :message="success" :alertClass="false" :key="'s'+index"></appAlerts>
+    </div>
   </div>
 </template>
 
@@ -43,7 +46,13 @@
       ...mapMutations('progress',{
         setProgStateWidth: 'setProgStateWidth',
         setProgShow: 'setProgShow'
-      })
+      }),
+      ...mapMutations('alerts',{
+        setSuccessAlertShow: 'setSuccessAlertShow',
+        setErrorAlertShow: 'setErrorAlertShow',
+        setSuccessAlertMsg: 'setSuccessAlertMsg',
+        setErrorAlertMsg: 'setErrorAlertMsg'
+      }),
       // authRedirect(){ // редирект при разном статусе авторизации пользователя
       //   if(this.logedIn){
       //     this.$router.push({name: 'catalog'});
@@ -63,11 +72,31 @@
         progStateWidth: 'progStateWidth',
         progShow: 'progShow'
       }),
+      ...mapGetters('alerts', {
+        succesAlert: 'succesAlert',
+        errorAlert: 'errorAlert'
+      }),
     },
     mounted(){
       $('[data-toggle="tooltip"]').tooltip();
       //вызываем метод для запроса информации о пользователе
       this.$store.dispatch('user/USER_REQUEST');
+
+      this.setErrorAlertMsg('Ошибка при запросе информации о каталоге 1');
+      this.setErrorAlertShow(true);
+      setTimeout(()=> {
+        this.setErrorAlertMsg('Ошибка при запросе информации о каталоге 2');
+        this.setErrorAlertShow(true);
+      },1000);
+      setTimeout(()=> {
+        this.setSuccessAlertMsg('Ошибка при запросе информации о каталоге 1');
+        this.setSuccessAlertShow(true);
+      },2000);
+      setTimeout(()=> {
+        this.setSuccessAlertMsg('Ошибка при запросе информации о каталоге 2');
+        this.setSuccessAlertShow(true);
+      },3000);
+
     }
   }
 

@@ -234,9 +234,9 @@
     },
     methods: {
       ...mapMutations('alerts',{
-        setSuccesAlertShow: 'setSuccesAlertShow',
+        setSuccessAlertShow: 'setSuccessAlertShow',
         setErrorAlertShow: 'setErrorAlertShow',
-        setSuccesAlertMsg: 'setSuccesAlertMsg',
+        setSuccessAlertMsg: 'setSuccessAlertShow',
         setErrorAlertMsg: 'setErrorAlertMsg'
       }),
       ...mapMutations('progress',{
@@ -264,8 +264,8 @@
               this.stepLastActive();
               this.switcherActive = !this.switcherActive;
               this.usersList[index].blocked = !this.usersList[index].blocked;
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Пользователи отфильтрованы');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Пользователи отфильтрованы');
             }
           })
           .catch(err => {
@@ -290,8 +290,8 @@
               this.setErrorAlertMsg('Ошибка при блокировке пользователя: ' + errorTxt);
             }else {
               this.usersList[index].blocked = !this.usersList[index].blocked;
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg('Пользователь заблокирован');
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg('Пользователь заблокирован');
             }
           })
           .catch(err => {
@@ -316,8 +316,8 @@
               this.setErrorAlertShow(true);
               this.setErrorAlertMsg(`Ошибка при поиске пользователя по запросу '${this.findUserStr}'; ${errorTxt}`);
             }else {
-              this.setSuccesAlertShow(true);
-              this.setSuccesAlertMsg(`Пользователи по запросу '${this.findUserStr}'`);
+              this.setSuccessAlertShow(true);
+              this.setSuccessAlertMsg(`Пользователи по запросу '${this.findUserStr}'`);
             }
           })
           .catch(err => {
@@ -342,8 +342,8 @@
                 this.setErrorAlertMsg('Ошибка при удалении пользователя: ' + errorTxt);
               }else{
                 this.$delete(this.usersList, index, this.usersList[index]);
-                this.setSuccesAlertShow(true);
-                this.setSuccesAlertMsg('Пользователь удалён');
+                this.setSuccessAlertShow(true);
+                this.setSuccessAlertMsg('Пользователь удалён');
               }
             })
             .catch(err => {

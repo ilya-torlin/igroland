@@ -96,9 +96,9 @@
       },
       methods: {
         ...mapMutations('alerts',{
-          setSuccesAlertShow: 'setSuccesAlertShow',
+          setSuccessAlertShow: 'setSuccessAlertShow',
           setErrorAlertShow: 'setErrorAlertShow',
-          setSuccesAlertMsg: 'setSuccesAlertMsg',
+          setSuccessAlertMsg: 'setSuccessAlertShow',
           setErrorAlertMsg: 'setErrorAlertMsg'
         }),
         ...mapMutations('progress',{

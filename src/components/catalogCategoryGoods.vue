@@ -290,9 +290,9 @@
       },
       methods: {
         ...mapMutations('alerts',{
-          setSuccesAlertShow: 'setSuccesAlertShow',
+          setSuccessAlertShow: 'setSuccessAlertShow',
           setErrorAlertShow: 'setErrorAlertShow',
-          setSuccesAlertMsg: 'setSuccesAlertMsg',
+          setSuccessAlertMsg: 'setSuccessAlertShow',
           setErrorAlertMsg: 'setErrorAlertMsg'
         }),
         ...mapMutations('progress',{
@@ -321,8 +321,8 @@
                 //this.setProduct(this.productSelectedId, this.productSelectedIndex);
                 this.$set(this.goodsListArr[this.productSelectedIndex],'name',this.alternativeGoodsName);
                 //this.goodsListArr[this.productSelectedIndex].name = this.alternativeGoodsName;
-                this.setSuccesAlertShow(true);
-                this.setSuccesAlertMsg('Наименование изменено');
+                this.setSuccessAlertShow(true);
+                this.setSuccessAlertMsg('Наименование изменено');
               }
             })
             .catch(err => {
@@ -406,8 +406,8 @@
                   this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при изменении наценки: ' + errorTxt);
                 }else{
-                  this.setSuccesAlertShow(true);
-                  this.setSuccesAlertMsg('Наценка изменена');
+                  this.setSuccessAlertShow(true);
+                  this.setSuccessAlertMsg('Наценка изменена');
                 }
               })
               .catch(err => {
@@ -534,8 +534,8 @@
               }else{
                 this.updateProduct(this.productSelectedId,this.productSelectedIndex);
                 //this.$set(this.goodsListArr,this.productSelectedIndex,e);
-                this.setSuccesAlertShow(true);
-                this.setSuccesAlertMsg('Галерея изменена');
+                this.setSuccessAlertShow(true);
+                this.setSuccessAlertMsg('Галерея изменена');
               }
             })
             .catch(err => {
