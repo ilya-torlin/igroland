@@ -280,6 +280,7 @@
                               @updatePagination="onUpdatePagination($event)"
                               @setSelectedProduct="onSetSelectProduct($event)"
                               @attachProductToCategory="onAttachProductToCategory"
+                              @changeLimit="onChangeLimit"
                               ref="productsCatalog"
                             ></appCatalogCategoryGoods>
                           </div>
@@ -643,7 +644,7 @@
                 selectedTitle:'',
                 categoryId: 0,//для запроса товаров
                 supplier_id: '',//для запроса товаров
-                limit: '',//для запроса товаров
+                limit: 20,//для запроса товаров
                 offset: '',//для запроса товаров
                 productSelectedId: 0,// id выбранного товара
                 productSelectedIndex: 0,
@@ -1345,8 +1346,14 @@
           },
           // изменяем текущую страницу
           onGoodsPageChange(e){
-            this.categoryGoods.offset = e.value.currentPage * this.categoryGoods.limit;
+            console.log(e,this.categoryGoods.limit);
+            this.categoryGoods.offset = (e.value.currentPage - 1) * this.categoryGoods.limit;
+            console.log(this.categoryGoods.offset);
             //this.$refs['productsCatalog'].findGoods(this.categoryGoods.findGoodsStr);
+          },
+          // возвращает количество отображаемых товаров
+          onChangeLimit(e){
+            this.categoryGoods.limit = e.value;
           },
           // возвращаем количество старниц для пагинации
           onUpdatePagination(e){

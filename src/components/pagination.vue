@@ -47,12 +47,18 @@
           </ul>
           <ul class="pagination" v-else>
 
-            <li class="page-item">
-              <a class="page-link" @click.prevent= "pageChange(prevPage)" href="#" aria-label="Previous" >
-                <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Предыдущая</span>
+            <li class="page-item" v-if="countPage > 3">
+              <a class="page-link" @click.prevent= "pageChange(1)" href="#" aria-label="Previous" >
+                <span aria-hidden="true">&laquo;&laquo;</span>
+                <span class="sr-only">Первая</span>
               </a>
             </li>
+            <li class="page-item">
+            <a class="page-link" @click.prevent= "pageChange(prevPage)" href="#" aria-label="Previous" >
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Предыдущая</span>
+            </a>
+          </li>
             <li class="page-item"
                 :class="{'is-active': value === currentPage}"
                 v-for="(value, index) in paginationArray">
@@ -64,6 +70,12 @@
               <a class="page-link" @click.prevent= "pageChange(nextPagePag)" href="#" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Следующая</span>
+              </a>
+            </li>
+            <li class="page-item" v-if="countPage > 3">
+              <a class="page-link" @click.prevent= "pageChange(countPage)" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;&raquo;</span>
+                <span class="sr-only">Последняя</span>
               </a>
             </li>
 
