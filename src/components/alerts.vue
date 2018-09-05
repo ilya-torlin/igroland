@@ -15,7 +15,7 @@
           </svg>
         </div>
         {{message.msg}}
-        <button type="button" class="close"  aria-label="Close" @click="closeErrAlert">
+        <button type="button" class="close"  aria-label="Close" @click="closeAlert">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -25,7 +25,6 @@
 
 <script>
 
-  import {mapGetters} from 'vuex';
   import {mapMutations} from 'vuex';
 
   export default {
@@ -39,28 +38,14 @@
       'message',
       'alertClass',
     ],
-    computed: {
-      ...mapGetters('alerts',
-      {
-        succesAlert: 'succesAlert',
-        errorAlert: 'errorAlert'
-      })
-    },
     methods: {
       ...mapMutations('alerts',{
-        setSuccessAlertShow: 'setSuccessAlertShow',
         setErrorAlertShow: 'setErrorAlertShow',
-        setSuccessAlertMsg: 'setSuccessAlertShow',
-        setErrorAlertMsg: 'setErrorAlertMsg'
+        setSuccessAlertShow: 'setSuccessAlertShow',
       }),
-      closeErrAlert(){
-        this.setErrorAlertShow(false);
-        // this.$store.commit('alerts/setErrorAlert', tmp);
+      closeAlert(){
+        (this.alertClass) ? this.setErrorAlertShow(false) : this.setSuccessAlertShow(false);
       },
-      closeSuccessAlert(){
-        this.setSuccessAlertShow(false);
-        // this.$store.commit('alerts/setErrorAlert', tmp);
-      }
     }
   }
 </script>

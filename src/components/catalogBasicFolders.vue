@@ -121,8 +121,6 @@
 <script>
   import {API_URL} from '../constants';
   import axios from 'axios';
-  import {mapGetters} from 'vuex';
-  import {mapMutations} from 'vuex';
   import singleFolder from '../modules/singleFolder'
 
 
@@ -143,29 +141,8 @@
           }
         },
         computed: {
-          ...mapGetters('alerts', {
-            succesAlert: 'succesAlert',
-            errorAlert: 'errorAlert'
-          }),
-          ...mapGetters('progress', {
-            progStateWidth: 'progStateWidth',
-            progShow: 'progShow'
-          }),
         },
         methods: {
-          ...mapMutations('alerts',{
-            setSuccessAlertShow: 'setSuccessAlertShow',
-            setErrorAlertShow: 'setErrorAlertShow',
-            setSuccessAlertMsg: 'setSuccessAlertShow',
-            setErrorAlertMsg: 'setErrorAlertMsg'
-          }),
-          ...mapMutations('progress',{
-            setProgStateWidth: 'setProgStateWidth',
-            setProgShow: 'setProgShow',
-            stepOneActive: 'stepOneActive',
-            stepTwoActive: 'stepTwoActive',
-            stepLastActive: 'stepLastActive',
-          }),
           //перезапись массива каталога, используется в родительском компоненте
           setRootCatalogFoldersComp(value){
             this.rootCatalogFoldersComp = value;
@@ -178,7 +155,6 @@
             this.$delete(this.rootCatalogFoldersComp, index);
           },
           setSelectItem(catalog, index, action){
-
             if( this.selectedItemObjectId === catalog.id && this.selectedItemObjectIndex === index){
               this.selectedItemObjectId = 0;
               this.selectedItemObjectIndex = 0;

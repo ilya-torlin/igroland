@@ -39,7 +39,7 @@
     import {API_URL} from '../constants'
     import axios from 'axios'
 
-    import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
     import {mapMutations} from 'vuex';
 
     export default {
@@ -189,11 +189,9 @@
           appProviderItem
         },
         methods: {
-          ...mapMutations('alerts',{
-            setSuccessAlertShow: 'setSuccessAlertShow',
-            setErrorAlertShow: 'setErrorAlertShow',
-            setSuccessAlertMsg: 'setSuccessAlertShow',
-            setErrorAlertMsg: 'setErrorAlertMsg'
+          ...mapActions('alerts',{
+            setErrorAlertMsg: 'setErrorAlertMsg',
+            setSuccessAlertMsg: 'setSuccessAlertMsg',
           }),
           ...mapMutations('progress',{
             setProgStateWidth: 'setProgStateWidth',
@@ -220,16 +218,13 @@
                 this.stepLastActive(); // прогрессбар
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при блокировке/разблокировке поставщика: ' + errorTxt);
                 }else {
                   this.providerList[index].isOn = !this.providerList[index].isOn;
-                  this.setSuccessAlertShow(true);
                   this.setSuccessAlertMsg('Изменения сохранены');
                 }
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при блокировке/разблокировке поставщика');
                 this.stepLastActive(); // прогрессбар
                 console.log(err);
@@ -259,7 +254,6 @@
           // сохранение провайдера
           onSaveProvider(index){
             if(this.providerList[index].catalogSaved){
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Каталог сохранён');
             }else {
               if(this.FormValid(this.providerList[index].inputsArr, 'profit-percent')){
@@ -271,22 +265,18 @@
                     this.stepLastActive(); // прогрессбар
                     if(error){
                       let errorTxt = resp.data.data.msgClient;
-                      this.setErrorAlertShow(true);
                       this.setErrorAlertMsg('Ошибка при сохранении поставщика: ' + errorTxt);
                     }else {
                       this.providerList[index].catalogSaved = true;
-                      this.setSuccessAlertShow(true);
                       this.setSuccessAlertMsg('Поставщик');
                     }
                   })
                   .catch(err => {
-                    this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при сохранении провайдера');
                     this.stepLastActive(); // прогрессбар
                     console.log(err);
                   });
               }else{
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg(`Форма заполненна некорректно`);
               }
             }

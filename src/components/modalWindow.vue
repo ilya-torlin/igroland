@@ -50,12 +50,7 @@
 </template>
 
 <script>
-
-  import {API_URL} from '../constants';
-  import axios from 'axios';
-  import {mapGetters} from 'vuex';
-  import {mapMutations} from 'vuex';
-  import appInput from './inputValid';
+    import appInput from './inputValid';
 
     export default {
       name: 'modalWindow',
@@ -65,14 +60,7 @@
           }
       },
       computed: {
-        ...mapGetters('alerts', {
-          succesAlert: 'succesAlert',
-          errorAlert: 'errorAlert'
-        }),
-        ...mapGetters('progress', {
-          progStateWidth: 'progStateWidth',
-          progShow: 'progShow'
-        }),
+
       },
       props: [
         'headerText',

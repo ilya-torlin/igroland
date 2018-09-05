@@ -143,6 +143,7 @@
 
 <script>
   import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import {mapMutations} from  'vuex';
   import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT } from '../store/actions/auth'
 	export default {
@@ -153,17 +154,15 @@
       }
     },
     computed: {
-      ...mapGetters('config',
-      {
+      ...mapGetters('config',{
         showHeader: 'showHeader',
-        logedIn: 'logedIn'
+        logedIn: 'logedIn',
+        setHeaderStatus: 'setHeaderStatus',
       }),
-      ...mapGetters('menu',
-      {
+      ...mapGetters('menu',{
         menuList: 'items',
       }),
-      ...mapGetters('user',
-      {
+      ...mapGetters('user',{
         avatar: 'avatar',
         userName: 'name',
         userRole: 'role',
@@ -174,13 +173,16 @@
       ...mapMutations('user',{
         logOutUser: 'logOut'
       }),
+      ...mapActions('auth',{
+        authLogout: 'AUTH_LOGOUT',
+      }),
       // логаут
       logOut(){
         console.log('this.$store = ', this.$store);
-        this.$store.dispatch(`${AUTH_LOGOUT}`)
+        this.authLogout()
         .then(() => {
           this.logOutUser(); //Возможно предётся удалить, перенести всю логику в модуль авторизации
-          this.$store.commit('config/setHeaderStatus', false);
+          this.setHeaderStatus(false);
           this.$router.push({name: 'auth'});
         });
 

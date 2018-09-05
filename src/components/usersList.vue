@@ -170,7 +170,7 @@
   import appSwitcher from './switcher';
   import {API_URL} from '../constants';
   import axios from 'axios';
-  import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import {mapMutations} from 'vuex';
   import appInput from './inputValid';
   import appSignup from './SignUp.vue';
@@ -215,14 +215,6 @@
       }
     },
     computed: {
-      ...mapGetters('alerts', {
-        succesAlert: 'succesAlert',
-        errorAlert: 'errorAlert'
-      }),
-      ...mapGetters('progress', {
-        progStateWidth: 'progStateWidth',
-        progShow: 'progShow'
-      }),
       currentPage(){ // текущая страница, передаётся в url в качестве параметра
         return this.$route.params.page || 1;
       }
@@ -233,11 +225,9 @@
       appSignup
     },
     methods: {
-      ...mapMutations('alerts',{
-        setSuccessAlertShow: 'setSuccessAlertShow',
-        setErrorAlertShow: 'setErrorAlertShow',
-        setSuccessAlertMsg: 'setSuccessAlertShow',
-        setErrorAlertMsg: 'setErrorAlertMsg'
+      ...mapActions('alerts',{
+        setErrorAlertMsg: 'setErrorAlertMsg',
+        setSuccessAlertMsg: 'setSuccessAlertMsg',
       }),
       ...mapMutations('progress',{
         setProgStateWidth: 'setProgStateWidth',
@@ -258,18 +248,15 @@
             if(error){
               this.stepLastActive();
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при фильтрации пользователей: ' + errorTxt);
             }else {
               this.stepLastActive();
               this.switcherActive = !this.switcherActive;
               this.usersList[index].blocked = !this.usersList[index].blocked;
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Пользователи отфильтрованы');
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при фильтрации пользователей');
             console.log(err);
             this.stepLastActive();
@@ -286,16 +273,13 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при блокировке пользователя: ' + errorTxt);
             }else {
               this.usersList[index].blocked = !this.usersList[index].blocked;
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Пользователь заблокирован');
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при блокировке пользователя');
             this.stepLastActive(); // прогрессбар
             console.log(err);
@@ -313,15 +297,12 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg(`Ошибка при поиске пользователя по запросу '${this.findUserStr}'; ${errorTxt}`);
             }else {
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg(`Пользователи по запросу '${this.findUserStr}'`);
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg(`Ошибка при поиске пользователя по запросу '${this.findUserStr}'`);
             this.stepLastActive(); // прогрессбар
             console.log(err);
@@ -338,22 +319,18 @@
               this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при удалении пользователя: ' + errorTxt);
               }else{
                 this.$delete(this.usersList, index, this.usersList[index]);
-                this.setSuccessAlertShow(true);
                 this.setSuccessAlertMsg('Пользователь удалён');
               }
             })
             .catch(err => {
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при удалении пользователя ');
               this.stepLastActive(); // прогрессбар
               console.log(err);
             });
         }else{
-          this.setErrorAlertShow(true);
           this.setErrorAlertMsg('Ошибка при удалении пользователя: имена не совпадают');
         }
       },

@@ -24,48 +24,45 @@ const getters = {
 
 const mutations = {
   setSuccessAlertMsg(state, payload){
-    let message = {
-        msg: payload,
-        show: false
-    };
-    state.succesAlert.push(message);
-    // возвращаем индекс алерта
-    //return state.succesAlert.length - 1;
+    state.succesAlert.push(payload);
   },
   setErrorAlertMsg(state, payload){
-    let message = {
-      msg: payload,
-      show: false
-    };
-    state.errorAlert.push(message);
+    state.errorAlert.push(payload);
   },
-  setSuccessAlertShow(state, payload){
-    let length = state.succesAlert.length - 1;
-    if (payload === true){
-      setTimeout(()=>{
-        state.succesAlert[length].show = false;
-        //state.succesAlert.shift();
-      }, 5000);
-    }
-    state.succesAlert[length].show = payload;
+  setSuccessAlertShow(state){
+    state.succesAlert.pop();
   },
-  setErrorAlertShow(state, payload){
-    let length = state.errorAlert.length - 1;
-    if (payload === true){
-      setTimeout(()=>{
-        state.errorAlert[length].show = false;
-        //state.errorAlert.shift();
-        console.log(state.errorAlert);
-      }, 5000);
-    }
-    state.errorAlert[length].show = payload;
+  setErrorAlertShow(state){
+    state.errorAlert.pop();
   }
 };
 
 const actions = {
   setSuccessAlertMsg({commit, dispatch},message){
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve) => {
+      let payload = {
+        msg: message,
+        show: true
+      };
+      commit('setSuccessAlertMsg',payload);
+      setTimeout(()=>{
+        commit('setSuccessAlertShow');
+      }, 5000);
+      resolve();
+    });
 
+  },
+  setErrorAlertMsg({commit, dispatch},message) {
+    return new Promise((resolve) => {
+      let payload = {
+        msg: message,
+        show: true
+      };
+      commit('setErrorAlertMsg', payload);
+      setTimeout(() => {
+        commit('setErrorAlertShow');
+      }, 5000);
+      resolve();
     });
   },
 };

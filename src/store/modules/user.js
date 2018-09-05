@@ -3,10 +3,8 @@ import Vue from 'vue'
 import {AUTH_ERROR, AUTH_LOGOUT, AUTH_REQUEST, AUTH_SUCCESS} from '../actions/auth'
 import axios from 'axios'
 import {API_URL} from '../../constants'
-// const state = { status: '', profile: {} }
 
 //phone, name, site, surname, lastName, applicationList
-
 
 const state = {
   logedIn: false,//Пользователь авторизован, с бекенда отправлять false
@@ -129,8 +127,10 @@ const actions = {
         });
     })
   },
+  [AUTH_LOGOUT]:({commit}) => {
+    commit(AUTH_LOGOUT);
+  },
 }
-
 
 export default {
   namespaced: true,

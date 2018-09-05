@@ -106,6 +106,7 @@
   import axios from 'axios'
 
   import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import {mapMutations} from 'vuex';
 
   export default {
@@ -172,24 +173,14 @@
       }
     },
     computed: {
-      ...mapGetters('alerts',{
-          succesAlert: 'succesAlert',
-          errorAlert: 'errorAlert'
-        }),
-      ...mapGetters('progress', {
-        progStateWidth: 'progStateWidth',
-        progShow: 'progShow'
-      }),
       ...mapGetters('user', {
           userRole: 'role',
         }),
     },
     methods: {
-      ...mapMutations('alerts',{
-        setSuccessAlertShow: 'setSuccessAlertShow',
-        setErrorAlertShow: 'setErrorAlertShow',
-        setSuccessAlertMsg: 'setSuccessAlertShow',
-        setErrorAlertMsg: 'setErrorAlertMsg'
+      ...mapActions('alerts',{
+        setErrorAlertMsg: 'setErrorAlertMsg',
+        setSuccessAlertMsg: 'setSuccessAlertMsg',
       }),
       ...mapMutations('progress',{
         setProgStateWidth: 'setProgStateWidth',
@@ -220,16 +211,13 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при изменении состояния каталога: ' + errorTxt);
             }else{
-              this.setSuccessAlertShow(true);
               (this.catalogList[index].isOn) ? this.setSuccessAlertMsg('Каталог включен') : this.setSuccessAlertMsg('Каталог отключен');
               //this.falseCatalogSave(index);
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при изменении состояния каталога ');
             this.stepLastActive(); // прогрессбар
             console.log(err);
@@ -267,10 +255,8 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при копировании каталога: ' + errorTxt);
             }else{
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Каталог скопирован');
 
               this.catalogList.push(Object.assign({}, this.catalogList[index]));
@@ -284,7 +270,6 @@
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при копировании каталога ');
             this.stepLastActive(); // прогрессбар
             console.log(err);
@@ -296,7 +281,6 @@
       // сохранение каталога
       onSaveCatalog(index){
         if(this.catalogList[index].catalogSaved){
-          this.setSuccessAlertShow(true);
           this.setSuccessAlertMsg('Каталог сохранён');
         }else {
           let payload = this.catalogList[index];
@@ -308,16 +292,13 @@
               this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при сохранении каталога: ' + errorTxt);
               }else {
                 this.catalogList[index].catalogSaved = true;
-                this.setSuccessAlertShow(true);
                 this.setSuccessAlertMsg('Каталог сохранён');
               }
             })
             .catch(err => {
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при сохранении каталога');
               this.stepLastActive(); // прогрессбар
               console.log(err);
@@ -353,22 +334,18 @@
               this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при удалении каталога: ' + errorTxt);
               }else{
                 this.$delete(this.catalogList, index, this.catalogList[index]);
-                this.setSuccessAlertShow(true);
                 this.setSuccessAlertMsg('Каталог удалён');
               }
             })
             .catch(err => {
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при удалении каталога ');
               this.stepLastActive(); // прогрессбар
               console.log(err);
             });
         }else{
-          this.setErrorAlertShow(true);
           this.setErrorAlertMsg('Ошибка при удалении каталога: имена не совпадают');
         }
       },
@@ -403,16 +380,13 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при добавлении каталога: ' + errorTxt);
             }else{
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Каталог добавлен');
               this.initMyCatalog();
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при добавлении каталога ');
             this.stepLastActive(); // прогрессбар
             console.log(err);
@@ -427,7 +401,6 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при получении списка каталогов: ' + errorTxt);
             }else{
               let arrayList = resp.data.data;
@@ -439,7 +412,6 @@
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при получении списка каталогов');
             this.stepLastActive(); // прогрессбар
             console.log(err);
@@ -458,7 +430,6 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
             }else{
               this.userList = resp.data.data;
@@ -466,7 +437,6 @@
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при получении списка каталогов');
             this.stepLastActive(); // прогрессбар
             console.log(err);

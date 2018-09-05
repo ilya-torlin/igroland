@@ -68,8 +68,6 @@
 </template>
 
 <script>
-  import {mapGetters} from 'vuex';
-  import {mapMutations} from 'vuex';
 
   import appInput from './inputValid';
   import {AUTH_REQUEST} from '../store/actions/auth'

@@ -192,6 +192,7 @@
   import {API_URL, IMAGE_URL,USER_ADMIN} from '../constants';
   import axios from 'axios';
   import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import {mapMutations} from 'vuex';
 
   import Multiselect from 'vue-multiselect'
@@ -255,14 +256,6 @@
           }
       },
       computed: {
-        ...mapGetters('alerts', {
-          succesAlert: 'succesAlert',
-          errorAlert: 'errorAlert'
-        }),
-        ...mapGetters('progress', {
-          progStateWidth: 'progStateWidth',
-          progShow: 'progShow'
-        }),
         ...mapGetters('user',{
           avatar: 'avatar',
           userName: 'name',
@@ -289,11 +282,9 @@
         appAdminGallery
       },
       methods: {
-        ...mapMutations('alerts',{
-          setSuccessAlertShow: 'setSuccessAlertShow',
-          setErrorAlertShow: 'setErrorAlertShow',
-          setSuccessAlertMsg: 'setSuccessAlertShow',
-          setErrorAlertMsg: 'setErrorAlertMsg'
+        ...mapActions('alerts',{
+          setErrorAlertMsg: 'setErrorAlertMsg',
+          setSuccessAlertMsg: 'setSuccessAlertMsg',
         }),
         ...mapMutations('progress',{
           setProgStateWidth: 'setProgStateWidth',
@@ -311,25 +302,18 @@
           axios({url: API_URL + '/product/' + this.productSelectedId + '/setalternativetitle', data: payload, method: 'POST' })
             .then(resp => {
               const error = resp.data.error;
-              console.log(resp);
               this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при изменении наименования: ' + errorTxt);
               }else{
-                //this.setProduct(this.productSelectedId, this.productSelectedIndex);
                 this.$set(this.goodsListArr[this.productSelectedIndex],'name',this.alternativeGoodsName);
-                //this.goodsListArr[this.productSelectedIndex].name = this.alternativeGoodsName;
-                this.setSuccessAlertShow(true);
                 this.setSuccessAlertMsg('Наименование изменено');
               }
             })
-            .catch(err => {
-              this.setErrorAlertShow(true);
+            .catch(() => {
               this.setErrorAlertMsg('Ошибка при изменении наименования');
               this.stepLastActive(); // прогрессбар
-              console.log(err);
             });
         },
         // обновление продукта
@@ -349,7 +333,6 @@
             const error = resp.data.error;
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
             }else{
               this.selectedProduct = resp.data.data;
@@ -372,14 +355,12 @@
             this.stepLastActive(); // прогрессбар
           })
             .catch(err => {
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при запросе товаров');
               this.stepLastActive(); // прогрессбар
             });
         },
         //запрос информации о конкретном товаре и выделение товара в списке товаров
         setProduct(prodId, categoryGoodsIndex){
-          console.log(prodId, this.productSelectedId);
           if (this.productSelectedId === +prodId) {
             this.productSelectedId = 0;
             this.productSelectedIndex = 0;
@@ -399,22 +380,17 @@
             axios({url: API_URL + '/product/' + this.productSelectedId + '/settrademarkup', data: payload, method: 'POST' })
               .then(resp => {
                 const error = resp.data.error;
-                console.log(resp);
                 this.stepLastActive(); // прогрессбар
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при изменении наценки: ' + errorTxt);
                 }else{
-                  this.setSuccessAlertShow(true);
                   this.setSuccessAlertMsg('Наценка изменена');
                 }
               })
-              .catch(err => {
-                this.setErrorAlertShow(true);
+              .catch(() => {
                 this.setErrorAlertMsg('Ошибка при изменении наценки');
                 this.stepLastActive(); // прогрессбар
-                console.log(err);
               });
           }
         },
@@ -440,10 +416,8 @@
             const error = resp.data.error;
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при запросе товаров: ' + errorTxt);
             }else{
-              console.log(resp);
               this.goodsListArr = resp.data.data.items;
               this.$emit('updatePagination', Math.ceil(resp.data.data.data.count/this.limit));
               this.productSelectedId = 0;
@@ -457,8 +431,7 @@
             }
             this.stepLastActive(); // прогрессбар
           })
-            .catch(err => {
-              this.setErrorAlertShow(true);
+            .catch(() => {
               this.setErrorAlertMsg('Ошибка при запросе товаров');
               this.stepLastActive(); // прогрессбар
             });
@@ -481,10 +454,8 @@
             const error = resp.data.error;
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при поиске: ' + errorTxt);
             }else{
-              console.log(resp.data);
               if (resp.data.data.items.length > 0)
                 this.goodsListArr = resp.data.data.items;
               else
@@ -495,7 +466,6 @@
             this.stepLastActive(); // прогрессбар
           })
             .catch(err => {
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при поиске');
               this.stepLastActive(); // прогрессбар
             });
@@ -525,24 +495,19 @@
           axios({url: API_URL + '/product/' + this.productSelectedId + '/setuseadmingallery', data: payload, method: 'POST' })
             .then(resp => {
               const error = resp.data.error;
-              console.log(resp);
               this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при изменении галереи: ' + errorTxt);
               }else{
                 this.updateProduct(this.productSelectedId,this.productSelectedIndex);
                 //this.$set(this.goodsListArr,this.productSelectedIndex,e);
-                this.setSuccessAlertShow(true);
                 this.setSuccessAlertMsg('Галерея изменена');
               }
             })
-            .catch(err => {
-              this.setErrorAlertShow(true);
+            .catch(() => {
               this.setErrorAlertMsg('Ошибка при изменении галереи');
               this.stepLastActive(); // прогрессбар
-              console.log(err);
             });
         },
       },

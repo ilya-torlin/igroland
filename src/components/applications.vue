@@ -164,7 +164,7 @@
   import appSwitcher from './switcher';
   import {API_URL} from '../constants';
   import axios from 'axios';
-  import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import {mapMutations} from 'vuex';
   import appInput from './inputValid';
   import appSignup from './SignUp.vue';
@@ -202,14 +202,6 @@
       }
     },
     computed: {
-      ...mapGetters('alerts', {
-        succesAlert: 'succesAlert',
-        errorAlert: 'errorAlert'
-      }),
-      ...mapGetters('progress', {
-        progStateWidth: 'progStateWidth',
-        progShow: 'progShow'
-      }),
       currentPage(){ // текущая страница, передаётся в url в качестве параметра
         return this.$route.params.page || 1;
       }
@@ -220,11 +212,9 @@
       appSignup
     },
     methods: {
-      ...mapMutations('alerts',{
-        setSuccessAlertShow: 'setSuccessAlertShow',
-        setErrorAlertShow: 'setErrorAlertShow',
-        setSuccessAlertMsg: 'setSuccessAlertShow',
-        setErrorAlertMsg: 'setErrorAlertMsg'
+      ...mapActions('alerts',{
+        setErrorAlertMsg: 'setErrorAlertMsg',
+        setSuccessAlertMsg: 'setSuccessAlertMsg',
       }),
       ...mapMutations('progress',{
         setProgStateWidth: 'setProgStateWidth',
@@ -235,10 +225,8 @@
       }),
       // переключение "Все пользователи"
       onSwitchToogle(){
-
         let payload = this.switcherActive;
         this.stepOneActive(); // прогрессбар
-
         axios({url: API_URL + '/application/applicationlist', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
@@ -246,20 +234,16 @@
             if(error){
               this.stepLastActive();
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при фильтрации приложений: ' + errorTxt);
             }else {
               this.stepLastActive();
               this.switcherActive = !this.switcherActive;
               this.applicationList[index].blocked = !this.applicationList[index].blocked;
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Пользователи отфильтрованы');
             }
           })
-          .catch(err => {
-            this.setErrorAlertShow(true);
+          .catch(() => {
             this.setErrorAlertMsg('Ошибка при фильтрации приложений');
-            console.log(err);
             this.stepLastActive();
           });
       },
@@ -275,16 +259,13 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при блокировке приложения: ' + errorTxt);
             }else {
               this.applicationList[index].blocked = !this.applicationList[index].blocked;
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Приложение заблокировано');
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при блокировке приложения');
             this.stepLastActive(); // прогрессбар
             console.log(err);
@@ -303,18 +284,14 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg(`Ошибка при поиске приложения по запросу '${this.findAppStr}'; ${errorTxt}`);
             }else {
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg(`Пользователи по запросу '${this.findAppStr}'`);
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg(`Ошибка при поиске приложения по запросу '${this.findAppStr}'`);
             this.stepLastActive(); // прогрессбар
-            console.log(err);
           });
       },
       // Удалить приложение
@@ -328,22 +305,17 @@
               this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при удалении приложения: ' + errorTxt);
               }else{
                 this.$delete(this.applicationList, index, this.applicationList[index]);
-                this.setSuccessAlertShow(true);
                 this.setSuccessAlertMsg('Приложение удалёно');
               }
             })
             .catch(err => {
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при удалении приложения ');
               this.stepLastActive(); // прогрессбар
-              console.log(err);
             });
         }else{
-          this.setErrorAlertShow(true);
           this.setErrorAlertMsg('Ошибка при удалении приложения: имена не совпадают');
         }
       },

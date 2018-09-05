@@ -441,6 +441,7 @@
     import {API_URL, IMAGE_URL, USER_ADMIN} from '../constants';
     import axios from 'axios';
     import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
     import {mapMutations} from 'vuex';
 
     import Multiselect from 'vue-multiselect'
@@ -667,14 +668,6 @@
             }
         },
         computed: {
-          ...mapGetters('alerts', {
-            succesAlert: 'succesAlert',
-            errorAlert: 'errorAlert'
-          }),
-          ...mapGetters('progress', {
-            progStateWidth: 'progStateWidth',
-            progShow: 'progShow'
-          }),
           ...mapGetters('user',{
               userRole: 'role',
             }),
@@ -709,11 +702,9 @@
           vueDropzone: vue2Dropzone
         },
         methods: {
-          ...mapMutations('alerts',{
-            setSuccessAlertShow: 'setSuccessAlertShow',
-            setErrorAlertShow: 'setErrorAlertShow',
-            setSuccessAlertMsg: 'setSuccessAlertShow',
-            setErrorAlertMsg: 'setErrorAlertMsg'
+          ...mapActions('alerts',{
+            setErrorAlertMsg: 'setErrorAlertMsg',
+            setSuccessAlertMsg: 'setSuccessAlertMsg',
           }),
           ...mapMutations('progress',{
             setProgStateWidth: 'setProgStateWidth',
@@ -828,14 +819,12 @@
               this.remoteTextLabel = 'Вы действительно хотите отвязать категорию - "' +  categoryName + '"?';
               $('#confirmDeAttachModal').modal();
             }else{
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Вы не выбрали привязанную категорию');
             }
           },
           removeAttachedCategory(){
             let activeTab = this.getActiveTab();
             let categoryId = this.foldersCont.attachFolder.catalogSelectedItemId;
-            console.log(this.foldersCont.attachFolder);
             this.stepOneActive(); // прогрессбар
             axios({url: API_URL + '/categoryattach/' + categoryId ,method: 'DELETE' })
               .then(resp => {
@@ -843,12 +832,10 @@
                 this.stepLastActive(); // прогрессбар
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при отвязывании категории: ' + errorTxt);
                 }else{
                   //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
                   let usedCategories = this.getParentsCategoryId();
-                  console.log('parents categories ------------->',usedCategories);
                   let updateCategory;
                   for(let ind = 0; ind<usedCategories.length; ind++) {
                     updateCategory = this.getCategoryById(+usedCategories[ind].id);
@@ -864,7 +851,7 @@
                           this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
                       },
                       error => { // всё не ок
-                        console.log('error', error);
+                        //console.log('error', error);
                       }
                     );
                   }
@@ -884,15 +871,12 @@
                   // удаляем из списка компонента привязаных товаров выбранную категорию
                   this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
                   //this.setAttachAction('catalogFolder',this.foldersCont['catalogFolder'].catalogSelectedItemIndex);
-                  this.setSuccessAlertShow(true);
                   this.setSuccessAlertMsg('Категория отвязана');
                 }
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при отвязывании категории ');
                 this.stepLastActive(); // прогрессбар
-                console.log(err);
               });
           },
           // вызываем всплывашку отвязки продукта
@@ -905,15 +889,12 @@
               this.remoteTextLabel = 'Вы действительно хотите отвязать продукт - "' +  categoryName + '"?';
               $('#confirmDeAttachProductModal').modal();
             }else{
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Вы не выбрали привязанный продукт');
             }
           },
           removeAttachedProduct(){
             // todocomplete: проверить работоспособность кода
-            let activeTab = this.getActiveTab();
             let categoryId = this.foldersCont.attachProducts.catalogSelectedItemId;
-            console.log(this.foldersCont.attachProducts);
             this.stepOneActive(); // прогрессбар
             axios({url: API_URL + '/productattach/' + categoryId ,method: 'DELETE' })
               .then(resp => {
@@ -921,12 +902,10 @@
                 this.stepLastActive(); // прогрессбар
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при отвязывании продукта: ' + errorTxt);
                 }else{
                   //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
                   let usedCategories = this.getParentsCategoryId();
-                  console.log('parents categories ------------->',usedCategories);
                   let updateCategory;
                   for(let ind = 0; ind<usedCategories.length; ind++) {
                     updateCategory = this.getCategoryById(+usedCategories[ind].id);
@@ -949,7 +928,7 @@
                         // this.foldersCont[catalogKey].rootCatalogFolders[newIndex].hideFolder = false;
                       },
                       error => { // всё не ок
-                        console.log('error', error);
+                        //console.log('error', error);
                       }
                     );
                   }
@@ -957,15 +936,12 @@
                   // удаляем из списка компонента привязаных товаров выбранную категорию
                   //this.$refs['attachCont'].removeFromRoot(this.foldersCont['attachFolder'].catalogSelectedItemIndex);
                   //this.setAttachAction('catalogFolder',this.foldersCont['catalogFolder'].catalogSelectedItemIndex);
-                  this.setSuccessAlertShow(true);
                   this.setSuccessAlertMsg('Продукт отвязан');
                 }
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при отвязывании категории ');
                 this.stepLastActive(); // прогрессбар
-                console.log(err);
               });
           },
           //поиск среди папок по подстроке
@@ -984,7 +960,6 @@
                 const error = resp.data.error;
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при поиске: ' + errorTxt);
                 }else{
                   this.$refs['findResFolder'].setRootCatalogFoldersComp(resp.data.data.catalogFolders);
@@ -992,14 +967,12 @@
                 this.stepLastActive(); // прогрессбар
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при поиске');
                 this.stepLastActive(); // прогрессбар
               });
           },
           //Event handler: клик по хлебным крошкам
           onBreadItemClicked(e){
-            console.log('catalog id is ==== ', e.value);
           },
           // создание нового каталога/папки из контекстного меню
           contextCreatedNewCatalog(event){
@@ -1019,28 +992,23 @@
                 this.stepLastActive(); // прогрессбар
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при удалении категории: ' + errorTxt);
                 }else{
                   //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
                   this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
-                  this.setSuccessAlertShow(true);
                   this.setSuccessAlertMsg('Категория удалёна');
 
                 }
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при удалении категории ');
                 this.stepLastActive(); // прогрессбар
-                console.log(err);
               });
           },
           // создание нового каталога/папки
           createNewCatalog(catalogName){
             // добавляем категория к нашему каталогу, проверяем если не выбранны в колонке слева категории, то добавляем
             // в корневую папку и родительскую категорию не ставим, иначе ставим
-            console.log('create new catalog', catalogName);
             let payload = {
               name: catalogName,
               parentId: 0,
@@ -1053,23 +1021,18 @@
             axios({url: API_URL + '/category', data: payload, method: 'POST' })
               .then(resp => {
                 const error = resp.data.error;
-                console.log(resp);
                 this.stepLastActive(); // прогрессбар
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при добавлении категории: ' + errorTxt);
                 }else{
-                  this.setSuccessAlertShow(true);
                   this.setSuccessAlertMsg('Категория добавлена');
                   this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                 }
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при добавлении категории ');
                 this.stepLastActive(); // прогрессбар
-                console.log(err);
               });
             //заглушка, вставляем папку с сервера
             //this.foldersCont.catalogFolder.rootCatalogFolders.push(new singleFolder({}));
@@ -1098,22 +1061,19 @@
                 supplier_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех каталогов
                 parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
               };
-              console.log('Req pay --', payload);
               let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider, this.hideNotAvl);
               categoryRequest.then(
                 result => { // всё ок
-                  console.log('categoryRequest result -->>', result);
                   // фильтр каталогов с нулевыми остатками
                   let notNullArray = result.catalogFolders;
                   if (this.hideNotAvl)
                     notNullArray = result.catalogFolders.filter( (element) => +element.goodsCount > 0);
                   this.foldersCont[folderKey].rootCatalogFolders = notNullArray;
                   //Перезаписываем значение в компоненте
-                  console.log('componentRefKey -->>', componentRefKey);
                   this.$refs[componentRefKey].setRootCatalogFoldersComp(notNullArray);
                 },
                 error =>{ // всё не ок
-                  console.log('error');
+                  //console.log('error');
                 }
               );
             }
@@ -1121,7 +1081,6 @@
           //Event handler: изменение поставщика
           onChangeProvider(newProviderObj){
             this.selectedProvider = newProviderObj;
-            console.log('Провайдер изменён на: ', newProviderObj);
             //Запрос категории
             this.updateFolderCont(null, null, null, +newProviderObj.id, 'providerFolder', 'providerCont');
           },
@@ -1129,7 +1088,6 @@
           tabChangeVal(newVal){
             this.tabValue = newVal;
             if(newVal === 'provider'){
-              console.log('provider Tab Selected')
               // this.updateFolderCont(null, null, null, this.selectedProvider.id, 'providerFolder', 'providerCont');
             }
           },
@@ -1161,11 +1119,8 @@
                 const error = resp.data.error;
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при запросе каталогов: ' + errorTxt);
                 }else {
-                  // todocomplete: фильтровать данные для администраторов
-                  console.log('filtermassive',resp.data.data);
                   if(this.userRole.id === USER_ADMIN)
                     this.providerList = this.providerFilter(resp.data.data);
                   else
@@ -1179,7 +1134,6 @@
                 this.stepLastActive(); // прогрессбар
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при запросе каталогов');
                 this.stepLastActive(); // прогрессбар
               });
@@ -1191,12 +1145,10 @@
           //Удалить папку категорию - показываем всплывашку
           onRemoveCatalogFolder(){
             if(+this.foldersCont.catalogFolder.catalogSelectedItemId !== 0){
-              console.log(this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont.catalogFolder.catalogSelectedItemIndex]);
               let categoryName = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont.catalogFolder.catalogSelectedItemIndex].name;
               this.remoteTextLabel = 'Вы действительно хотите удалить категорию - "' +  categoryName + '"?';
               $('#confirmDeleteModal').modal();
             }else{
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Вы не выбрали категорию в пользовательском каталоге');
             }
           },
@@ -1225,19 +1177,16 @@
               axios({url: API_URL + '/category/' + categoryId, data: {}, method: 'GET' })
                 .then(resp => {
                   const error = resp.data.error;
-                  console.log('resp.error',resp.data.error);
                   this.stepLastActive(); // прогрессбар
                   if(error){
                     reject(resp.data.data);
                     let errorTxt = resp.data.data.msgClient;
-                    this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при обновлении категории: ' + errorTxt);
                   }else{
                     resolve(resp.data.data);
                   }
                 })
                 .catch(err => {
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при обновлении категории');
                   this.stepLastActive(); // прогрессбар
                   reject(err);
@@ -1253,7 +1202,6 @@
             let indexLvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[selected.index].lvlFolder - 1;
             for(let ind = selected.index; ind >= 0 || indexLvlFolder === 0; ind--){
               if(indexLvlFolder === this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder){
-                console.log('find parent');
                 categoryArray.push({id :this.foldersCont.catalogFolder.rootCatalogFolders[ind].folderId,
                                     index: ind
                                   });
@@ -1280,14 +1228,11 @@
                 axios({url: API_URL + '/categoryattach', data: payload, method: 'POST' })
                   .then(resp => {
                     const error = resp.data.error;
-                    console.log(resp);
                     this.stepLastActive(); // прогрессбар
                     if(error){
                       let errorTxt = resp.data.data.msgClient;
-                      this.setErrorAlertShow(true);
                       this.setErrorAlertMsg('Ошибка при привязке категорий: ' + errorTxt);
                     }else{
-                      this.setSuccessAlertShow(true);
                       this.setSuccessAlertMsg('Категории привязаны');
                       let currentFolder = activeTab.obj.rootCatalogFolders[activeTab.selectedIndex];
                       currentFolder.hideFolder = true;
@@ -1298,7 +1243,6 @@
                       }
                       //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                       let usedCategories = this.getParentsCategoryId();
-                      console.log('parents categories ------------->',usedCategories);
                       let updateCategory;
                       for(let ind = 0; ind<usedCategories.length; ind++){
                         // обновляем список привязанных категорий у выбранного id
@@ -1313,7 +1257,7 @@
                               this.$refs['attachCont'].setRootCatalogFoldersComp(result.attachedCategories);
                           },
                           error =>{ // всё не ок
-                            console.log('error', error);
+                            //console.log('error', error);
                           }
                         );
                       }
@@ -1322,22 +1266,17 @@
                     }
                   })
                   .catch(err => {
-                    this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при привязке категорий');
                     this.stepLastActive(); // прогрессбар
-                    console.log(err);
                   });
               }
               else {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Не выбрана категория в каталоге производителей');
               }
             }
             else{
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Не выбрана категория в пользовательском каталоге');
             }
-            console.log('attach to category');
           },
           // Привязка продуктов к категории
           onAttachProductToCategory(){
@@ -1351,24 +1290,19 @@
                    category_id: catalogCategory.selectedId,
                    attached_product_id: this.categoryGoods.productSelectedId  // параметры для отправки на сервер
                 };
-                console.log(payload);
                 this.stepOneActive(); // прогрессбар
                 axios({url: API_URL + '/productattach', data: payload, method: 'POST' })
                   .then(resp => {
                     const error = resp.data.error;
-                    console.log(resp);
                     this.stepLastActive(); // прогрессбар
                     if(error){
                       let errorTxt = resp.data.data.msgClient;
-                      this.setErrorAlertShow(true);
                       this.setErrorAlertMsg('Ошибка при привязке продукта: ' + errorTxt);
                     }else{
-                      this.setSuccessAlertShow(true);
                       this.setSuccessAlertMsg('Продукт привязан');
                       //activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].hideFolder = true;
                       //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                       let usedCategories = this.getParentsCategoryId();
-                      console.log('parents categories ------------->',usedCategories);
                       let updateCategory;
                       for(let ind = 0; ind<usedCategories.length; ind++) {
                         // обновляем список привязанных категорий у выбранного id
@@ -1383,29 +1317,24 @@
                               this.$refs['attachProd'].setRootCatalogFoldersComp(result.attachedProducts);
                           },
                           error => { // всё не ок
-                            console.log('error', error);
+                            //console.log('error', error);
                           }
                         );
                       }
                     }
                   })
                   .catch(err => {
-                    this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при привязке продукта');
                     this.stepLastActive(); // прогрессбар
-                    console.log(err);
                   });
               }
               else {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Не выбрана категория в каталоге товаров');
               }
             }
             else{
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Не выбрана категория в пользовательском каталоге');
             }
-            console.log('attach to product category');
           },
           //поиск среди папок
           onFindGoods(){
@@ -1434,10 +1363,8 @@
               const error = resp.data.error;
               if(error){
                 let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при запросе информации о каталоге: ' + errorTxt);
               }else{
-                console.log(resp.data.data);
                 this.paramsFolder = resp.data.data;
                 this.foldersCont.catalogFolder.folderH = this.paramsFolder.catalogName;
                 this.foldersCont.catalogFolder.lastUpdateTxt = 'Последнее изменение ' + this.paramsFolder.lastUpdate;
@@ -1445,7 +1372,6 @@
               this.stepLastActive(); // прогрессбар
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при запросе информации о каталоге');
                 this.stepLastActive(); // прогрессбар
               });
@@ -1463,7 +1389,6 @@
             if (catalogCategory.selectedId) {
               this.categoryGoods.categoryId = catalogCategory.selectedId;
               this.categoryGoods.selectedTitle = this.foldersCont.catalogFolder.rootCatalogFolders[catalogCategory.selectedIndex].name;
-              console.log('onCatalogShowGoods');
               this.$refs['productsCatalog'].getProducts(catalogCategory.selectedId);
               this.tabChangeVal('goods');
             }
@@ -1473,7 +1398,6 @@
             if (activeTab.selectedId) {
               this.categoryGoods.categoryId = activeTab.selectedId;
               this.categoryGoods.selectedTitle = activeTab.obj.rootCatalogFolders[activeTab.selectedIndex].name;
-              console.log('onTabShowGoods');
               this.$refs['productsCatalog'].getProducts(activeTab.selectedId,);
               this.tabChangeVal('goods');
             }
@@ -1490,21 +1414,16 @@
                 this.stepLastActive(); // прогрессбар
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
                 }else{
                   //let currentUserList = resp.data.data;
                   if (this.userRole.id === USER_ADMIN)
                     this.userList = resp.data.data;
-                  console.log('condition',this.userRole.id === USER_ADMIN);
-                  console.log('userList',resp.data.data);
                 }
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при получении списка каталогов');
                 this.stepLastActive(); // прогрессбар
-                console.log(err);
               });
           },
           // методы для изменения параметров каталога
@@ -1531,7 +1450,6 @@
           onOpenRemoveCatalogWindow(){},
           onSaveCatalog(){
             if(this.paramsFolder.catalogSaved){
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Каталог сохранён');
             }else {
               let payload = this.paramsFolder;
@@ -1543,20 +1461,16 @@
                   this.stepLastActive(); // прогрессбар
                   if(error){
                     let errorTxt = resp.data.data.msgClient;
-                    this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при сохранении каталога: ' + errorTxt);
                   }else {
                     this.paramsFolder.catalogSaved = true;
                     this.foldersCont.catalogFolder.folderH = this.paramsFolder.catalogName;
-                    this.setSuccessAlertShow(true);
                     this.setSuccessAlertMsg('Каталог сохранён');
                   }
                 })
                 .catch(err => {
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при сохранении каталога');
                   this.stepLastActive(); // прогрессбар
-                  console.log(err);
                 });
             }
           },

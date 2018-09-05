@@ -155,7 +155,7 @@
 <script>
   import {API_URL} from '../constants';
   import axios from 'axios';
-  import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import {mapMutations} from 'vuex';
   import singleFolder from '../modules/singleFolder'
 
@@ -189,21 +189,11 @@
           }
         },
         computed: {
-          ...mapGetters('alerts', {
-            succesAlert: 'succesAlert',
-            errorAlert: 'errorAlert'
-          }),
-          ...mapGetters('progress', {
-            progStateWidth: 'progStateWidth',
-            progShow: 'progShow'
-          }),
         },
         methods: {
-          ...mapMutations('alerts',{
-            setSuccessAlertShow: 'setSuccessAlertShow',
-            setErrorAlertShow: 'setErrorAlertShow',
-            setSuccessAlertMsg: 'setSuccessAlertShow',
-            setErrorAlertMsg: 'setErrorAlertMsg'
+          ...mapActions('alerts',{
+            setErrorAlertMsg: 'setErrorAlertMsg',
+            setSuccessAlertMsg: 'setSuccessAlertMsg',
           }),
           ...mapMutations('progress',{
             setProgStateWidth: 'setProgStateWidth',
@@ -253,7 +243,6 @@
                   if(error){
                     reject(resp.data.data);
                     let errorTxt = resp.data.data.msgClient;
-                    this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при запросе категории: ' + errorTxt);
                   }else{
                     resolve(resp.data.data);
@@ -263,7 +252,6 @@
                 })
                 .catch(err => {
                   this.folderPending = false;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при запросе категории');
                   this.stepLastActive(); // прогрессбар
                   reject(err);

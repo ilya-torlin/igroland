@@ -37,7 +37,6 @@
     },
     methods:{
       changeStatus(status){
-        console.log('status', status);
         this.authStatus = status.authStatus;
       }
     },
@@ -56,6 +55,5 @@
 </script>
 
 <style lang="sass">
-
   /*@import 'assets/sass/main.sass';*/
 </style>

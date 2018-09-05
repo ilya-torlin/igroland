@@ -147,6 +147,7 @@
 
 <script>
     import {mapGetters} from 'vuex';
+    import {mapActions} from 'vuex';
     import {mapMutations} from  'vuex';
     import appInput from './inputValid'
     import {API_URL} from '../constants';
@@ -326,11 +327,9 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
-          ...mapMutations('alerts',{
-            setSuccessAlertShow: 'setSuccessAlertShow',
-            setErrorAlertShow: 'setErrorAlertShow',
-            setSuccessAlertMsg: 'setSuccessAlertShow',
-            setErrorAlertMsg: 'setErrorAlertMsg'
+          ...mapActions('alerts',{
+            setErrorAlertMsg: 'setErrorAlertMsg',
+            setSuccessAlertMsg: 'setSuccessAlertMsg',
           }),
           //проверка на валидацию всех полей в форме, возвращает true если все поля валидны
           FormValid(objectArr, firstKey){
@@ -363,18 +362,15 @@
                 if(error){
                   this.stepLastActive();
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при обновлении профиля: ' + errorTxt);
                 }else {
                   this.stepLastActive();
                   this.switcherActive = !this.switcherActive;
                   this.usersList[index].blocked = !this.usersList[index].blocked;
-                  this.setSuccessAlertShow(true);
                   this.setSuccessAlertMsg('Профиль обновлён');
                 }
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при обновлении профиля');
                 console.log(err);
                 this.stepLastActive();
@@ -401,22 +397,18 @@
                   if(error){
                     this.stepLastActive();
                     let errorTxt = resp.data.data.msgClient;
-                    this.setErrorAlertShow(true);
                     this.setErrorAlertMsg('Ошибка при обновлении профиля: ' + errorTxt);
                   }else {
                     this.stepLastActive();
-                    this.setSuccessAlertShow(true);
                     this.setSuccessAlertMsg('Профиль обновлён');
                   }
                 })
                 .catch(err => {
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при обновлении профиля');
                   console.log(err);
                   this.stepLastActive();
                 });
             }else{
-              this.setErrorAlertShow(true);
               let errorTxt = !samePwd ? ': пароли не совпадают' : '';
               this.setErrorAlertMsg(`Форма заполненна некорректно ${errorTxt}`);
               this.stepLastActive();

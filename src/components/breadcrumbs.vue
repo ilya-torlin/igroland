@@ -74,8 +74,7 @@
 </template>
 
 <script>
-    // import $ from '../../node_modules/jquery';
-    // import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.min';
+
     import appSwitcher from './switcher'
     import Multiselect from 'vue-multiselect'
     export default {
@@ -129,9 +128,5 @@
 </script>
 
 <style lang="sass">
-  /*@import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.css'*/
-  /*@import '../../src/assets/libs/jQueryFormStyler-master/dist/jquery.formstyler.theme.css'*/
   @import '../../node_modules/vue-multiselect/dist/vue-multiselect.min.css'
-
-  /*@import 'assets/sass/main.sass';*/
 </style>

@@ -31,6 +31,7 @@
 
   import {mapGetters} from 'vuex';
   import {mapMutations} from 'vuex';
+  import { mapActions } from 'vuex';
 
   import appHeader from './components/header'
   import appAlerts from './components/alerts'
@@ -47,11 +48,12 @@
         setProgStateWidth: 'setProgStateWidth',
         setProgShow: 'setProgShow'
       }),
-      ...mapMutations('alerts',{
-        setSuccessAlertShow: 'setSuccessAlertShow',
-        setErrorAlertShow: 'setErrorAlertShow',
+      ...mapActions('alerts',{
+        setErrorAlertMsg: 'setErrorAlertMsg',
         setSuccessAlertMsg: 'setSuccessAlertMsg',
-        setErrorAlertMsg: 'setErrorAlertMsg'
+      }),
+      ...mapActions('user',{
+        userRequest: 'USER_REQUEST',
       }),
       // authRedirect(){ // редирект при разном статусе авторизации пользователя
       //   if(this.logedIn){
@@ -80,22 +82,15 @@
     mounted(){
       $('[data-toggle="tooltip"]').tooltip();
       //вызываем метод для запроса информации о пользователе
-      this.$store.dispatch('user/USER_REQUEST');
+      this.userRequest()
+        .then(result => {
+          //this.setSuccessAlertMsg(error);
+        })
+        .catch(error => {
+          //this.setErrorAlertMsg(error.message);
+        });
 
-      this.setErrorAlertMsg('Ошибка при запросе информации о каталоге 1');
-      this.setErrorAlertShow(true);
-      setTimeout(()=> {
-        this.setErrorAlertMsg('Ошибка при запросе информации о каталоге 2');
-        this.setErrorAlertShow(true);
-      },1000);
-      setTimeout(()=> {
-        this.setSuccessAlertMsg('Ошибка при запросе информации о каталоге 1');
-        this.setSuccessAlertShow(true);
-      },2000);
-      setTimeout(()=> {
-        this.setSuccessAlertMsg('Ошибка при запросе информации о каталоге 2');
-        this.setSuccessAlertShow(true);
-      },3000);
+      //this.setSuccessAlertMsg('Ошибка при запросе информации о каталоге 1');
 
     }
   }

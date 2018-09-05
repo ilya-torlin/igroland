@@ -41,11 +41,8 @@
 
 <script>
 
-  import {API_URL,IMAGE_URL,USER_ADMIN} from '../constants';
-  import axios from 'axios';
+  import {IMAGE_URL,USER_ADMIN} from '../constants';
   import {mapGetters} from 'vuex';
-  import {mapMutations} from 'vuex';
-
   import appSwitcher from './switcher'
   import vue2Dropzone from 'vue2-dropzone'
 
@@ -54,25 +51,11 @@
       data () {
           return {
             IMAGE_URL,
-            // useOwnImagesSwitch: false,
-            // useDefaultImagesSwitch: true,
           }
       },
       computed: {
-        ...mapGetters('alerts', {
-          succesAlert: 'succesAlert',
-          errorAlert: 'errorAlert'
-        }),
-        ...mapGetters('progress', {
-          progStateWidth: 'progStateWidth',
-          progShow: 'progShow'
-        }),
-        ...mapGetters('user',
-          {
-            avatar: 'avatar',
-            userName: 'name',
+        ...mapGetters('user',{
             userRole: 'role',
-            userProfile: 'profile'
           }),
         useOwnImagesSwitch(){
           return this.useAdminGallery;
@@ -95,39 +78,12 @@
         vueDropzone: vue2Dropzone
       },
       methods: {
-        ...mapMutations('alerts',{
-          setSuccessAlertShow: 'setSuccessAlertShow',
-          setErrorAlertShow: 'setErrorAlertShow',
-          setSuccessAlertMsg: 'setSuccessAlertShow',
-          setErrorAlertMsg: 'setErrorAlertMsg'
-        }),
-        ...mapMutations('progress',{
-          setProgStateWidth: 'setProgStateWidth',
-          setProgShow: 'setProgShow',
-          stepOneActive: 'stepOneActive',
-          stepTwoActive: 'stepTwoActive',
-          stepLastActive: 'stepLastActive',
-        }),
         //Использовать изображения по умолчанию, переключатель
         onUseDefaultImages(e){
-          console.log('onUseDefaultImages',e);
-          // this.useDefaultImagesSwitch = !this.useDefaultImagesSwitch;
-          // if(this.useDefaultImagesSwitch){
-          //   this.useOwnImagesSwitch = false;// 1 из 2х, должен быть активен
-          // } else {
-          //   this.useOwnImagesSwitch = true;// 1 из 2х, должен быть активен
-          // }
           this.onChangeUseOwnGallery(!e.switcherActive);
         },
         //Использовать свои изображения, переключатель
         onUseOwnImages(e){
-          console.log('onUseOwnImages',e);
-          // this.useOwnImagesSwitch = !this.useOwnImagesSwitch;
-          // if (this.useOwnImagesSwitch){
-          //   this.useDefaultImagesSwitch = false;// 1 из 2х, должен быть активен
-          // }else {
-          //   this.useDefaultImagesSwitch = true;// 1 из 2х, должен быть активен
-          // }
           this.onChangeUseOwnGallery(e.switcherActive);
         },
         onChangeUseOwnGallery(value){

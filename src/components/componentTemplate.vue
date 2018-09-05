@@ -16,7 +16,7 @@
 
   import {API_URL} from '../constants';
   import axios from 'axios';
-  import {mapGetters} from 'vuex';
+  import {mapActions} from 'vuex';
   import {mapMutations} from 'vuex';
 
     export default {
@@ -27,22 +27,12 @@
           }
       },
       computed: {
-        ...mapGetters('alerts', {
-          succesAlert: 'succesAlert',
-          errorAlert: 'errorAlert'
-        }),
-        ...mapGetters('progress', {
-          progStateWidth: 'progStateWidth',
-          progShow: 'progShow'
-        }),
       },
       props: [],
       methods: {
-        ...mapMutations('alerts',{
-          setSuccessAlertShow: 'setSuccessAlertShow',
-          setErrorAlertShow: 'setErrorAlertShow',
-          setSuccessAlertMsg: 'setSuccessAlertShow',
-          setErrorAlertMsg: 'setErrorAlertMsg'
+        ...mapActions('alerts',{
+          setErrorAlertMsg: 'setErrorAlertMsg',
+          setSuccessAlertMsg: 'setSuccessAlertMsg',
         }),
         ...mapMutations('progress',{
           setProgStateWidth: 'setProgStateWidth',

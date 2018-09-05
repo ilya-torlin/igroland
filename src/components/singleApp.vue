@@ -207,8 +207,8 @@
 
   import {API_URL} from '../constants';
   import axios from 'axios';
-  import {mapGetters} from 'vuex';
   import {mapMutations} from 'vuex';
+  import {mapActions} from 'vuex';
   import Multiselect from 'vue-multiselect'
   import appInput from './inputValid';
 
@@ -271,25 +271,15 @@
       }
     },
     computed:{
-      ...mapGetters('alerts', {
-        succesAlert: 'succesAlert',
-        errorAlert: 'errorAlert'
-      }),
-      ...mapGetters('progress', {
-        progStateWidth: 'progStateWidth',
-        progShow: 'progShow'
-      }),
       // id приложения, передаётся в url в качестве параметра
       applicationId(){
         return this.$route.params.id || 1;
       }
     },
     methods:{
-      ...mapMutations('alerts',{
-        setSuccessAlertShow: 'setSuccessAlertShow',
-        setErrorAlertShow: 'setErrorAlertShow',
-        setSuccessAlertMsg: 'setSuccessAlertShow',
-        setErrorAlertMsg: 'setErrorAlertMsg'
+      ...mapActions('alerts',{
+        setErrorAlertMsg: 'setErrorAlertMsg',
+        setSuccessAlertMsg: 'setSuccessAlertMsg',
       }),
       ...mapMutations('progress',{
         setProgStateWidth: 'setProgStateWidth',
@@ -317,27 +307,23 @@
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при генерации ключа: ' + errorTxt);
             }else{
               this.API = resp.data.data.api;//в зависимости от того, что вернёт api
-              this.setSuccessAlertShow(true);
               this.setSuccessAlertMsg('Ключ сгенерирован');
             }
           })
           .catch(err => {
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Ошибка при генерации ключа');
             this.stepLastActive(); // прогрессбар
             console.log(err);
           });
       },
       copyBuffer(id){
-        var copyText = document.getElementById(id);
+        let copyText = document.getElementById(id);
         copyText.select();
         document.execCommand("copy");
 
-        this.setSuccessAlertShow(true);
         this.setSuccessAlertMsg('Текст скопирован в буфер обмена');
       },
       onChangeData(key, data){ // для компонента input
@@ -375,28 +361,22 @@
               this.stepLastActive(); // прогрессбар
               if(error){
                 let errorTxt = resp.data.data.msgClient;
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при удалении приложения: ' + errorTxt);
               }else{
-
-                this.setSuccessAlertShow(true);
                 this.setSuccessAlertMsg('Приложение удалёно');
               }
             })
             .catch(err => {
-              this.setErrorAlertShow(true);
               this.setErrorAlertMsg('Ошибка при удалении приложения ');
               this.stepLastActive(); // прогрессбар
               console.log(err);
             });
         }else{
-          this.setErrorAlertShow(true);
           this.setErrorAlertMsg('Ошибка при удалении приложения: имена не совпадают');
         }
       },
       saveApplication(){
         if(this.appSaved){
-          this.setSuccessAlertShow(true);
           this.setSuccessAlertMsg('Приложение сохранёно');
         }else {
           if(this.siteInput.isValid && this.profitPercentInput.isValid){
@@ -415,22 +395,18 @@
                 this.stepLastActive(); // прогрессбар
                 if(error){
                   let errorTxt = resp.data.data.msgClient;
-                  this.setErrorAlertShow(true);
                   this.setErrorAlertMsg('Ошибка при сохранении приложения: ' + errorTxt);
                 }else {
                   this.catalogList[index].catalogSaved = true;
-                  this.setSuccessAlertShow(true);
                   this.setSuccessAlertMsg('Приложение сохранёно');
                 }
               })
               .catch(err => {
-                this.setErrorAlertShow(true);
                 this.setErrorAlertMsg('Ошибка при сохранении каталога');
                 this.stepLastActive(); // прогрессбар
                 console.log(err);
               });
           }else{
-            this.setErrorAlertShow(true);
             this.setErrorAlertMsg('Форма заполненна неправильно');
           }
         }
