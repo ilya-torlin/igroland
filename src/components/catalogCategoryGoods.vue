@@ -484,7 +484,6 @@
         // обновление лимита показа товаров
         changeLimit(value){
           this.limit = value;
-          this.getProducts(this.categoryId);
           this.$emit('changeLimit', {value: this.limit});
         },
         // изменить свойство "Использовать пользовательскую галерею"

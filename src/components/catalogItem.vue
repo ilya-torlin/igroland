@@ -117,8 +117,8 @@
                       :multiple="true"
                       :close-on-select="true"
                       placeholder="Пользователи"
-                      label="name"
-                      track-by="name"
+                      label="email"
+                      track-by="email"
                       selectLabel="Выбрать"
                       deselectLabel="Убрать из списка"
                       @input="onChangeUsers($event, 'thisSelectedUsers')">

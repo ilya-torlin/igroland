@@ -1,4 +1,4 @@
-//todo: Переработать структуру, изменить header.vue
+//todocomplete: Переработать структуру, изменить header.vue
 export default {
   namespaced: true,
   state:{

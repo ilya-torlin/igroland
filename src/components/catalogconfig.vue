@@ -1252,6 +1252,8 @@
                           result => { // всё ок
                             // сохраняем вложенность
                             result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].lvlFolder;
+                            result.isOpen = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].isOpen;
+                            result.childCount = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].childCount;
                             this.$set(this.foldersCont.catalogFolder.rootCatalogFolders,usedCategories[ind].index,result);
                             //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
                             if (ind === 0)

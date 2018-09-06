@@ -70,28 +70,28 @@
 
       <!-- Modal RemoveCatalog-->
       <appModal
-        :headerText="'Подтвердите удаление каталога'"
-        :keyId="'confirmDeleteModal'"
+        headerText="Подтвердите удаление каталога"
+        keyId="confirmDeleteModal"
         :deleteIcon="true"
-        :positiveActionText="'Удалить каталог'"
-        :negativeActionText="'Отмена'"
+        positiveActionText="Удалить каталог"
+        negativeActionText="Отмена"
         :actionIndex="removeCatalogIndex"
         :inputsArr="inputsArr"
-        :buttonClass="'btn-danger'"
-        :necessaryEvent="'pageChange'"
+        buttonClass="btn-danger"
+        necessaryEvent="pageChange"
         @pageChange="removeCatalog(removeCatalogIndex)">
       </appModal>
       <!--Modal AddCatalog-->
       <appModal
-        :headerText="'Введите имя нового каталога'"
-        :keyId="'confirmAddModal'"
+        headerText="Введите имя нового каталога"
+        keyId="confirmAddModal"
         :deleteIcon="false"
-        :positiveActionText="'Добавить каталог'"
-        :negativeActionText="'Отмена'"
+        positiveActionText="Добавить каталог"
+        negativeActionText="Отмена"
         :actionIndex="0"
         :inputsArr="inputsAddArr"
-        :buttonClass="'btn-success'"
-        :necessaryEvent="'pageChange'"
+        buttonClass="btn-success"
+        necessaryEvent="pageChange"
         @pageChange="addNewCatalog">
       </appModal>
     </div>
@@ -406,7 +406,7 @@
               this.setErrorAlertMsg('Ошибка при получении списка каталогов: ' + errorTxt);
             }else{
               let arrayList = resp.data.data;
-              //this.catalogList = resp.data.data;
+              this.catalogList = [];
               arrayList.forEach(value => {
                 this.catalogList.push(value);
                 //this.$set(this.catalogList, value.id, value);
