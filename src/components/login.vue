@@ -70,6 +70,7 @@
 <script>
   import {mapGetters} from 'vuex';
   import {mapActions} from 'vuex';
+  import {mapMutations} from 'vuex';
   import appInput from './inputValid';
   import {AUTH_REQUEST} from '../store/actions/auth'
 
@@ -107,6 +108,10 @@
       }
     },
     computed:{
+      ...mapGetters({
+        showHeader: 'showHeader',
+        logedIn: 'logedIn',
+      }),
       formValid(){
         let isValid = this.inputsArr[0].isValid;
         for(let item of this.inputsArr){
@@ -119,13 +124,11 @@
       appInput
     },
     methods: {
-      ...mapGetters('config',{
-        showHeader: 'showHeader',
-        logedIn: 'logedIn',
+      ...mapMutations('config',{
         setHeaderStatus: 'setHeaderStatus',
       }),
-      ...mapActions('auth',{
-        authRequest: 'AUTH_REQUEST',
+      ...mapActions({
+        authRequest: AUTH_REQUEST,
       }),
       //Авторизация
       getLogIn(){
@@ -134,19 +137,17 @@
           let password = this.inputsArr[1].value;
           const loginData = { email: username, password: password };
           //Action в Vuex возвращает Promise
-          this.authRequest(loginData).then(promSucces => {
-            this.setHeaderStatus(true);
-            this.$router.push({name: 'profileconfig'});
-          }, promError => {
-            this.errorText = promError.data.msgClient;
-
-            // for(let item of this.inputsArr){
-            //   item.showError = true;
-            // }
-
-            $('#errorLoginModal').modal();
-            console.error('Login err', promError);
-          });
+          this.authRequest(loginData)
+            .then(
+              promSucces => {
+                this.setHeaderStatus(true);
+                this.$router.push({name: 'profileconfig'});
+              },
+              promError => {
+                this.errorText = promError.data.msgClient;
+                $('#errorLoginModal').modal();
+                console.error('Login err', promError);
+              });
         }else{
           let index = 0;
           for(let item of this.inputsArr){

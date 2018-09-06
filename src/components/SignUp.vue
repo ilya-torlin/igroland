@@ -133,7 +133,7 @@
             setErrorAlertMsg: 'setErrorAlertMsg',
             setSuccessAlertMsg: 'setSuccessAlertMsg',
           }),
-          ...mapActions('auth',{
+          ...mapActions({
             authRequest: 'AUTH_REQUEST',
           }),
           //регистрация пользователя
@@ -182,14 +182,14 @@
                     // const loginData = { email: username, password: password };
                     //Action в Vuex возвращает Promise
                     this.authRequest(payload).then(promSucces => {
-                      this.setHeaderStatus(true);
-                      this.$router.push({name: 'profileconfig'});
-                      console.log('Авторизовался');
-                    }, promError => {
-                      let errorTxt = promError.data.msgClient;
-                      this.setErrorAlertMsg('Ошибка при авторизации пользователя пользователя: ' + errorTxt);
-                      console.error('Login err', promError);
-                    });
+                        this.setHeaderStatus(true);
+                        this.$router.push({name: 'profileconfig'});
+                      })
+                      .catch( promError => {
+                        let errorTxt = promError.data.msgClient;
+                        this.setErrorAlertMsg('Ошибка при авторизации пользователя пользователя: ' + errorTxt);
+                        console.error('Login err', promError);
+                      });
                   }
                 })
                 .catch(err => {

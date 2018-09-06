@@ -83,7 +83,6 @@ const mutations = {
 const actions = {
   //запрос информации о пользователе, вызывать при перезагрузке страницы и после авторизации пользователя
   [USER_REQUEST]: ({commit, dispatch}) => {
-    //todo: сделать проверку, если сервер вернёт что пользователь не авторизован
     return new Promise((resolve, reject) => {
       commit(USER_REQUEST, 'USER_REQUEST');
       axios({url: API_URL + '/user/me', data: {}, method: 'GET' })
@@ -93,7 +92,7 @@ const actions = {
             commit(USER_ERROR);
             reject(resp.data);
           }else {
-            console.log('user is: ',  resp.data.data);
+            //console.log('user is: ',  resp.data.data);
             let userData = resp.data.data;
 
             let emailData = userData.email ? userData.email : '',

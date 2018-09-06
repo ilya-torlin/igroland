@@ -5,7 +5,7 @@ import {API_URL} from '../../constants'
 
 import axios from 'axios'
 
-const state = { token: localStorage.getItem('user-token') || '', status: '', hasLoadedOnce: false }
+const state = { token: localStorage.getItem('user-token') || '', status: '', hasLoadedOnce: false };
 
 const getters = {
   isAuthenticated: state => !!state.token,
@@ -55,6 +55,8 @@ const actions = {
           commit(AUTH_LOGOUT);
           console.log('logout ERR');
           //todo: переделать, axios возвращает reject
+          commit('user/USER_ERROR');
+          commit('user/AUTH_LOGOUT');
           // Request header field token is not allowed by Access-Control-Allow-Headers in preflight response
           resolve();
           // reject(err);

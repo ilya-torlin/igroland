@@ -157,7 +157,6 @@
       ...mapGetters('config',{
         showHeader: 'showHeader',
         logedIn: 'logedIn',
-        setHeaderStatus: 'setHeaderStatus',
       }),
       ...mapGetters('menu',{
         menuList: 'items',
@@ -173,7 +172,10 @@
       ...mapMutations('user',{
         logOutUser: 'logOut'
       }),
-      ...mapActions('auth',{
+      ...mapMutations('config',{
+        setHeaderStatus: 'setHeaderStatus',
+      }),
+      ...mapActions({
         authLogout: 'AUTH_LOGOUT',
       }),
       // логаут
