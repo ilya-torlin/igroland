@@ -1354,6 +1354,7 @@
           // возвращает количество отображаемых товаров
           onChangeLimit(e){
             this.categoryGoods.limit = e.value;
+            this.onUpdatePagination
           },
           // возвращаем количество старниц для пагинации
           onUpdatePagination(e){

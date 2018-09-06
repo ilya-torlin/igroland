@@ -134,6 +134,11 @@
         this.$emit('pageChange', {'value': resVal});
       }
     },
+    watch:{
+      countPage(){
+          this.pageCur = 1;
+      },
+    },
     props: [
       'countPage',
       'routerLink',
