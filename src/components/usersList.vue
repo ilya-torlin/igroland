@@ -4,13 +4,14 @@
 
   <!--todo: API - блокировка пользователя
       todo: API - список незаблокированных пользователей
-      todo: API - список всех пользователей (заблокированные и активные)
+      todocomplete: API - список всех пользователей (заблокированные и активные)
       todo: API - список активных пользователей
       todo: API - поиск пользователей по подстроке
   -->
 
   <!--
-    todo: переделать ассециативный массив, на обычный usersList
+    todocomplete: переделать ассециативный массив, на обычный usersList
+    todo: модалка для добавления пользователя
   -->
 
   <div class="container">
@@ -73,11 +74,11 @@
               <div class="catalog-h">
                 <div class="title-cat">
                   <div class=" ava-c" data-placement="bottom">
-                    <img :src="userItem.avatar" :alt="userItem.name">
+                    <img :src="userItem.photo" :alt="userItem.name + userItem.surname">
                   </div>
                   <div class="user-info">
                     <div class="h-user-name">
-                      {{userItem.name + ' ' + userItem.surname}}
+                      {{ userItem.login || userItem.name + userItem.surname }}
                     </div>
                     <div class="h-user-role">
                       {{userItem.email}}
@@ -99,7 +100,7 @@
                     </button>
                   </div>
                   <div class="item">
-                    <button :class="{isOnTr: !userItem.blocked}" class="trIsOnB" @click="isOnToogle(userItem.id)" data-toggle="tooltip" data-placement="top" :data-original-title="userItem.blocked ? 'Разблокировать':'Заблокировать'" >
+                    <button :class="{isOnTr: userItem.isActive}" class="trIsOnB" @click="isOnToogle(userItem.id)" data-toggle="tooltip" data-placement="top" :data-original-title="userItem.isActive ? 'Заблокировать' : 'Разблокировать'" >
                       <div class="svg-c">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -119,50 +120,19 @@
       </transition>
     </template>
 
-    <!-- Modal -->
-    <div class="modal fade warning-modal" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle">
-              <div class="svg-c">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="23px" height="23px">
-                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                        d="M11.500,23.000 C5.149,23.000 0.000,17.851 0.000,11.500 C0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM11.500,5.000 C10.672,5.000 10.000,5.671 10.000,6.500 C10.000,7.328 10.672,8.000 11.500,8.000 C12.328,8.000 13.000,7.328 13.000,6.500 C13.000,5.671 12.328,5.000 11.500,5.000 ZM13.000,10.500 C13.000,9.671 12.328,9.000 11.500,9.000 C10.672,9.000 10.000,9.671 10.000,10.500 L10.000,16.500 C10.000,17.328 10.672,18.000 11.500,18.000 C12.328,18.000 13.000,17.328 13.000,16.500 L13.000,10.500 Z"/>
-                </svg>
-              </div>
-              <div class="txt">
-                Подтвердите удаление пользователя
-              </div>
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <appInput v-for="(elem, index) in inputsArr" :key="index"
-                      :validFeedback="elem.validFeedback"
-                      :invalidFeedback="elem.invalidFeedback"
-                      :placeholder="elem.placeholder"
-                      :required="elem.required"
-                      :pattern="elem.pattern"
-                      :type="elem.type"
-                      :value="elem.value"
-                      :isValid="elem.isValid"
-                      :showError="elem.showError"
-                      @changedata="onChangeData(index, $event)">
-            </appInput>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="deleteUser(removeUserIndex)">Удалить пользователя</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Modal RemoveUser-->
+    <appModal
+      headerText="Подтвердите удаление пользователя"
+      keyId="confirmDeleteModal"
+      :deleteIcon="true"
+      positiveActionText="Удалить пользователя"
+      negativeActionText="Отмена"
+      :actionIndex="removeUserIndex"
+      :inputsArr="inputsArr"
+      buttonClass="btn-danger"
+      necessaryEvent="pageChange"
+      @pageChange="deleteUser(removeUserIndex)">
+    </appModal>
   </div>
 </template>
 
@@ -173,29 +143,18 @@
   import {mapActions} from 'vuex';
   import {mapMutations} from 'vuex';
   import appInput from './inputValid';
-  import appSignup from './SignUp.vue';
+  import appSignup from './SignUp';
+  import appModal from  './modalWindow'
   export default {
     name: 'usersList',
     data () {
       return {
-        usersList: {
-          123: {
-            name: 'MrAmiD', // Имя пользователя
-            role: 'Ninja',//'права' пользователя
-            avatar: 'src/assets/img/avatar.png',//аватарка
-            email: 'someMail@gmail.com', // email
-            site: 'site.ru', //какой-то сайт
-            phone: '+7(953)345-34-54', // телефон
-            surname: 'Surname', // фамилия
-            lastName: 'lastName', // отчество
-            login: 'someMail@gmail.com', // login
-            id: 123, // id
-            blocked: false // заблокирован
-          }
-        },
+        usersList: [
+
+        ],
         switcherActive: true, // все пользователи
         findUserStr: '', // Подстрока для поиска пользователя
-        removeUserIndex: '', // Ид пользователя для удаления
+        removeUserIndex: 0, // Ид пользователя для удаления
         inputsArr:[
           {
             id: 'confirmDelete',
@@ -222,7 +181,8 @@
     components: {
       appSwitcher,
       appInput,
-      appSignup
+      appSignup,
+      appModal
     },
     methods: {
       ...mapActions('alerts',{
@@ -344,7 +304,33 @@
       },
       showRegPanel(showPanel){
         this.showSignup = showPanel;
+      },
+      initUsersList(){
+        axios({url: API_URL + '/user', method: 'GET' })
+          .then(resp => {
+            const error = resp.data.error;
+            this.stepLastActive(); // прогрессбар
+            if(error){
+              let errorTxt = resp.data.data.msgClient;
+              this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
+            }else{
+              let arrayList = resp.data.data;
+              this.usersList = [];
+              arrayList.forEach(value => {
+                this.usersList.push(value);
+                //this.$set(this.catalogList, value.id, value);
+              })
+            }
+          })
+          .catch(err => {
+            this.setErrorAlertMsg('Ошибка при получении списка пользователей');
+            this.stepLastActive(); // прогрессбар
+            console.log(err);
+          });
       }
+    },
+    mounted() {
+      this.initUsersList();
     }
   }
 </script>
