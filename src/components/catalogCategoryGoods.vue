@@ -399,7 +399,7 @@
           // проверяем если передается категория 0, то не выполняем запрос на получение товаров
           if (categoryId === 0)
             return;
-          // todo: проверить работает ли вывод товаров "только в наличии"
+          // todocomplete: проверить работает ли вывод товаров "только в наличии"
           let payload = {
             category_id: categoryId || null,
             supplier_id: this.supplierId || null,

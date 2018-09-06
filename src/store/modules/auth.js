@@ -54,7 +54,7 @@ const actions = {
           localStorage.removeItem('user-token'); // if the request fails, remove any possible user token if possible
           commit(AUTH_LOGOUT);
           console.log('logout ERR');
-          //todo: переделать, axios возвращает reject
+          //todocomplete: переделать, axios возвращает reject
           commit('user/USER_ERROR');
           commit('user/AUTH_LOGOUT');
           // Request header field token is not allowed by Access-Control-Allow-Headers in preflight response
