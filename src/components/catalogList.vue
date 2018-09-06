@@ -1,98 +1,100 @@
 <!--Список всех каталогов-->
 <template>
   <!--catalogList.vue-->
-  <div class="catalogComp">
-    <div class="row">
-      <div class="col-12">
-        <div class="btn-c">
-          <button @click="onOpenModalWindow" type="button" class="btn btn-outline-secondary">Новый каталог</button>
-        </div>
-      </div>
-      <div class="col-12 mt-3">
-      </div>
-    </div>
-    <!--todocomplete: вынести в отдельный компонент-->
-
-      <!--<template v-for="(catalogItem, index) in catalogList">-->
-        <!--{{catalogItem.switcherActive}} {{index}} // <br>-->
-      <!--</template>-->
-
-      <!--
-          todonotneessary: Доделать пагинацию
-          todo: Загрузка фото
-          todocomplete: Добавить редактирование имени каталога, справа от названия добавить кнопку с карандашиком. при нажатии на кнопку, заменять название на инпат(???)
-          todo: добавить массив со страницами в состояние
-          todocomplete: переделать массив каталогов из ассоциативного массива в обычный
-      -->
-
-      <div class="row" v-if="Object.keys(catalogList).length == 0">
+  <div class="container">
+    <div class="catalogComp">
+      <div class="row">
         <div class="col-12">
-          <div class="white-block-r ">
-            <h4 class="mb-0">
-              Список каталогов пуст, для создания нового каталога, используйте кнопку "Новый каталог"
-            </h4>
+          <div class="btn-c">
+            <button @click="onOpenModalWindow" type="button" class="btn btn-outline-secondary">Новый каталог</button>
           </div>
         </div>
+        <div class="col-12 mt-3">
+        </div>
       </div>
+      <!--todocomplete: вынести в отдельный компонент-->
 
-      <appCatalogItem v-else v-for="(catalogItem, index) in catalogList"
-        :key="index"
-        :selected="catalogItem.selected"
-        :switcherActive="catalogItem.switcherActive"
-        :showConfig="catalogItem.showConfig"
-        :userList="userList"
-        :catalogName="catalogItem.catalogName"
-        :catalogId="catalogItem.id"
-        :isActive="catalogItem.isActive"
-        :isOn="catalogItem.isOn"
-        :description="catalogItem.description"
-        :selectedUsers="catalogItem.selectedUsers"
-        :userRole="userRole"
-        :useCatalogParams="false"
-        @configToogle = "onConfigToogle(index)"
-        @switchToogle = "onSwitchToogle(index)"
-        @isOnToogle = "onIsOnToogle(index)"
-        @changeDescr = "onChangeDescr(index, $event)"
-        @copyCatalog = "onCopyCatalog(index)"
-        @saveCatalog = "onSaveCatalog(index)"
-        @changeSelect = "onChangeSelect(index, $event)"
-        @changeName="onChangeName(index, $event)"
-        @removeCatalog = "onOpenRemoveCatalogWindow(index)">
-      </appCatalogItem>
+        <!--<template v-for="(catalogItem, index) in catalogList">-->
+          <!--{{catalogItem.switcherActive}} {{index}} // <br>-->
+        <!--</template>-->
 
-      <!--appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
-        :routerLink="/catalog/"
-        :routerOn="pagination.routerOn"
-        @pageChange = "onPageChange()">
-      </appPagination-->
-    <div class="pagination"></div>
+        <!--
+            todonotneessary: Доделать пагинацию
+            todo: Загрузка фото
+            todocomplete: Добавить редактирование имени каталога, справа от названия добавить кнопку с карандашиком. при нажатии на кнопку, заменять название на инпат(???)
+            todo: добавить массив со страницами в состояние
+            todocomplete: переделать массив каталогов из ассоциативного массива в обычный
+        -->
 
-    <!-- Modal RemoveCatalog-->
-    <appModal
-      :headerText="'Подтвердите удаление каталога'"
-      :keyId="'confirmDeleteModal'"
-      :deleteIcon="true"
-      :positiveActionText="'Удалить каталог'"
-      :negativeActionText="'Отмена'"
-      :actionIndex="removeCatalogIndex"
-      :inputsArr="inputsArr"
-      :buttonClass="'btn-danger'"
-      :necessaryEvent="'pageChange'"
-      @pageChange="removeCatalog(removeCatalogIndex)">
-    </appModal>
-    <!--Modal AddCatalog-->
-    <appModal
-      :headerText="'Введите имя нового каталога'"
-      :keyId="'confirmAddModal'"
-      :deleteIcon="false"
-      :positiveActionText="'Добавить каталог'"
-      :negativeActionText="'Отмена'"
-      :actionIndex="0"
-      :inputsArr="inputsAddArr"
-      :buttonClass="'btn-success'"
-      :necessaryEvent="'pageChange'"
-      @pageChange="addNewCatalog">
-    </appModal>
+        <div class="row" v-if="Object.keys(catalogList).length == 0">
+          <div class="col-12">
+            <div class="white-block-r ">
+              <h4 class="mb-0">
+                Список каталогов пуст, для создания нового каталога, используйте кнопку "Новый каталог"
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        <appCatalogItem v-else v-for="(catalogItem, index) in catalogList"
+          :key="index"
+          :selected="catalogItem.selected"
+          :switcherActive="catalogItem.switcherActive"
+          :showConfig="catalogItem.showConfig"
+          :userList="userList"
+          :catalogName="catalogItem.catalogName"
+          :catalogId="catalogItem.id"
+          :isActive="catalogItem.isActive"
+          :isOn="catalogItem.isOn"
+          :description="catalogItem.description"
+          :selectedUsers="catalogItem.selectedUsers"
+          :userRole="userRole"
+          :useCatalogParams="false"
+          @configToogle = "onConfigToogle(index)"
+          @switchToogle = "onSwitchToogle(index)"
+          @isOnToogle = "onIsOnToogle(index)"
+          @changeDescr = "onChangeDescr(index, $event)"
+          @copyCatalog = "onCopyCatalog(index)"
+          @saveCatalog = "onSaveCatalog(index)"
+          @changeSelect = "onChangeSelect(index, $event)"
+          @changeName="onChangeName(index, $event)"
+          @removeCatalog = "onOpenRemoveCatalogWindow(index)">
+        </appCatalogItem>
+
+        <!--appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
+          :routerLink="/catalog/"
+          :routerOn="pagination.routerOn"
+          @pageChange = "onPageChange()">
+        </appPagination-->
+      <div class="pagination"></div>
+
+      <!-- Modal RemoveCatalog-->
+      <appModal
+        :headerText="'Подтвердите удаление каталога'"
+        :keyId="'confirmDeleteModal'"
+        :deleteIcon="true"
+        :positiveActionText="'Удалить каталог'"
+        :negativeActionText="'Отмена'"
+        :actionIndex="removeCatalogIndex"
+        :inputsArr="inputsArr"
+        :buttonClass="'btn-danger'"
+        :necessaryEvent="'pageChange'"
+        @pageChange="removeCatalog(removeCatalogIndex)">
+      </appModal>
+      <!--Modal AddCatalog-->
+      <appModal
+        :headerText="'Введите имя нового каталога'"
+        :keyId="'confirmAddModal'"
+        :deleteIcon="false"
+        :positiveActionText="'Добавить каталог'"
+        :negativeActionText="'Отмена'"
+        :actionIndex="0"
+        :inputsArr="inputsAddArr"
+        :buttonClass="'btn-success'"
+        :necessaryEvent="'pageChange'"
+        @pageChange="addNewCatalog">
+      </appModal>
+    </div>
   </div>
 </template>
 <!--todocomplete: переделать ассоциативный массив на обычный -->
