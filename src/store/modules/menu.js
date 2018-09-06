@@ -3,25 +3,34 @@ export default {
   namespaced: true,
   state:{
     items: [
+      /*
+      * url: { name: 'user' } - имя маршрута в routers.js
+      * admin: 0 - пункт меню не доступен пользователю
+      * */
       {
-        url: '/dashboard',
-        text: 'DashBoard'
+        url: { name: 'dashboard' },
+        text: 'DashBoard',
+        admin: 0
       },
       {
-        url: '/catalog',
-        text: 'Каталоги'
+        url: { name: 'catalog' } ,
+        text: 'Каталоги',
+        admin: 1
       },
       {
-        url: '/provider',
-        text: 'Поставщики'
+        url: { name: 'provider' } ,
+        text: 'Поставщики',
+        admin: 0
       },
       {
-        url: '/users',
-        text: 'Пользователи'
+        url: { name: 'users' } ,
+        text: 'Пользователи',
+        admin: 0
       },
       {
-        url: '/application',
-        text: 'Приложения'
+        url: { name: 'applications' },
+        text: 'Приложения',
+        admin: 1
       }
     ]
   },

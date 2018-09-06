@@ -55,7 +55,7 @@
                   <div class="user-control-menu">
                     <ul>
                       <li>
-                        <router-link class="btn-icon-tr" to="/profileconfig">
+                        <router-link class="btn-icon-tr" :to="userMenu.parameters">
                           <div class="svg-c">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@
                         </router-link>
                       </li>
                       <li>
-                        <router-link class="btn-icon-tr" to="/help">
+                        <router-link class="btn-icon-tr" :to="userMenu.help">
                           <div class="svg-c">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -87,7 +87,7 @@
                         </router-link>
                       </li>
                       <li>
-                        <router-link class="btn-icon-tr" to="/orders">
+                        <router-link class="btn-icon-tr" :to="userMenu.reports">
                           <div class="svg-c">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -146,11 +146,17 @@
   import {mapActions} from 'vuex';
   import {mapMutations} from  'vuex';
   import { AUTH_REQUEST, AUTH_ERROR, AUTH_SUCCESS, AUTH_LOGOUT } from '../store/actions/auth'
-	export default {
+  import {USER_ADMIN} from "../constants";
+
+  export default {
 		name: "headerMenu",
     data () {
       return {
-        msg: 'template'
+        userMenu: {
+          parameters: { name: 'profileconfig'},
+          help: { name: 'help'},
+          reports: { name: 'reports'},
+        },
       }
     },
     computed: {
@@ -159,7 +165,7 @@
         logedIn: 'logedIn',
       }),
       ...mapGetters('menu',{
-        menuList: 'items',
+        menuArray: 'items',
       }),
       ...mapGetters('user',{
         avatar: 'avatar',
@@ -167,6 +173,11 @@
         userRole: 'role',
         userProfile: 'profile'
       }),
+      menuList(){
+        if(this.userRole.id !== USER_ADMIN)
+          return this.menuArray.filter( item => item.admin === 1);
+        return this.menuArray;
+      },
     },
     methods: {
       ...mapMutations('user',{
