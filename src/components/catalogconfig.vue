@@ -645,7 +645,7 @@
                 categoryId: 0,//для запроса товаров
                 supplier_id: '',//для запроса товаров
                 limit: 20,//для запроса товаров
-                offset: '',//для запроса товаров
+                offset: 0,//для запроса товаров
                 productSelectedId: 0,// id выбранного товара
                 productSelectedIndex: 0,
                 category: {
@@ -1353,8 +1353,9 @@
           },
           // возвращает количество отображаемых товаров
           onChangeLimit(e){
+            // обновляем количествовоыводимых товаров, скидываем отступ при загрузке
             this.categoryGoods.limit = e.value;
-            this.onUpdatePagination
+            this.categoryGoods.offset = 0;
           },
           // возвращаем количество старниц для пагинации
           onUpdatePagination(e){
