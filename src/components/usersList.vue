@@ -246,7 +246,9 @@
               this.setErrorAlertMsg('Ошибка при блокировке пользователя: ' + errorTxt);
             }else {
               this.usersList[index].isActive = !this.usersList[index].isActive;
-              this.setSuccessAlertMsg('Пользователь заблокирован');
+              let msgS = 'Пользователь ';
+              (this.usersList[index].isActive) ? msgS += 'разблокирован' : msgS += 'заблокирован';
+              this.setSuccessAlertMsg(msgS);
             }
           })
           .catch(err => {

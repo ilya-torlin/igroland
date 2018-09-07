@@ -64,7 +64,7 @@
   import {mapMutations} from 'vuex';
 
     export default {
-      name: 'componentTemplate',
+      name: 'UserItem',
       data () {
           return {
               msg: 'template'
