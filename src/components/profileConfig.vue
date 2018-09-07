@@ -345,17 +345,16 @@
           updateUserProfile(){
             let payload = {
               surname: this.inputsArr['surname-i'].value,
-              lastName: this.inputsArr['lastName-i'].value,
+              patronymic: this.inputsArr['lastName-i'].value,
               login: this.inputsArr['login-i'].value,
               email: this.inputsArr['email-i'].value,
               phone: this.inputsArr['phone-i'].value,
               site: this.inputsArr['site-i'].value ,
-              userName: this.inputsArr['name-i'].value = this.userName,
-              id: this.id
+              name: this.inputsArr['name-i'].value = this.userName,
             };
             //
             this.stepOneActive(); // прогрессбар
-            axios({url: API_URL + '/updateUserProfile', data: payload, method: 'POST' })
+            axios({url: API_URL + '/user/' + this.id, data: payload, method: 'PUT' })
               .then(resp => {
                 const error = resp.data.error;
                 this.stepLastActive(); // прогрессбар
@@ -365,8 +364,8 @@
                   this.setErrorAlertMsg('Ошибка при обновлении профиля: ' + errorTxt);
                 }else {
                   this.stepLastActive();
-                  this.switcherActive = !this.switcherActive;
-                  this.usersList[index].blocked = !this.usersList[index].blocked;
+                  //this.switcherActive = !this.switcherActive;
+                  //this.usersList[index].blocked = !this.usersList[index].blocked;
                   this.setSuccessAlertMsg('Профиль обновлён');
                 }
               })
