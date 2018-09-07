@@ -65,7 +65,7 @@
     </transition>
 
     <template v-for="(userItem, index) in usersList">
-      <transition name="vue-fade" mode="out-in"
+      <!--transition name="vue-fade" mode="out-in"
                   enter-active-class="animated zoomIn"
                   leave-active-class="animated zoomOut">
         <div class="row catalog-list-r">
@@ -117,7 +117,13 @@
             </div>
           </div>
         </div>
-      </transition>
+      </transition-->
+      <appUserItem :key="index"
+        :user="userItem"
+        @deleteUser="openRemoveModal(index)"
+        @onSwitchIsActive="isOnToogle(index)"
+      >
+      </appUserItem>
     </template>
 
     <!-- Modal RemoveUser-->
@@ -145,6 +151,7 @@
   import appInput from './inputValid';
   import appSignup from './SignUp';
   import appModal from  './modalWindow'
+  import appUserItem from './userItem'
   export default {
     name: 'usersList',
     data () {
@@ -182,7 +189,8 @@
       appSwitcher,
       appInput,
       appSignup,
-      appModal
+      appModal,
+      appUserItem
     },
     methods: {
       ...mapActions('alerts',{
@@ -223,11 +231,13 @@
           });
       },
       isOnToogle(index){ // заблокировать/разблокировать пользователя
-        let payload = this.usersList[index];
-
+        let payload = {
+          value: !this.usersList[index].isActive
+        };
+        let userId = this.usersList[index].id;
         this.stepOneActive(); // прогрессбар
 
-        axios({url: API_URL + '/blockuser', data: payload, method: 'POST' })
+        axios({url: API_URL + '/user/' + userId + '/setonoff', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
@@ -235,7 +245,7 @@
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertMsg('Ошибка при блокировке пользователя: ' + errorTxt);
             }else {
-              this.usersList[index].blocked = !this.usersList[index].blocked;
+              this.usersList[index].isActive = !this.usersList[index].isActive;
               this.setSuccessAlertMsg('Пользователь заблокирован');
             }
           })
@@ -271,9 +281,9 @@
       deleteUser(index){
         console.log('delete user', index);
         if(this.inputsArr[0].value === this.usersList[index].email){
-          let payload = this.usersList[index];
+          let payload = this.usersList[index].id;
           this.stepOneActive(); // прогрессбар
-          axios({url: API_URL + '/login', data: payload, method: 'POST' })
+          axios({url: API_URL + '/user/'+ payload, method: 'DELETE' })
             .then(resp => {
               const error = resp.data.error;
               this.stepLastActive(); // прогрессбар
