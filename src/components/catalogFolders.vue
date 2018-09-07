@@ -48,9 +48,9 @@
             >
               <!--:key - параметр для сортировки-->
               <div class="folder-title" @click.right = "contextOpen($event, catFolder )" >
-                <div class="folder-name ">
+                <div class="folder-name " @click="openSubfolder(index, catFolder.folderId, catFolder.lvlFolder, index)">
                   <div class="folder-controls-c">
-                    <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0" @click="openSubfolder(index, catFolder.folderId, catFolder.lvlFolder, index)">
+                    <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -66,6 +66,10 @@
                   {{catFolder.name}}
                 </div>
                 <div class="folder-controls-c">
+                  <template v-if="showButtons">
+                    <button type="button" class="btn btn-outline-secondary" @click="contextMenuOptEvent('showGoods')">Показать товары</button>
+                    <button type="button" class="btn btn-outline-secondary" @click="contextMenuOptEvent('attachFolderToCategory')">Привязать</button>
+                  </template>
                   <span class="badge badge-success badge-pill">{{catFolder.goodsCount}}</span>
                 </div>
               </div>
@@ -355,14 +359,8 @@
             this.$emit('setSelectRoot', {'value': ''});
           },
           setSelectItem(catalog, index){
-            if( this.selectedItemObjectId === catalog.folderId && this.selectedItemObjectIndex === index){
-              this.selectedItemObjectId = 0;
-              this.selectedItemObjectIndex = 0;
-              //this.setSelectRoot();
-            }else{
-              this.selectedItemObjectId = catalog.folderId;
-              this.selectedItemObjectIndex = index;
-            }
+            this.selectedItemObjectId = catalog.folderId;
+            this.selectedItemObjectIndex = index;
             this.$emit('setSelectedItem', {'value': {
                 id : this.selectedItemObjectId,
                 index : this.selectedItemObjectIndex,
@@ -382,7 +380,8 @@
           'selectedItemId', // выбранный каталог (по которому кликнули, выделяется желтым цветом объект id)
           'selectedItemIndex', // выбранный каталог (по которому кликнули, выделяется желтым цветом объект index)
           'userCatalogId',  // Id каталога пользователя
-          'hideNotAvl'  // скрывать не в наличии
+          'hideNotAvl',  // скрывать не в наличии
+          'showButtons' // показывать кнопки в каталоге
         ],
         mounted(){
             let varthis = this;

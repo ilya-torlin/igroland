@@ -355,6 +355,10 @@ button
 .folder-b
   .folder-controls-c
     min-width: 28px
+    .btn.btn-outline-secondary
+      display: none
+      margin-right: 15px
+      line-height: 1
     .btn-icon-tr
       padding: 0 10px
   .folder-name
@@ -402,6 +406,8 @@ button
         left: 6px
     &.isActive
       border-color: $yellow
+      .btn.btn-outline-secondary
+        display: flex
   .context-open
     background: $yellow
 .folder-controls-c

@@ -110,6 +110,7 @@
                   :rootCatalogFolders = 'foldersCont.catalogFolder.rootCatalogFolders'
                   :userCatalogId = 'currentCatalogId'
                   :hideNotAvl="hideNotAvl"
+                  :showButtons="foldersCont.catalogFolder.showButtons"
                   @setFolders = 'onSetFolders($event, "catalogFolder")'
                   @addCatalogFolder = 'onAddCatalogFolder'
                   @removeCatalogFolder = 'onRemoveCatalogFolder'
@@ -169,6 +170,7 @@
                               :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
                               :selectedProvider = 'selectedProvider'
                               :hideNotAvl="hideNotAvl"
+                              :showButtons="foldersCont.providerFolder.showButtons"
                               @setFolders = 'onSetFolders($event, "providerFolder")'
                               @setSelectedItem = 'onSetSelectItem($event, "providerFolder")'
                               @attachFolderToCategory='onAttachFolderToCategory'
@@ -232,6 +234,7 @@
                                 :rootCatalogFolders = 'foldersCont.findResFolder.rootCatalogFolders'
                                 :selectedProvider = 'selectedProvider'
                                 :hideNotAvl="hideNotAvl"
+                                :showButtons="foldersCont.findResFolder.showButtons"
                                 @setFolders = 'onSetFolders($event, "findResFolder")'
                                 @showParamFolder = 'onSetFolders($event)'
                                 @setSelectedItem = 'onSetSelectItem($event, "findResFolder")'
@@ -506,6 +509,7 @@
                 providerFolder: {
                   folderH: '', // заголовок каталога
                   sideFolder: false, //боковая панель (каталог)
+                  showButtons: true,
                   lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
                   contextMenu:{ // Контекстное меню
                     contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
@@ -534,6 +538,7 @@
                 findResFolder: { // вывод поиска
                   folderH: '', // заголовок каталога
                   sideFolder: false, //боковая панель (каталог)
+                  showButtons: true,
                   lastUpdateTxt: '', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
                   contextMenu:{ // Контекстное меню
                     contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
@@ -563,6 +568,7 @@
                 catalogFolder: {
                   folderH: 'Каталог', // заголовок каталога
                   sideFolder: true, //боковая панель (каталог)
+                  showButtons: false,
                   lastUpdateTxt: 'Последнее изменение Сегодня 18:00', // Когда было произведено последнее мзменение, запрашивается в виде текста с сервера
                   contextMenu:{ // Контекстное меню
                     contextMenuOpen: false, //состояние контекстного меню (закрыто/открыто)
