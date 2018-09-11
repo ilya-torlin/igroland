@@ -218,7 +218,7 @@
               placeholder: "Наценка, %",
               type: "text",
               required: "false",
-              pattern: /^[0-9,.]{1,2}$/,
+              pattern: /^[0-9,.]{1,3}$/,
               value: '',
               isValid: false
             },
@@ -264,7 +264,10 @@
         }),
         adminRoleId(){
           return USER_ADMIN;
-        }
+        },
+        currentCatalogId(){
+          return +this.$route.params.id || null;
+        },
       },
       props: [
         'categoryId',
@@ -328,7 +331,9 @@
           };
           this.stepOneActive(); // прогрессбар
           axios.get( API_URL + `/product/${this.productSelectedId}`, {
-            params: {},
+            params: {
+              catalog_id: this.currentCatalogId
+            },
           }).then(resp => {
             const error = resp.data.error;
             if(error){
@@ -342,7 +347,7 @@
               this.alternativeGoodsName = resp.data.data.name;
               this.dropzoneOptions.url =  API_URL + '/product/' + this.productSelectedId + '/addgallery';
               if(resp.data.data.tradeMarkup)
-                this.profitPercentInput.value = resp.data.data.tradeMarkup.value;
+                this.profitPercentInput.value = resp.data.data.tradeMarkup;
               else
                 this.profitPercentInput.value = '';
               this.$refs['tradeMarkup'].activated = false;
@@ -375,6 +380,7 @@
           if(this.profitPercentInput.isValid){
             let payload = {
               value: this.profitPercentInput.value,
+              catalog_id: this.currentCatalogId
             };
             this.stepOneActive(); // прогрессбар
             axios({url: API_URL + '/product/' + this.productSelectedId + '/settrademarkup', data: payload, method: 'POST' })
