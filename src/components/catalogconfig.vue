@@ -161,7 +161,7 @@
                               <div class="txt-f">
                                 Выбранный каталог: <span class="provider-txt">{{ providerHeader }}</span>
                               </div>
-                              <div class="catalog-count">
+                              <div class="catalog-count" v-if="providerTotalCount">
                                 <span class="badge badge-success badge-pill">{{providerTotalCount}}</span>
                               </div>
                             </div>
