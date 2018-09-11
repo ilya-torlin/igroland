@@ -15,15 +15,8 @@
     <div class="container">
       <appProviderItem v-for="(providerItem, index) in providerList"
         :key = "index"
-        :name = "providerItem.name"
-        :lastUpdate = "providerItem.lastUpdate"
-        :showConfig = "providerItem.showConfig"
-        :isOn = "providerItem.isOn"
-        :id = "providerItem.id"
-        :inputsArr = "providerItem.inputsArr"
-        :uploadTime = "providerItem.uploadTime"
-        :uploadBtnArr = "providerItem.uploadBtnArr"
-        :catalogFileUrl = "providerItem.catalogFileUrl"
+        :providerIndex="index"
+        :provider = "providerItem"
          @configToogle = "onConfigToogle(index)"
          @isOnToogle = "onIsOnToogle(index)"
          @uploadTime = "onUploadTime"
@@ -45,145 +38,47 @@
     export default {
         name: 'provider',
         data () {
-            return {
-                providerList:{
-                  324: {
-                    name: 'Восток 1000',//имя поставщика
-                    lastUpdate: '4 ч',// последнее обновление, приходит с сервера в виде строки
-                    showConfig: false, // Тригер для отображения параметров переключателя(шестерёнка)
-                    isOn: true, // Тригер для включения/отключения провайдера, если каталог отключён, то пользователи его не видят
-                    id: 324, //идентификатор
-                    uploadTime: '1',
-                    catalogFileUrl: 'https://android-school.ru/wp-content/uploads/2016/07/FileUpload-1024x528.png',//файл для скачивания
-                    catalogSaved: true,//провайдер сохранён, при внесении изменений или копирывании поставщика ставим в false... если каталог не сохранён, то его нельзя скопировать и выводится ошибка(предупреждение) для пользователя
-                    inputsArr: {
-                      'profit-val':{
-                        id: 'profit-val',
-                        showError: false,
-                        validFeedback: "",
-                        invalidFeedback: "Наценка введена неверно",
-                        placeholder: "Наценка, руб.",
-                        type: "text",
-                        required: "false",
-                        pattern: /^[0-9,.]{1,15}$/,
-                        value: '',
-                        isValid: false
-                      },
-                      'site-url':{
-                        id: 'site-url',
-                        showError: false,
-                        validFeedback: "",
-                        invalidFeedback: "Адрес сайта введён неверно",
-                        placeholder: "Адрес",
-                        type: "text",
-                        required: "false",
-                        pattern: /^[а-яА-Яa-zA-Z0-9_.\/#:]{5,100}$/,
-                        value: '',
-                        isValid: false
-                      },
-                      'profit-percent':{
-                        id: 'profit-percent',
-                        showError: false,
-                        validFeedback: "",
-                        invalidFeedback: "Наценка введена неверно",
-                        placeholder: "Наценка, %",
-                        type: "text",
-                        required: "false",
-                        pattern: /^[0-9,.]{1,15}$/,
-                        value: '',
-                        isValid: false
-                      },
-                    },
-                    uploadBtnArr:[
-                      {
-                        btnTxt: '1ч.',//Текст кнопки
-                        value: '1', //Значение
-                      },
-                      {
-                        btnTxt: '2ч.',//Текст кнопки
-                        value: '2', //Значение
-                      },
-                      {
-                        btnTxt: '3ч.',//Текст кнопки
-                        value: '3', //Значение
-                      },
-                      {
-                        btnTxt: 'Раз в день',//Текст кнопки
-                        value: 'Раз в день', //Значение
-                      },
-
-                    ]
-                  },
-                  21: {
-                    name: 'Восток 10220',//имя поставщика
-                    lastUpdate: '4 ч',// последнее обновление, приходит с сервера в виде строки
-                    showConfig: false, // Тригер для отображения параметров переключателя(шестерёнка)
-                    isOn: true, // Тригер для включения/отключения провайдера, если каталог отключён, то пользователи его не видят
-                    id: 21, //идентификатор
-                    uploadTime: '1',
-                    catalogFileUrl: 'https://android-school.ru/wp-content/uploads/2016/07/FileUpload-1024x528.png',//файл для скачивания
-                    catalogSaved: true,//провайдер сохранён, при внесении изменений или копирывании поставщика ставим в false... если каталог не сохранён, то его нельзя скопировать и выводится ошибка(предупреждение) для пользователя
-                    inputsArr: {
-                      'profit-val':{
-                        id: 'profit-val',
-                        showError: false,
-                        validFeedback: "",
-                        invalidFeedback: "Вес введен неверно",
-                        placeholder: "Вес",
-                        type: "text",
-                        required: "false",
-                        pattern: /^[0-9]{1,15}$/,
-                        value: '',
-                        isValid: false
-                      },
-                      'site-url':{
-                        id: 'site-url',
-                        showError: false,
-                        validFeedback: "",
-                        invalidFeedback: "Адрес сайта введён неверно",
-                        placeholder: "Адрес",
-                        type: "text",
-                        required: "false",
-                        pattern: /^[а-яА-Яa-zA-Z0-9_.\/#:]{5,100}$/,
-                        value: '',
-                        isValid: false
-                      },
-                      'profit-percent':{
-                        id: 'profit-percent',
-                        showError: false,
-                        validFeedback: "",
-                        invalidFeedback: "Наценка введена неверно",
-                        placeholder: "Наценка, %",
-                        type: "text",
-                        required: "false",
-                        pattern: /^[0-9,.]{1,15}$/,
-                        value: '',
-                        isValid: false
-                      },
-                    },
-                    uploadBtnArr:[
-                      {
-                        btnTxt: '1ч.',//Текст кнопки
-                        value: '1', //Значение
-                      },
-                      {
-                        btnTxt: '2ч.',//Текст кнопки
-                        value: '2', //Значение
-                      },
-                      {
-                        btnTxt: '3ч.',//Текст кнопки
-                        value: '3', //Значение
-                      },
-                      {
-                        btnTxt: 'Раз в день',//Текст кнопки
-                        value: 'Раз в день', //Значение
-                      },
-
-                    ]
-                  },
-                },
-
-            }
+          return {
+            inputsArr: {
+              'profit-val':{
+                id: 'profit-val',
+                showError: false,
+                validFeedback: "",
+                invalidFeedback: "Вес введен неверно",
+                placeholder: "Вес",
+                type: "text",
+                required: "false",
+                pattern: /^[0-9]{1,15}$/,
+                value: '',
+                isValid: true
+              },
+              'site-url':{
+                id: 'site-url',
+                showError: false,
+                validFeedback: "",
+                invalidFeedback: "Адрес сайта введён неверно",
+                placeholder: "Адрес",
+                type: "text",
+                required: "false",
+                pattern: /^[а-яА-Яa-zA-Z0-9\-_.,?=&\/#:]{5,200}$/,
+                value: '',
+                isValid: true
+              },
+              'profit-percent':{
+                id: 'profit-percent',
+                showError: false,
+                validFeedback: "",
+                invalidFeedback: "Наценка введена неверно",
+                placeholder: "Наценка, %",
+                type: "text",
+                required: "false",
+                pattern: /^[0-9,.]{1,15}$/,
+                value: '',
+                isValid: true
+              },
+            },
+            providerList:[],
+          }
         },
         components:{
           appProviderItem
@@ -210,9 +105,12 @@
           },
           // включение/отключение поставщика
           onIsOnToogle(index){
-            let payload = this.providerList[index];
+            let currentSupp = this.providerList[index];
+            let payload = {
+              value: !currentSupp.isOn,
+            };
             this.stepOneActive(); // прогрессбар
-            axios({url: API_URL + '/provider/block', data: payload, method: 'POST' })
+            axios({url: API_URL + `/supplier/${currentSupp.id}/setonoff`, data: payload, method: 'POST' })
               .then(resp => {
                 const error = resp.data.error;
                 this.stepLastActive(); // прогрессбар
@@ -221,7 +119,9 @@
                   this.setErrorAlertMsg('Ошибка при блокировке/разблокировке поставщика: ' + errorTxt);
                 }else {
                   this.providerList[index].isOn = !this.providerList[index].isOn;
-                  this.setSuccessAlertMsg('Изменения сохранены');
+                  let msgS = 'Поставщик ';
+                  (this.providerList[index].isOn) ? msgS += 'разблокирован' : msgS += 'заблокирован';
+                  this.setSuccessAlertMsg(msgS);
                 }
               })
               .catch(err => {
@@ -257,22 +157,27 @@
               this.setSuccessAlertMsg('Каталог сохранён');
             }else {
               if(this.FormValid(this.providerList[index].inputsArr, 'profit-percent')){
-                let payload = this.providerList[index];
+                let currentSupp = this.providerList[index];
+                let payload = {
+                  link: currentSupp.inputsArr['site-url'].value,
+                  price_add: currentSupp.inputsArr['profit-percent'].value,
+                  sort: currentSupp.inputsArr['profit-val'].value,
+                };
                 this.stepOneActive(); // прогрессбар
-                axios({url: API_URL + '/provider/save', data: payload, method: 'POST' })
+                axios({url: API_URL + `/supplier/${currentSupp.id}`, data: payload, method: 'PUT' })
                   .then(resp => {
                     const error = resp.data.error;
                     this.stepLastActive(); // прогрессбар
                     if(error){
                       let errorTxt = resp.data.data.msgClient;
-                      this.setErrorAlertMsg('Ошибка при сохранении поставщика: ' + errorTxt);
+                      this.setErrorAlertMsg('Ошибка при сохранении данных поставщика: ' + errorTxt);
                     }else {
                       this.providerList[index].catalogSaved = true;
-                      this.setSuccessAlertMsg('Поставщик');
+                      this.setSuccessAlertMsg('данные поставщика сохранены');
                     }
                   })
                   .catch(err => {
-                    this.setErrorAlertMsg('Ошибка при сохранении провайдера');
+                    this.setErrorAlertMsg('Ошибка при сохранении данных провайдера');
                     this.stepLastActive(); // прогрессбар
                     console.log(err);
                   });
@@ -280,12 +185,58 @@
                 this.setErrorAlertMsg(`Форма заполненна некорректно`);
               }
             }
-
-            // let indRand = (new Date).getTime();//unixtime in mileseconds
-            // this.$set(this.providerList, indRand, Object.assign({}, this.providerList[index]));
-            // this.providerList[indRand].catalogName = this.providerList[index].catalogName + ' (копия)';
-
           },
+          // загрузка каталогов (инициализация)
+          onInitProviders(){
+            this.stepOneActive(); // прогрессбар
+            axios.get( API_URL + '/supplier', { params: {} })
+              .then(resp => {
+                const error = resp.data.error;
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertMsg(`Ошибка при загрузке каталогов`);
+                }else {
+                  this.setSuccessAlertMsg(`Каталоги загружены`);
+                  let arrayList = resp.data.data;
+                  this.providerList.init = [];
+                  for (let supplier of arrayList) {
+                    // копируем список инпутов
+                    let inputsProfit = Object.assign({},this.inputsArr['profit-val']);
+                    let inputsSite = Object.assign({},this.inputsArr['site-url']);
+                    let inputsPercent = Object.assign({},this.inputsArr['profit-percent']);
+                    let inputs ={
+                      'profit-val' : inputsProfit,
+                      'site-url' : inputsSite,
+                      'profit-percent' : inputsPercent
+                    };
+                    // подготовили структуру для двбавления в список поставщиков
+                    let currentSup = {
+                      name: supplier.title,
+                      showConfig: false,
+                      isOn: +supplier.importIsActive,
+                      id: supplier.id,
+                      catalogFileUrl: '',
+                      catalogSaved: true,
+                      inputsArr: inputs
+                    };
+                    currentSup.inputsArr['profit-val'].value  = +supplier.sort;
+                    currentSup.inputsArr['site-url'].value = supplier.link;
+                    currentSup.inputsArr['profit-percent'].value = +supplier.price_add;
+
+                    this.providerList.push(currentSup);
+                  }
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertMsg(`Ошибка при загрузке каталогов`);
+                this.stepLastActive(); // прогрессбар
+                console.log(err);
+              });
+          }
+        },
+        mounted(){
+          this.onInitProviders();
         }
     }
 </script>

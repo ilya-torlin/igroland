@@ -11,25 +11,25 @@
             <div class="title-cat">
               <div class="title">
                 <div class="txt-link">
-                  {{name}}
+                  {{provider.name}}
                 </div>
               </div>
             </div>
             <div class="conf-panel">
-              <!--<div class="item" v-if="isActive">-->
-                <!--<button data-toggle="tooltip" data-placement="left" data-original-title="Активен">-->
-                  <!--<div class="svg-c">-->
-                    <!--<svg-->
-                      <!--xmlns="http://www.w3.org/2000/svg"-->
-                      <!--xmlns:xlink="http://www.w3.org/1999/xlink"-->
-                      <!--width="10px" height="17px">-->
-                      <!--<path fill-rule="evenodd"  fill="rgb(255, 229, 130)"-->
-                            <!--d="M7.685,0.632 L5.598,7.629 L9.425,7.629 L2.119,16.631 L4.206,9.630 L0.384,9.630 L7.685,0.632 Z"/>-->
-                    <!--</svg>-->
-                  <!--</div>-->
-                <!--</button>-->
-              <!--</div>-->
-              <div class="item">
+              <!--div class="item" v-if="isActive">
+                <button data-toggle="tooltip" data-placement="left" data-original-title="Активен">
+                  <div class="svg-c">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      width="10px" height="17px">
+                      <path fill-rule="evenodd"  fill="rgb(255, 229, 130)"
+                            d="M7.685,0.632 L5.598,7.629 L9.425,7.629 L2.119,16.631 L4.206,9.630 L0.384,9.630 L7.685,0.632 Z"/>
+                    </svg>
+                  </div>
+                </button>
+              </div-->
+              <!--div class="item">
                 <button class="time-btn" data-toggle="tooltip" data-placement="top" data-original-title="Последнее обновление">
                   <div class="svg-c">
                     <svg
@@ -41,10 +41,10 @@
                     </svg>
                   </div>
                   <span class="time-txt">
-                    {{lastUpdate}}
+                    {{provider.lastUpdate}}
                   </span>
                 </button>
-              </div>
+              </div-->
               <div class="item">
                 <button @click="$emit('configToogle')" data-toggle="tooltip" data-placement="top" data-original-title="Настройки">
                   <div class="svg-c">
@@ -59,7 +59,11 @@
                 </button>
               </div>
               <div class="item">
-                <button :class="{isOnTr: isOn}" class="trIsOnB" @click="$emit('isOnToogle')" data-toggle="tooltip" data-placement="top" :data-original-title="isOn ? 'Выключить':'Включить'" >
+                <button :class="{isOnTr: provider.isOn}"
+                        class="trIsOnB" @click="$emit('isOnToogle')"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        :data-original-title="provider.isOn ? 'Выключить':'Включить'" >
                   <div class="svg-c">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -76,9 +80,9 @@
           <transition name="vue-fade" mode="out-in"
                       enter-active-class="animated fadeIn"
                       leave-active-class="animated fadeOut">
-            <div v-show="showConfig" class="catalog-b">
+            <div v-show="provider.showConfig" class="catalog-b">
               <div class="row">
-                <div class="col-4 " v-for="(elem, index) in inputsArr" >
+                <div class="col-4 " v-for="(elem, index) in provider.inputsArr" >
                   <appInput class="appInputLabel"
                             :key="index"
                             :validFeedback="elem.validFeedback"
@@ -97,7 +101,7 @@
               </div>
               <div class="row align-items-end provider-config-r">
                 <div class="col-6">
-                  <div class="upload-t">
+                  <!--div class="upload-t">
                     <div class="upload-i">
                       <div class="txt-lbl">
                         Частота обновления
@@ -111,12 +115,12 @@
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </div-->
                 </div>
                 <div class="col-6">
                   <div class="btn-c">
-                    <button v-if="catalogFileUrl" type="button" class="btn btn-outline-secondary">
-                      <a :href="catalogFileUrl" target="_blank">
+                    <button v-if="provider.catalogFileUrl" type="button" class="btn btn-outline-secondary">
+                      <a :href="provider.catalogFileUrl" target="_blank">
                         <span class="svg-c">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -154,15 +158,8 @@
       }
     },
     props: [
-      'name', //имя поставщика
-      'lastUpdate', // последнее обновление, приходит с сервера в виде строки
-      'showConfig',// Тригер для отображения параметров переключателя(шестерёнка)
-      'isOn', // Тригер для включения/отключения провайдера, если каталог отключён, то пользователи его не видят
-      'id', //идентификатор
-      'inputsArr', // массив инпатов
-      'uploadTime', // частота обновления
-      'uploadBtnArr', // массив кнопок (частота обновления)
-      'catalogFileUrl', // файл для скачивания
+      'provider',
+      'providerIndex'
     ],
     components: {
       appSwitcher,
@@ -171,7 +168,7 @@
     methods: {
       // для компонента input
       onChangeData(index, data){
-        data.id = this.id;
+        data.id = this.providerIndex;
         data.inputIndex = index;
         this.$emit('changeData', data);
         // this.inputsArr[index].value = data.value;
