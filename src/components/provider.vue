@@ -1,17 +1,6 @@
 <!--Поставщики-->
 <template>
     <!--provider.vue-->
-    <!--
-      todo: API - сохранение поставщика
-      todo: API - блокировка/разблокировка поставщика
-      todo: API - добавить ссылку на каталог для кнопки "скачать"
-    -->
-
-    <!--
-      todo: доделать пагинацию, когда закончу делать компонент с пагинацией
-      todo: заменить ассециативный массив providerList на обыный, такой же как в каталогах catalogList.vue
-    -->
-
     <div class="container">
       <appProviderItem v-for="(providerItem, index) in providerList"
         :key = "index"
