@@ -1057,11 +1057,10 @@
           },
           //Event handler: скрыть не в наличии
           onHideNotOwned(value){
-            //todocomplete: переключатель 'скрыть не в наличии', сейчас никак  не обрабатывается, доделать
             this.hideNotAvl = value;
             //this.notUserCreatedFoldersInit();
             this.onChangeProvider(this.selectedProvider);
-            this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+            //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
             this.$refs['productsCatalog'].getProducts(this.foldersCont.catalogFolder.catalogSelectedItemId);
           },
           //изменение значения setRootCatalogFoldersComp(массив папок), у дочернего компонента по ссылке ref
