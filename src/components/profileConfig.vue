@@ -327,6 +327,13 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
+          ...mapMutations('user',{
+            setStateName: 'setName',
+          }),
+          ...mapActions('user',{
+            userRequest: 'USER_REQUEST',
+            userInfo: 'USER_INFO',
+          }),
           ...mapActions('alerts',{
             setErrorAlertMsg: 'setErrorAlertMsg',
             setSuccessAlertMsg: 'setSuccessAlertMsg',
@@ -349,8 +356,8 @@
               login: this.inputsArr['login-i'].value,
               email: this.inputsArr['email-i'].value,
               phone: this.inputsArr['phone-i'].value,
-              site: this.inputsArr['site-i'].value ,
-              name: this.inputsArr['name-i'].value = this.userName,
+              site: this.inputsArr['site-i'].value,
+              name: this.inputsArr['name-i'].value,
             };
             //
             this.stepOneActive(); // прогрессбар
@@ -366,6 +373,7 @@
                   this.stepLastActive();
                   //this.switcherActive = !this.switcherActive;
                   //this.usersList[index].blocked = !this.usersList[index].blocked;
+                  this.setStateName(payload.name);
                   this.setSuccessAlertMsg('Профиль обновлён');
                 }
               })
@@ -434,13 +442,18 @@
           //todo: задать задержку, или вызывать requestUser, вводяться не те значения, отслеживать, когда поступила информация о пользователе, и уже потом вызывать функции ниже
           //todo: эту ошибку можно отследить, если перезагрузить страницу... данные о пользователя ещё идут, а поля уже пытаются заполнить
 
-          this.inputsArr['surname-i'].value = this.profile.surname;
-          this.inputsArr['name-i'].value = this.userName;
-          this.inputsArr['lastName-i'].value = this.profile.lastName;
-          this.inputsArr['login-i'].value = this.profile.login;
-          this.inputsArr['email-i'].value = this.profile.email;
-          this.inputsArr['phone-i'].value = this.profile.phone;
-          this.inputsArr['site-i'].value = this.profile.site;
+          this.userRequest()
+            .then( result => {
+                this.inputsArr['surname-i'].value = this.profile.surname;
+                this.inputsArr['name-i'].value = this.userName;
+                this.inputsArr['lastName-i'].value = this.profile.patronymic;
+                this.inputsArr['login-i'].value = this.profile.login;
+                this.inputsArr['email-i'].value = this.profile.email;
+                this.inputsArr['phone-i'].value = this.profile.phone;
+                this.inputsArr['site-i'].value = this.profile.site;
+              });
+
+
         }
     }
 </script>

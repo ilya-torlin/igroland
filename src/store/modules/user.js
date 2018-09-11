@@ -8,19 +8,19 @@ import {API_URL} from '../../constants'
 
 const state = {
   logedIn: false,//Пользователь авторизован, с бекенда отправлять false
-  name: 'MrAmiD', // Имя пользователя
-  role: 'Ninja',//'права' пользователя
+  name: '', // Имя пользователя
+  role: '',//'права' пользователя
   avatar: 'src/assets/img/avatar.png',//аватарка
-  id: 123, // id
+  id: 0, // id
   status: '', //для работы авторизиции, с бекенда отправлять просто как пустой атрибут
-  applicationList: '123, 32, 43',//список ид приложений у пользователя
+  applicationList: '',//список ид приложений у пользователя
   profile: {
-    email: 'someMail@gmail.com', // email
-    site: 'https://site.ru', //сайт пользователя
-    phone: '+7(953)345-34-54', // телефон
-    surname: 'Surname', // фамилия
-    lastName: 'lastName', // отчество
-    login: 'someMail@gmail.com', // login
+    email: '', // email
+    site: '', //сайт пользователя
+    phone: '', // телефон
+    surname: '', // фамилия
+    patronymic: '', // отчество
+    login: '', // login
     blocked: false, // заблокирован
   },
 };
@@ -92,7 +92,7 @@ const actions = {
             commit(USER_ERROR);
             reject(resp.data);
           }else {
-            //console.log('user is: ',  resp.data.data);
+            console.log('user is: ',  resp.data.data);
             let userData = resp.data.data;
 
             let emailData = userData.email ? userData.email : '',
@@ -101,9 +101,9 @@ const actions = {
                   site: userData.site ? userData.site : '', //сайт пользователя
                   phone: userData.phone ? userData.phone : '', // телефон
                   surname: userData.surname ? userData.surname : '', // фамилия
-                  lastName: userData.lastName ? userData.lastName : '', // отчество
+                  patronymic: userData.patronymic ? userData.patronymic : '', // отчество
                   login: userData.login ? userData.login : '', // login
-                  blocked: userData.active !== 1, // заблокирован
+                  blocked: userData.isActive !== 1, // заблокирован
                 };
 
             commit('setName', userData.name ? userData.name : '',); // !!! .name
@@ -129,6 +129,18 @@ const actions = {
   },
   [AUTH_LOGOUT]:({commit}) => {
     commit(AUTH_LOGOUT);
+  },
+  USER_INFO: () => {
+    return new Promise(resolve => {
+      if(state.name !== ''){
+        console.log('user isset',state.name);
+        let result = {
+          name : state.name,
+          profile : state.profile
+        };
+        resolve(result);
+      }
+    });
   },
 }
 

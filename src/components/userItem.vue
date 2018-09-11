@@ -10,7 +10,7 @@
           <div class="catalog-h">
             <div class="title-cat">
               <div class=" ava-c" data-placement="bottom">
-                <img :src="user.photo" :alt="user.name + user.surname">
+                <img :src="imagePhoto" :alt="user.login">
               </div>
               <div class="user-info">
                 <div class="h-user-name">
@@ -71,6 +71,9 @@
           }
       },
       computed: {
+        imagePhoto(){
+          return (this.user.photo) ? this.user.photo : 'src/assets/img/avatar.png';
+        }
       },
       props: [
         'user'
