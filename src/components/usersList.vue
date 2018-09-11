@@ -32,7 +32,7 @@
         <div class="col-6">
           <div class="find-b justify-content-end d-flex">
             <div class="input-group ">
-              <input v-model.lazy="findUserStr" v-on:keyup.enter="findUser" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">
+              <input v-model="findUserStr" v-on:keyup.enter="findUser" type="text" class="form-control" placeholder="Найти" aria-label="Recipient's username" aria-describedby="button-addon2">
               <div class="input-group-append">
                 <button class="btn btn-outline-secondary" type="button" @click="findUser">
                   <svg
@@ -49,7 +49,7 @@
         </div>
       </div>
     </div>
-    <template v-for="(userItem, index) in usersList">
+    <template v-for="(userItem, index) in usersList.result">
       <appUserItem :key="index"
         :user="userItem"
         @deleteUser="openRemoveModal(index)"
@@ -57,6 +57,15 @@
       >
       </appUserItem>
     </template>
+    <div class="row" v-if="usersList.result.length === 0">
+      <div class="col-12">
+        <div class="white-block-r ">
+          <h4 class="mb-0">
+            Пользователи не найдены
+          </h4>
+        </div>
+      </div>
+    </div>
 
     <!-- Modal RemoveUser -->
     <appModal
@@ -101,9 +110,10 @@
     name: 'usersList',
     data () {
       return {
-        usersList: [
-
-        ],
+        usersList: {
+          result: [],
+          init: []
+        },
         switcherActive: true, // все пользователи
         findUserStr: '', // Подстрока для поиска пользователя
         removeUserIndex: 0, // Ид пользователя для удаления
@@ -208,36 +218,18 @@
         stepLastActive: 'stepLastActive',
       }),
       onSwitchToogle(){// переключение "Все пользователи"
-
-        let payload = this.switcherActive;
-        this.stepOneActive(); // прогрессбар
-
-        axios({url: API_URL + '/user/userlist', data: payload, method: 'POST' })
-          .then(resp => {
-            const error = resp.data.error;
-            this.stepLastActive(); // прогрессбар
-            if(error){
-              this.stepLastActive();
-              let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertMsg('Ошибка при фильтрации пользователей: ' + errorTxt);
-            }else {
-              this.stepLastActive();
-              this.switcherActive = !this.switcherActive;
-              this.usersList[index].blocked = !this.usersList[index].blocked;
-              this.setSuccessAlertMsg('Пользователи отфильтрованы');
-            }
-          })
-          .catch(err => {
-            this.setErrorAlertMsg('Ошибка при фильтрации пользователей');
-            console.log(err);
-            this.stepLastActive();
-          });
+        this.switcherActive = !this.switcherActive;
+        this.usersList.result = this.usersList.init.filter( item => item.isActive >= +!this.switcherActive );
+        //console.log('usersList',list);
+        //let payload = this.switcherActive;
+        //this.stepOneActive(); // прогрессбар
+        //this.initUsersList(+payload);
       },
       isOnToogle(index){ // заблокировать/разблокировать пользователя
         let payload = {
-          value: !this.usersList[index].isActive
+          value: !this.usersList.result[index].isActive
         };
-        let userId = this.usersList[index].id;
+        let userId = this.usersList.result[index].id;
         this.stepOneActive(); // прогрессбар
 
         axios({url: API_URL + '/user/' + userId + '/setonoff', data: payload, method: 'POST' })
@@ -248,9 +240,9 @@
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertMsg('Ошибка при блокировке пользователя: ' + errorTxt);
             }else {
-              this.usersList[index].isActive = !this.usersList[index].isActive;
+              this.usersList.result[index].isActive = !this.usersList.result[index].isActive;
               let msgS = 'Пользователь ';
-              (this.usersList[index].isActive) ? msgS += 'разблокирован' : msgS += 'заблокирован';
+              (this.usersList.result[index].isActive) ? msgS += 'разблокирован' : msgS += 'заблокирован';
               this.setSuccessAlertMsg(msgS);
             }
           })
@@ -262,19 +254,33 @@
 
       },
       findUser(){
-        let payload = this.findUserStr;
-
         this.stepOneActive(); // прогрессбар
-
-        axios({url: API_URL + '/user/finduser', data: payload, method: 'POST' })
-          .then(resp => {
+        // скидываем принудительно на "всех пользователей"
+        this.switcherActive = true;
+        let payload = {
+          text: this.findUserStr,
+          active: +this.switcherActive
+        };
+        this.stepOneActive(); // прогрессбар
+        axios.get( API_URL + '/user/search', {
+          params: {
+            ...payload
+          },
+        }).then(resp => {
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
             if(error){
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertMsg(`Ошибка при поиске пользователя по запросу '${this.findUserStr}'; ${errorTxt}`);
             }else {
-              this.setSuccessAlertMsg(`Пользователи по запросу '${this.findUserStr}'`);
+              if (this.findUserStr !== '')
+                this.setSuccessAlertMsg(`Пользователи по запросу '${this.findUserStr}'`);
+              let arrayList = resp.data.data;
+              this.usersList.init = [];
+              for (let user of arrayList){
+                this.usersList.init.push(user);
+              }
+              this.usersList.result = this.usersList.init;
             }
           })
           .catch(err => {
@@ -285,8 +291,8 @@
       },
       deleteUser(index){
         console.log('delete user', index);
-        if(this.inputsArr[0].value === this.usersList[index].email){
-          let payload = this.usersList[index].id;
+        if(this.inputsArr[0].value === this.usersList.result[index].email){
+          let payload = this.usersList.result[index].id;
           this.stepOneActive(); // прогрессбар
           axios({url: API_URL + '/user/'+ payload, method: 'DELETE' })
             .then(resp => {
@@ -296,7 +302,9 @@
                 let errorTxt = resp.data.data.msgClient;
                 this.setErrorAlertMsg('Ошибка при удалении пользователя: ' + errorTxt);
               }else{
-                this.$delete(this.usersList, index, this.usersList[index]);
+                this.$delete(this.usersList.result, index, this.usersList.result[index]);
+                this.usersList.init = this.usersList.result;
+                this.inputsArr[0].value = ''; // обнуляем инпут при удалении
                 this.setSuccessAlertMsg('Пользователь удалён');
               }
             })
@@ -359,6 +367,7 @@
               }else{
                 this.stepLastActive();
                 this.setSuccessAlertMsg('Пользователь добавлен');
+                this.initUsersList(1);
               }
             })
             .catch(err => {
@@ -371,8 +380,8 @@
           this.stepLastActive();
         }
       },
-      initUsersList(){
-        axios({url: API_URL + '/user', method: 'GET' })
+      initUsersList($active = 0){
+        axios({url: API_URL + `/user?active=${$active}`, method: 'GET' })
           .then(resp => {
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
@@ -381,11 +390,11 @@
               this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
             }else{
               let arrayList = resp.data.data;
-              this.usersList = [];
-              arrayList.forEach(value => {
-                this.usersList.push(value);
-                //this.$set(this.catalogList, value.id, value);
-              })
+              this.usersList.init = this.usersList.result = [];
+              for (let user of arrayList){
+                this.usersList.init.push(user);
+              }
+              this.usersList.result = this.usersList.init;
             }
           })
           .catch(err => {
@@ -396,7 +405,7 @@
       }
     },
     mounted() {
-      this.initUsersList();
+      this.initUsersList(1);
     }
   }
 </script>
