@@ -161,6 +161,9 @@
                               <div class="txt-f">
                                 Выбранный каталог: <span class="provider-txt">{{ providerHeader }}</span>
                               </div>
+                              <div class="catalog-count">
+                                <span class="badge badge-success badge-pill">{{providerTotalCount}}</span>
+                              </div>
                             </div>
                             <appCatalogFolders
                               :folderH = 'foldersCont.providerFolder.folderH'
@@ -693,6 +696,13 @@
           },
           providerHeader(){
             return (this.selectedProvider.catalogName) ? this.selectedProvider.catalogName : 'Выберите поставщика';
+          },
+          providerTotalCount(){
+            let totalSum = 0;
+            for (let item of this.foldersCont.providerFolder.rootCatalogFolders) {
+              totalSum += +item.goodsCount;
+            }
+            return totalSum;
           }
         },
         components: {
