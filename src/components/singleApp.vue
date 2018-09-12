@@ -34,15 +34,7 @@
         <div class="col-4">
           <appInput class="appInputLabel"
                     key="siteInput"
-                    :validFeedback="siteInput.validFeedback"
-                    :invalidFeedback="siteInput.invalidFeedback"
-                    :placeholder="siteInput.placeholder"
-                    :required="siteInput.required"
-                    :pattern="siteInput.pattern"
-                    :type="siteInput.type"
-                    :value="siteInput.value"
-                    :isValid="siteInput.isValid"
-                    :showError="siteInput.showError"
+                    :input="siteInput"
                     @changedata="onChangeData('siteInput', $event)"
           >
           </appInput>
@@ -69,15 +61,7 @@
         <div class="col-4">
           <appInput class="appInputLabel"
                     key="profitPercentInput"
-                    :validFeedback="profitPercentInput.validFeedback"
-                    :invalidFeedback="profitPercentInput.invalidFeedback"
-                    :placeholder="profitPercentInput.placeholder"
-                    :required="profitPercentInput.required"
-                    :pattern="profitPercentInput.pattern"
-                    :type="profitPercentInput.type"
-                    :value="profitPercentInput.value"
-                    :isValid="profitPercentInput.isValid"
-                    :showError="profitPercentInput.showError"
+                    :input="profitPercentInput"
                     @changedata="onChangeData('profitPercentInput', $event)"
           >
           </appInput>
@@ -178,15 +162,7 @@
           <div class="modal-body">
             <appInput class=" "
                       key="confirmDeleteApp"
-                      :validFeedback="confirmDeleteAppInput.validFeedback"
-                      :invalidFeedback="confirmDeleteAppInput.invalidFeedback"
-                      :placeholder="confirmDeleteAppInput.placeholder"
-                      :required="confirmDeleteAppInput.required"
-                      :pattern="confirmDeleteAppInput.pattern"
-                      :type="confirmDeleteAppInput.type"
-                      :value="confirmDeleteAppInput.value"
-                      :isValid="confirmDeleteAppInput.isValid"
-                      :showError="confirmDeleteAppInput.showError"
+                      :input="confirmDeleteAppInput"
                       @changedata="onChangeData('confirmDeleteAppInput', $event)"
             >
             </appInput>
@@ -410,6 +386,30 @@
             this.setErrorAlertMsg('Форма заполненна неправильно');
           }
         }
+      },
+      initMyCatalogs(){
+        this.stepOneActive(); // прогрессбар
+        axios({url: API_URL + '/catalog/my', method: 'GET' })
+          .then(resp => {
+            const error = resp.data.error;
+            this.stepLastActive(); // прогрессбар
+            if(error){
+              let errorTxt = resp.data.data.msgClient;
+              this.setErrorAlertMsg('Ошибка при получении списка каталогов: ' + errorTxt);
+            }else{
+              let arrayList = resp.data.data;
+              this.catalogList = [];
+              arrayList.forEach(value => {
+                this.catalogList.push(value);
+                //this.$set(this.catalogList, value.id, value);
+              })
+            }
+          })
+          .catch(err => {
+            this.setErrorAlertMsg('Ошибка при получении списка каталогов');
+            this.stepLastActive(); // прогрессбар
+            console.log(err);
+          });
       }
     },
     components:{
@@ -417,7 +417,7 @@
       Multiselect
     },
     mounted(){
-
+      this.initMyCatalogs();
     }
   }
 </script>

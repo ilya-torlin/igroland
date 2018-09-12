@@ -98,15 +98,7 @@
                 Наценка, %
               </div>
               <appInput key="profitPercentInput"
-                        :validFeedback="profitPercentInput.validFeedback"
-                        :invalidFeedback="profitPercentInput.invalidFeedback"
-                        :placeholder="profitPercentInput.placeholder"
-                        :required="profitPercentInput.required"
-                        :pattern="profitPercentInput.pattern"
-                        :type="profitPercentInput.type"
-                        :value="profitPercentInput.value"
-                        :isValid="profitPercentInput.isValid"
-                        :showError="profitPercentInput.showError"
+                        :input="profitPercentInput"
                         @changedata="onChangeDataParcent($event)"
                         ref="tradeMarkup"
               >

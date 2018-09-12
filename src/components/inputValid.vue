@@ -4,52 +4,62 @@
   invalid-group - ошибка
   valid-group - всё норм
   -->
-  <div class="input-group mb-3 " :class="validClass" :cont="placeholder">
-    <input  class="form-control"
-            :type="type"
-            :placeholder="placeholder"
-            :value="value"
-            @input="onInput">
+  <div>
+    <div class="input-group mb-3" :class="validClass" :cont="input.placeholder" v-if="input.type === 'select'">
+      <div style="width:100%">
+        <multiselect
+          :value="selectedFind"
+          :options="input.options"
+          :multiple="false"
+          :close-on-select="true"
+          :allow-empty="false"
+          :searchable="false"
+          :placeholder="input.placeholder"
+          selectedLabel="Выбрано"
+          label="name"
+          track-by="id"
+          selectLabel="Выбрать"
+          deselectLabel=""
+          @input = "onInputSelect" >
+        </multiselect>
+      </div>
+      <div class="invalid-feedback">
+        {{input.invalidFeedback}}
+      </div>
+    </div>
+    <div class="input-group mb-3" :class="validClass" :cont="input.placeholder" v-else>
+      <input  class="form-control"
+              :type="input.type"
+              :placeholder="input.placeholder"
+              :value="input.value"
+              @input="onInput">
 
-    <!--todocomplete: Сделать каждый инпат как отдельный компонент, для упращения валидации
-        todocomplete: Для инпатов создать массив инпатов со значениями, и выводить компонент через v-for
-        f.e. <input-component v-for="(singleInput, index) in inputsArr" :key="index"><input-component>
-        todotodocomplete: данные в компонент передавать через :atribute , в самом компоненте прописать - props: ['atribute']
-        в инпате у дочернего компонента, НЕ прописывать v-bind, использовать event @input="someMethod", и объявить someMethod() у дочернего компонента
-
-
-    -->
-    <!--<div class="valid-feedback">-->
-    <!--{{validFeedback}}-->
-    <!--</div>-->
-    <div class="invalid-feedback">
-      {{invalidFeedback}}
+      <div class="invalid-feedback">
+        {{input.invalidFeedback}}
+      </div>
     </div>
   </div>
 </template>
 
 <script>
- /**
- * @param {string} validFeedback сообщение при корректном вводе данных
- * @param {string} invalidFeedback сообщение при некорректном вводе данных
- * @param {string} placeholder плейсхолдер
- * @param {string} required обязательное поле
- * @param {string} pattern регулярка для проверки вводимых данных
- * @param {string} value значение инпата
- *
- * */
+ import Multiselect from 'vue-multiselect';
+
   export default {
     name: 'inputValid',
-    props: ['validFeedback', 'invalidFeedback', 'placeholder', 'required', 'pattern', 'value', 'type', 'isValid', 'showError'],
+    props: ['input', 'validFeedback', 'invalidFeedback', 'placeholder', 'required', 'pattern', 'value', 'type', 'isValid', 'showError'],
     data () {
       return {
-        activated: this.value != '' // если пользователь что-то вводил
+        selectedFind:null,
+        activated: this.input.value != '' // если пользователь что-то вводил
       }
+    },
+    components:{
+      multiselect: Multiselect
     },
     computed: {
       validClass(){
         if(this.activated){
-          return this.pattern.test(this.value) && !this.showError ?
+          return this.input.pattern.test(this.input.value) && !this.input.showError ?
             'valid-group' :
             'invalid-group';
         }else {
@@ -60,16 +70,28 @@
     methods: {
       //вызывается при изменении инпата
       onInput(e){
-       this.activated = true;
-       this.$emit('changedata', {
-         value: e.target.value,
-         valid: this.pattern.test(e.target.value)
-       });
-     }
+         this.activated = true;
+         this.$emit('changedata', {
+           value: e.target.value,
+           valid: this.input.pattern.test(e.target.value)
+         });
+       },
+      onInputSelect(event){
+        let selectedType = {
+          name: event.name,
+          id: event.id
+        };
+        this.selectedFind = selectedType;
+        this.$emit('changedata', {
+          value: selectedType,
+          valid: this.input.pattern.test(event.name)
+        });
+      },
+
     }
   }
 </script>
 
 <style >
-
+  @import '../../node_modules/vue-multiselect/dist/vue-multiselect.min.css'
 </style>

@@ -3,15 +3,7 @@
   <div class="row">
     <div class="col-md-12 ">
       <appInput v-for="(elem, index) in inputsArr" :key="index"
-        :validFeedback="elem.validFeedback"
-        :invalidFeedback="elem.invalidFeedback"
-        :placeholder="elem.placeholder"
-        :required="elem.required"
-        :pattern="elem.pattern"
-        :type="elem.type"
-        :value="elem.value"
-        :isValid="elem.isValid"
-        :showError="elem.showError"
+        :input="elem"
         @changedata="onChangeData(index, $event)"
       >
       </appInput>

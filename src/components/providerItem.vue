@@ -85,15 +85,7 @@
                 <div class="col-4 " v-for="(elem, index) in provider.inputsArr" >
                   <appInput class="appInputLabel"
                             :key="index"
-                            :validFeedback="elem.validFeedback"
-                            :invalidFeedback="elem.invalidFeedback"
-                            :placeholder="elem.placeholder"
-                            :required="elem.required"
-                            :pattern="elem.pattern"
-                            :type="elem.type"
-                            :value="elem.value"
-                            :isValid="elem.isValid"
-                            :showError="elem.showError"
+                            :input="elem"
                             @changedata="onChangeData(index, $event)"
                   >
                   </appInput>
