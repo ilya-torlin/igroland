@@ -700,7 +700,8 @@
           providerTotalCount(){
             let totalSum = 0;
             for (let item of this.foldersCont.providerFolder.rootCatalogFolders) {
-              totalSum += +item.goodsCount;
+              if (item.lvlFolder === 0)
+                totalSum += +item.goodsCount;
             }
             return totalSum;
           }

@@ -47,7 +47,7 @@
                 v-if="!catFolder.hideFolder"
             >
               <!--:key - параметр для сортировки-->
-              <div class="folder-title" @click.right = "contextOpen($event, catFolder )" >
+              <div class="folder-title" @click.right = "setSelectItem(catFolder, index); contextOpen($event, catFolder)" >
                 <div class="folder-name " @click="openSubfolder(index, catFolder.folderId, catFolder.lvlFolder, index)">
                   <div class="folder-controls-c">
                     <button class="btn-icon-tr" v-if="catFolder.hasFolders != 0">
