@@ -48,7 +48,7 @@
       </div>
     </div>
 
-    <template v-for="(appItem, index) in applicationList">
+    <template v-for="(appItem, index) in applicationList.result">
       <transition name="vue-fade" mode="out-in"
                   enter-active-class="animated zoomIn"
                   leave-active-class="animated zoomOut">
@@ -111,6 +111,15 @@
         </div>
       </transition>
     </template>
+    <div class="row" v-if="applicationList.result.length === 0">
+      <div class="col-12">
+        <div class="white-block-r ">
+          <h4 class="mb-0">
+            Приложения не найдены
+          </h4>
+        </div>
+      </div>
+    </div>
     <!-- Modal RemoveUser -->
     <appModal
       headerText="Подтвердите удаление приложения"
@@ -156,7 +165,10 @@
     data () {
       return {
         avatar: 'src/assets/img/app.png',//аватарка
-        applicationList: [],
+        applicationList: {
+          result: [],
+          init: []
+        },
         switcherActive: true, // все пользователи
         findAppStr: '', // Подстрока для поиска пользователя
         removeAppIndex: '', // Ид пользователя для удаления
@@ -233,27 +245,8 @@
       }),
       // переключение "Все пользователи"
       onSwitchToogle(){
-        let payload = this.switcherActive;
-        this.stepOneActive(); // прогрессбар
-        axios({url: API_URL + '/application/applicationlist', data: payload, method: 'POST' })
-          .then(resp => {
-            const error = resp.data.error;
-            this.stepLastActive(); // прогрессбар
-            if(error){
-              this.stepLastActive();
-              let errorTxt = resp.data.data.msgClient;
-              this.setErrorAlertMsg('Ошибка при фильтрации приложений: ' + errorTxt);
-            }else {
-              this.stepLastActive();
-              this.switcherActive = !this.switcherActive;
-              this.applicationList[index].blocked = !this.applicationList[index].blocked;
-              this.setSuccessAlertMsg('Пользователи отфильтрованы');
-            }
-          })
-          .catch(() => {
-            this.setErrorAlertMsg('Ошибка при фильтрации приложений');
-            this.stepLastActive();
-          });
+        this.switcherActive = !this.switcherActive;
+        this.applicationList.result = this.applicationList.init.filter( item => item.blocked <= +this.switcherActive );
       },
       // заблокировать/разблокировать приложение
       isOnToogle(index){
@@ -285,11 +278,10 @@
       },
       // поиск приложения по подстроке
       findApp(){
-        let payload = this.findAppStr;
-
         this.stepOneActive(); // прогрессбар
-
-        axios({url: API_URL + '/application/findApp', data: payload, method: 'POST' })
+        // скидываем принудительно на "всех пользователей"
+        this.switcherActive = true;
+        axios({url: API_URL + `/export/search`, data: { text: this.findAppStr }, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
@@ -297,7 +289,11 @@
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertMsg(`Ошибка при поиске приложения по запросу '${this.findAppStr}'; ${errorTxt}`);
             }else {
-              this.setSuccessAlertMsg(`Приложения по запросу '${this.findAppStr}'`);
+              if (this.findAppStr !== '')
+                this.setSuccessAlertMsg(`Пользователи по запросу '${this.findAppStr}'`);
+              let arrayList = resp.data.data;
+              this.applicationList.init = this.applicationList.result = [];
+              this.applicationList.init = this.applicationList.result = arrayList;
             }
           })
           .catch(err => {
@@ -307,8 +303,8 @@
       },
       // Удалить приложение
       deleteApplication(index){ // Удалить приложение
-        if(this.inputsArr[0].value === this.applicationList[index].name){
-          let payload = this.applicationList[index].id;
+        if(this.inputsArr[0].value === this.applicationList.result[index].name){
+          let payload = this.applicationList.result[index].id;
           this.stepOneActive(); // прогрессбар
           axios({url: API_URL + `/export/${payload}`, method: 'DELETE' })
             .then(resp => {
@@ -318,7 +314,9 @@
                 let errorTxt = resp.data.data.msgClient;
                 this.setErrorAlertMsg('Ошибка при удалении приложения: ' + errorTxt);
               }else{
-                this.$delete(this.applicationList, index, this.applicationList[index]);
+                this.$delete(this.applicationList.result, index, this.applicationList.result[index]);
+                this.applicationList.init = this.applicationList.result;
+                this.inputsArr[0].value = '';
                 this.setSuccessAlertMsg('Приложение удалёно');
               }
             })
@@ -382,7 +380,9 @@
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertMsg('Ошибка при получении списка пользователей: ' + errorTxt);
             }else{
-              this.applicationList = resp.data.data;
+              let arrayList = resp.data.data;
+              this.applicationList.init = this.applicationList.result = [];
+              this.applicationList.init = this.applicationList.result = arrayList;
               console.log(resp.data.data);
             }
           })
