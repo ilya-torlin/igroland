@@ -42,7 +42,7 @@
           <ul class="folder-list folder-list-main" v-if="rootCatalogFoldersComp.length > 0">
             <li v-for="(catFolder, index) in rootCatalogFoldersComp"
                 @click="setSelectItem(catFolder, index)"
-                :class="[ {'is-active' : catFolder.isOpen }, {'isActive' : (catFolder.folderId == selectedItemObjectId)} ]"
+                :class="[ {'is-active' : (catFolder.isOpen && catFolder.hasFolders) }, {'isActive' : (catFolder.folderId == selectedItemObjectId)} ]"
                 :style="{'paddingLeft': catFolder.lvlFolder * 28 + 'px'}"
                 v-if="!catFolder.hideFolder"
             >
