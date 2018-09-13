@@ -11,9 +11,15 @@
             <div class="title-cat">
               <div class="photo-input-c ava-c" data-toggle="tooltip" data-placement="bottom" data-original-title="Загрузить фото категории">
                 <!--todo: Обновлять изображение после загрузки нового-->
-                <img src="src/assets/img/dodik.png" alt="">
-                <label for="photoUpload">
-                  <input type="file" id="photoUpload">
+                <img :src="imageUrl" alt="">
+                <label :for="'file'+ index">
+                  <appUpload
+                    type="image"
+                    :url="imageUploadUrl"
+                    :inputId="'file'+ index"
+                    @changeImage="onChangeImage($event)"
+                  >
+                  </appUpload>
                 </label>
                 <div class="svg-c">
                   <svg
@@ -148,9 +154,10 @@
 </template>
 
 <script>
-  import {USER_ADMIN} from '../constants'
+  import {API_URL,USER_ADMIN} from '../constants'
   import Multiselect from 'vue-multiselect'
   import appSwitcher from './switcher'
+  import appUpload from './uploadFIles'
 
   export default {
     name: 'catalogItem',
@@ -158,7 +165,8 @@
       return {
         msg: 'catalogItem',
         thisSelectedUsers: {},
-        thisCatalogName: ''
+        thisCatalogName: '',
+        imageUrlDefault: 'src/assets/img/dodik.png',
       }
     },
     props: [
@@ -173,11 +181,14 @@
       'description',
       'selectedUsers',
       'userRole',
-      'useCatalogParams'
+      'useCatalogParams',
+      'catalogItem',
+      'index'
     ],
     components: {
       Multiselect,
-      appSwitcher
+      appSwitcher,
+      appUpload
     },
     computed: {
       opt(){
@@ -186,8 +197,18 @@
       adminRoleId(){
         return USER_ADMIN;
       },
+      imageUploadUrl(){
+        return `/catalog/${this.catalogId}/saveimage`;
+      },
+      imageUrl(){
+        return (this.catalogItem.catalogImg.length > 0) ? this.catalogItem.catalogImg : this.imageUrlDefault;
+      }
     },
     methods:{
+      onChangeImage(image){
+        console.log(image);
+        this.$emit('changeImage', image);
+      },
       onChangeUsers(event, selectResKey){
         //console.log(event);
         this[selectResKey] = event;

@@ -349,6 +349,7 @@
                           </div>
                           <appCatalogItem :selected="paramsFolder.selected"
                                           :switcherActive="paramsFolder.switcherActive"
+                                          :catalogItem="paramsFolder"
                                           :showConfig="true"
                                           :userList="userList"
                                           :catalogName="paramsFolder.catalogName"
@@ -367,7 +368,8 @@
                                           @copyCatalog = ""
                                           @saveCatalog = "onSaveCatalog"
                                           @changeSelect = "onChangeSelect($event)"
-                                          @removeCatalog = "onOpenRemoveCatalogWindow(index)">
+                                          @removeCatalog = "onOpenRemoveCatalogWindow(index)"
+                                          @changeImage="onChangeImage($event)">
                           </appCatalogItem>
                         </div>
                       </div>

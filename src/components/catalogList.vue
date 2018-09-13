@@ -34,7 +34,9 @@
 
         <appCatalogItem v-else v-for="(catalogItem, index) in catalogList"
           :key="index"
+          :index="index"
           :selected="catalogItem.selected"
+          :catalogItem="catalogItem"
           :switcherActive="catalogItem.switcherActive"
           :showConfig="catalogItem.showConfig"
           :userList="userList"
@@ -54,7 +56,8 @@
           @saveCatalog = "onSaveCatalog(index)"
           @changeSelect = "onChangeSelect(index, $event)"
           @changeName="onChangeName(index, $event)"
-          @removeCatalog = "onOpenRemoveCatalogWindow(index)">
+          @removeCatalog = "onOpenRemoveCatalogWindow(index)"
+          @changeImage="onChangeImage(index, $event)">
         </appCatalogItem>
 
         <!--appPagination v-if="Object.keys(catalogList).length != 0" :countPage = "pagination.countPage"
@@ -187,6 +190,10 @@
         stepTwoActive: 'stepTwoActive',
         stepLastActive: 'stepLastActive',
       }),
+      // изменить изображение
+      onChangeImage(index, image){
+        this.catalogList[index].catalogImg = image;
+      },
       //переключение каталога в режим не сохранён
       falseCatalogSave(index){
         this.catalogList[index].catalogSaved = false;
@@ -404,6 +411,7 @@
               let arrayList = resp.data.data;
               this.catalogList = [];
               arrayList.forEach(value => {
+                value['catalogImg'] = API_URL + value['catalogImg'];
                 this.catalogList.push(value);
                 //this.$set(this.catalogList, value.id, value);
               })

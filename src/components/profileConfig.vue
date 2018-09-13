@@ -32,12 +32,14 @@
                     </div>
                   </div>
                   <div class="label-c">
-                    <appUpload
-                      type="button"
-                      :url="imageUploadUrl"
-                      @changeImage="onChangeImage($event)"
-                    >
-                    </appUpload>
+                    <label for="file" class="uploadProfileAva">
+                      <appUpload
+                        type="button"
+                        inputId="file"
+                        :url="imageUploadUrl"
+                        @changeImage="onChangeImage($event)"
+                      ></appUpload>
+                    </label>
 
                   </div>
                 </div>

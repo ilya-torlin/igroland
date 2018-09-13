@@ -1,9 +1,10 @@
+<!-- Компонент загрузки фотографии -->
 <template>
   <div>
-    <label for="file" class="uploadProfileAva" v-if="type === 'button'">
-      Обновить фото
-      <input type="file" id="file" ref="files" @change="handleFilesUpload" />
-    </label>
+        <template v-if="type === 'button'">
+          Обновить фото
+        </template>
+        <input type="file" :id="inputId" ref="files" @change="handleFilesUpload" />
   </div>
 </template>
 
@@ -19,7 +20,7 @@
         files: []
       }
     },
-    props: ['type', 'url'],
+    props: ['type', 'url','image','inputId'],
     methods: {
       ...mapActions('alerts',{
         setErrorAlertMsg: 'setErrorAlertMsg',
@@ -34,7 +35,8 @@
         let formData = new FormData();
         for( let i = 0; i < this.files.length; i++ ){
           let file = this.files[i];
-          formData.append('file[' + i + ']', file);
+          formData.append("id", this.inputId);
+          formData.append(this.inputId + '[' + i + ']', file);
         }
         axios.post( API_URL + this.url, formData, { headers: { 'Content-Type': 'multipart/form-data', Authorization: 'Bearer ' + localStorage.getItem('user-token') } })
           .then(resp => {
