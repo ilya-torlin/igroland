@@ -418,9 +418,9 @@
       // подгрузка списка пользователей с сервера
       initUserList(){
         // если пользователь не суперадмин, то не запрашивать каталог
-        if (USER_ADMIN !== this.userRole.id){
-          return
-        }
+        // if (USER_ADMIN !== this.userRole.id){
+        //   return
+        // }
         this.stepOneActive(); // прогрессбар
         axios({url: API_URL + '/user', method: 'GET' })
           .then(resp => {

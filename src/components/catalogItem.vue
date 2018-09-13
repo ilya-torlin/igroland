@@ -117,7 +117,7 @@
                       :multiple="true"
                       :close-on-select="true"
                       placeholder="Пользователи"
-                      label="name"
+                      label="email"
                       track-by="id"
                       selectLabel="Выбрать"
                       deselectLabel="Убрать из списка"
