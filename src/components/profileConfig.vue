@@ -13,7 +13,7 @@
               <div class="white-block-r">
                 <div class="title-user">
                   <div class="ava-big-c">
-                    <img :src="avatar" alt="">
+                    <img :src="avatarUrl" alt="">
                   </div>
                 </div>
                 <div class="user-info">
@@ -32,10 +32,13 @@
                     </div>
                   </div>
                   <div class="label-c">
-                    <label for="uploadAva" class="uploadProfileAva">
-                      Обновить фото
-                      <input type="file" id="uploadAva">
-                    </label>
+                    <appUpload
+                      type="button"
+                      :url="imageUploadUrl"
+                      @changeImage="onChangeImage($event)"
+                    >
+                    </appUpload>
+
                   </div>
                 </div>
               </div>
@@ -137,150 +140,152 @@
     import {API_URL} from '../constants';
     import axios from 'axios';
     import appSwitcher from './switcher'
+    import appUpload from './uploadFIles';
     export default {
         name: 'profileConfig',
         data () {
             return {
-                msg: 'profileConfig',
-                inputsArr:{ // Редактируемые поля профиля -- Ассоциативный массив для быстрого доступа к элементов
-                  'surname-i':{
-                    id: 'surname-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Фамилия введена неверно",
-                    placeholder: "Фамилия",
-                    type: "text",
-                    required: "false",
-                    pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
-                    value: '',
-                    isValid: false
-                  },
-                  'name-i':{
-                    id: 'name-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Имя введено неверно",
-                    placeholder: "Имя",
-                    type: "text",
-                    required: "false",
-                    pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
-                    value: '',
-                    isValid: false
-                  },
-                  'lastName-i':{
-                    id: 'lastName-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Отчество введено неверно",
-                    placeholder: "Отчество",
-                    type: "text",
-                    required: "false",
-                    pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
-                    value: '',
-                    isValid: false
-                  },
-                  'login-i':{
-                    id: 'login-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Логин введён неверно",
-                    placeholder: "Логин",
-                    type: "text",
-                    required: "true",
-                    pattern: /^[a-zA-Z0-9_@.]{6,30}$/,
-                    value: '',
-                    isValid: false
-                  },
-                  'email-i':{
-                    id: 'email-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Email введён неверно",
-                    placeholder: "Email",
-                    type: "text",
-                    required: "true",
-                    pattern: /^[a-zA-Z0-9_@.]{6,30}$/,
-                    value: '',
-                    isValid: false
-                  },
-                  //todo: добавить маску для телефона
-                  'phone-i':{
-                    id: 'phone-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Телефон введен неверно",
-                    placeholder: "Телефон",
-                    type: "tel",
-                    required: "false",
-                    pattern: /^[0-9()\-+]{1,11}$/,
-                    value: '',
-                    isValid: false
-                  },
-                  'site-i':{
-                    id: 'site-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Сайт введен неверно",
-                    placeholder: "Сайт",
-                    type: "text",
-                    required: "false",
-                    pattern: /^[а-яА-Яa-zA-Z0-9_.\/#:]{5,100}$/,
-                    value: '',
-                    isValid: false
-                  },
-                },
-                acountArr:{ // Редактируемые поля профиля -- Ассоциативный массив для быстрого доступа к элементов
-                  'oldpass-i':{
-                    id: 'oldpass-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Пароль введен неверно",
-                    placeholder: "Старый пароль",
-                    type: "text",
-                    required: "true",
-                    pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
-                    value: '',
-                    isValid: false
-                  },
-                  'newpass-i':{
-                    id: 'newpass-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Пароль введен неверно",
-                    placeholder: "Новый пароль",
-                    type: "password",
-                    required: "true",
-                    pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
-                    value: '',
-                    isValid: false
-                  },
-                  'newpassrepeat-i':{
-                    id: 'newpassrepeat-i',
-                    showError: false,
-                    validFeedback: "",
-                    invalidFeedback: "Пароли не совпадают",
-                    placeholder: "Повторите новый пароль",
-                    type: "password",
-                    required: "true",
-                    pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
-                    value: '',
-                    isValid: false
-                  },
-                },
-                notifications: {
-                  'newFeatures': {
-                    txt: 'Уведомлять меня о новых возможностях сервиса',
-                    switched: false,
-                  },
-                  'newCatalog': {
-                    txt: 'Уведомлять меня о новых каталогах',
-                    switched: false,
-                  },
-                  'newNews': {
-                    txt: 'Держать меня в курсе новостей сервиса',
-                    switched: false,
-                  },
-                }
+              msg: 'profileConfig',
+              avatarImg:'',
+              inputsArr:{ // Редактируемые поля профиля -- Ассоциативный массив для быстрого доступа к элементов
+              'surname-i':{
+              id: 'surname-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Фамилия введена неверно",
+              placeholder: "Фамилия",
+              type: "text",
+              required: "false",
+              pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
+              value: '',
+              isValid: false
+              },
+              'name-i':{
+              id: 'name-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Имя введено неверно",
+              placeholder: "Имя",
+              type: "text",
+              required: "false",
+              pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
+              value: '',
+              isValid: false
+              },
+              'lastName-i':{
+              id: 'lastName-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Отчество введено неверно",
+              placeholder: "Отчество",
+              type: "text",
+              required: "false",
+              pattern: /^[а-яА-Яa-zA-Z]{2,15}$/,
+              value: '',
+              isValid: false
+              },
+              'login-i':{
+              id: 'login-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Логин введён неверно",
+              placeholder: "Логин",
+              type: "text",
+              required: "true",
+              pattern: /^[a-zA-Z0-9_@.]{6,30}$/,
+              value: '',
+              isValid: false
+              },
+              'email-i':{
+              id: 'email-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Email введён неверно",
+              placeholder: "Email",
+              type: "text",
+              required: "true",
+              pattern: /^[a-zA-Z0-9_@.]{6,30}$/,
+              value: '',
+              isValid: false
+              },
+              //todo: добавить маску для телефона
+              'phone-i':{
+              id: 'phone-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Телефон введен неверно",
+              placeholder: "Телефон",
+              type: "tel",
+              required: "false",
+              pattern: /^[0-9()\-+]{1,11}$/,
+              value: '',
+              isValid: false
+              },
+              'site-i':{
+              id: 'site-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Сайт введен неверно",
+              placeholder: "Сайт",
+              type: "text",
+              required: "false",
+              pattern: /^[а-яА-Яa-zA-Z0-9_.\/#:]{5,100}$/,
+              value: '',
+              isValid: false
+              },
+              },
+              acountArr:{ // Редактируемые поля профиля -- Ассоциативный массив для быстрого доступа к элементов
+              'oldpass-i':{
+              id: 'oldpass-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Пароль введен неверно",
+              placeholder: "Старый пароль",
+              type: "text",
+              required: "true",
+              pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
+              value: '',
+              isValid: false
+              },
+              'newpass-i':{
+              id: 'newpass-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Пароль введен неверно",
+              placeholder: "Новый пароль",
+              type: "password",
+              required: "true",
+              pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
+              value: '',
+              isValid: false
+              },
+              'newpassrepeat-i':{
+              id: 'newpassrepeat-i',
+              showError: false,
+              validFeedback: "",
+              invalidFeedback: "Пароли не совпадают",
+              placeholder: "Повторите новый пароль",
+              type: "password",
+              required: "true",
+              pattern: /^[0-9a-zA-Z!@#$%^&*]{6,}$/,
+              value: '',
+              isValid: false
+              },
+              },
+              notifications: {
+              'newFeatures': {
+              txt: 'Уведомлять меня о новых возможностях сервиса',
+              switched: false,
+              },
+              'newCatalog': {
+              txt: 'Уведомлять меня о новых каталогах',
+              switched: false,
+              },
+              'newNews': {
+              txt: 'Держать меня в курсе новостей сервиса',
+              switched: false,
+              },
+              }
             }
         },
         computed: {
@@ -297,11 +302,18 @@
           },
           acountFormValid(){
             return this.FormValid(this.acountArr, 'oldpass-i');
+          },
+          imageUploadUrl(){
+            return `/user/${this.id}/saveimage`;
+          },
+          avatarUrl(){
+            return (this.avatarImg.length > 0) ? this.avatarImg : this.avatar;
           }
         },
         components: {
           appInput,
-          appSwitcher
+          appSwitcher,
+          appUpload
         },
         methods:{
           ...mapMutations('progress',{
@@ -313,6 +325,7 @@
           }),
           ...mapMutations('user',{
             setStateName: 'setName',
+            setAvatar: 'setAvatar'
           }),
           ...mapActions('user',{
             userRequest: 'USER_REQUEST',
@@ -331,6 +344,11 @@
               isValid = isValid && objectArr[key].isValid;
             }
             return isValid;
+          },
+          // меняем фото после загрузки
+          onChangeImage(e){
+            this.setAvatar(e);
+            this.avatarImg = e;
           },
           //обновление профиля пользователя
           updateUserProfile(){

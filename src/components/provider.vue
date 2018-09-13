@@ -186,7 +186,7 @@
                   let errorTxt = resp.data.data.msgClient;
                   this.setErrorAlertMsg(`Ошибка при загрузке каталогов`);
                 }else {
-                  this.setSuccessAlertMsg(`Каталоги загружены`);
+                  //this.setSuccessAlertMsg(`Каталоги загружены`);
                   let arrayList = resp.data.data;
                   this.providerList.init = [];
                   for (let supplier of arrayList) {
