@@ -32,7 +32,7 @@
     <div class="white-block-r pr-0">
       <div class="row align-items-center" >
         <div class="col-4">
-          <appInput class="appInputLabel"
+          <appInput :cont="siteInput.placeholder" class="appInputLabel"
                     key="siteInput"
                     :input="siteInput"
                     @changedata="onChangeData('siteInput', $event)"
@@ -40,7 +40,7 @@
           </appInput>
         </div>
         <div class="col-4">
-          <appInput class="appInputLabel"
+          <appInput :cont="profitPercentInputRoz.placeholder" class="appInputLabel"
                     key="profitPercentInputRoz"
                     :input="profitPercentInputRoz"
                     @changedata="onChangeData('profitPercentInputRoz', $event)"
@@ -48,7 +48,7 @@
           </appInput>
         </div>
         <div class="col-4">
-          <appInput class="appInputLabel"
+          <appInput :cont="profitPercentInputOpt.placeholder" class="appInputLabel"
                     key="profitPercentInputOpt"
                     :input="profitPercentInputOpt"
                     @changedata="onChangeData('profitPercentInputOpt', $event)"
@@ -171,8 +171,8 @@
           id: 'site-url',
           showError: false,
           validFeedback: "",
-          invalidFeedback: "Адрес сайта введён неверно",
-          placeholder: "Адрес",
+          invalidFeedback: "Название введёно неверно",
+          placeholder: "Название/Адрес",
           type: "text",
           required: "false",
           pattern: /^[а-яА-Яa-zA-Z0-9_. \/#:]{5,100}$/,
