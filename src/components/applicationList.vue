@@ -1,18 +1,6 @@
 <!--Список приложений-->
 <template>
   <!--applicationList.vue-->
-
-  <!--todocomplete: API - блокировка приложения
-      todo: API - список незаблокированных приложений
-      todocomplete: API - список всех приложений (заблокированные и активные)
-      todocomplete: API - список активных приложений
-      todo: API - поиск приложений по подстроке
-  -->
-
-  <!--
-   todocomplete: Добавить ссылку на новое приложение, кнопка "новое приложение"
-  -->
-
   <div class="container">
     <div class="white-block-r">
       <div class="row align-items-center">

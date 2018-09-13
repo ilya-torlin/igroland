@@ -2,18 +2,6 @@
 <template>
   <!--singleApp.vue-->
 
-  <!--
-    todocomplete: API - удалить приложение
-    todocomplete: API - сохранить приложение
-    todocomplete: API - сгенерировать новый ключ(не перезаписывать старый, просто отдавать строку нового ключа, перезапись происходит при нажатии на кнопку "сохранить")
-    todocomplete: API - запрос для первоначальной инициализации по ид приложения
-  -->
-
-  <!--
-    todocomplete: перевод для селекта
-    todo: округлять проценты до сотых
-  -->
-
   <div class="container">
     <div class="white-block-r">
        <div class="row align-items-center">
