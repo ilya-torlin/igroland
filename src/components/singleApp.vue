@@ -3,14 +3,14 @@
   <!--singleApp.vue-->
 
   <!--
-    todo: API - удалить приложение
-    todo: API - сохранить приложение
-    todo: API - сгенерировать новый ключ(не перезаписывать старый, просто отдавать строку нового ключа, перезапись происходит при нажатии на кнопку "сохранить")
-    todo: API - запрос для первоначальной инициализации по ид приложения
+    todocomplete: API - удалить приложение
+    todocomplete: API - сохранить приложение
+    todocomplete: API - сгенерировать новый ключ(не перезаписывать старый, просто отдавать строку нового ключа, перезапись происходит при нажатии на кнопку "сохранить")
+    todocomplete: API - запрос для первоначальной инициализации по ид приложения
   -->
 
   <!--
-    todo: перевод для селекта
+    todocomplete: перевод для селекта
     todo: округлять проценты до сотых
   -->
 
@@ -298,10 +298,10 @@
           this.appData.name = data.value
         }
         if(key === 'profitPercentInputRoz' && data.valid === true){
-          this.appData.roznPriceAdd = data.value
+          this.appData.roznPriceAdd = parseFloat(data.value).toFixed(2);
         }
         if(key === 'profitPercentInputOpt' && data.valid === true){
-          this.appData.optPriceAdd = data.value
+          this.appData.optPriceAdd = parseFloat(data.value).toFixed(2);
         }
         this.falseAppSave();
       },
@@ -354,6 +354,8 @@
                   let errorTxt = resp.data.data.msgClient;
                   this.setErrorAlertMsg('Ошибка при сохранении приложения: ' + errorTxt);
                 }else {
+                  this.profitPercentInputRoz.value = parseFloat(this.profitPercentInputRoz.value).toFixed(2);
+                  this.profitPercentInputOpt.value = parseFloat(this.profitPercentInputOpt.value).toFixed(2);
                   this.setSuccessAlertMsg('Приложение сохранёно');
                 }
               })
