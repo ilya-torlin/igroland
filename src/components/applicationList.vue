@@ -251,9 +251,9 @@
       // заблокировать/разблокировать приложение
       isOnToogle(index){
         let payload = {
-          value: !this.applicationList[index].blocked
+          value: !this.applicationList.result[index].blocked
         };
-        let appId = this.applicationList[index].id;
+        let appId = this.applicationList.result[index].id;
         this.stepOneActive(); // прогрессбар
 
         axios({url: API_URL + `/export/${appId}/setonoff`, data: payload, method: 'POST' })
@@ -264,9 +264,9 @@
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertMsg('Ошибка при блокировке пользователя: ' + errorTxt);
             }else {
-              this.applicationList[index].blocked = !this.applicationList[index].blocked;
+              this.applicationList.result[index].blocked = !this.applicationList.result[index].blocked;
               let msgS = 'Приложение ';
-              (!this.applicationList[index].blocked) ? msgS += 'разблокировано' : msgS += 'заблокировано';
+              (!this.applicationList.result[index].blocked) ? msgS += 'разблокировано' : msgS += 'заблокировано';
               this.setSuccessAlertMsg(msgS);
             }
           })

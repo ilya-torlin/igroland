@@ -20,7 +20,7 @@
          <div class="col-12">
            <div class="app-tc d-flex align-items-center justify-content-between">
              <h5 class="title-c">
-               Приложение
+               {{appData.name}}
              </h5>
              <button type="button" class="btn btn-danger" @click="openModalRemoveApp">
                УДАЛИТЬ
@@ -40,31 +40,39 @@
           </appInput>
         </div>
         <div class="col-4">
-         <div class="d-flex align-items-center selectLabeled" cont="Выберите каталог">
-           <multiselect
-             v-model="selectedCatalogs"
-             :options="catalogList"
-             :multiple="false"
-             :close-on-select="true"
-             :allow-empty="false"
-             :searchable="false"
-             placeholder="Каталоги"
-             selectedLabel="Выбрано"
-             label="name"
-             track-by="name"
-             selectLabel="Выбрать"
-             deselectLabel="Убрать из списка"
-             @input = "onChangeSelect">
-           </multiselect>
-         </div>
+          <appInput class="appInputLabel"
+                    key="profitPercentInputRoz"
+                    :input="profitPercentInputRoz"
+                    @changedata="onChangeData('profitPercentInputRoz', $event)"
+          >
+          </appInput>
         </div>
         <div class="col-4">
           <appInput class="appInputLabel"
-                    key="profitPercentInput"
-                    :input="profitPercentInput"
-                    @changedata="onChangeData('profitPercentInput', $event)"
+                    key="profitPercentInputOpt"
+                    :input="profitPercentInputOpt"
+                    @changedata="onChangeData('profitPercentInputOpt', $event)"
           >
           </appInput>
+        </div>
+        <div class="col-4">
+          <div class="d-flex align-items-center selectLabeled" cont="Выберите каталог">
+            <multiselect
+              v-model="selectedCatalogs"
+              :options="catalogList"
+              :multiple="false"
+              :close-on-select="true"
+              :allow-empty="false"
+              :searchable="false"
+              placeholder="Каталоги"
+              selectedLabel="Выбрано"
+              label="name"
+              track-by="name"
+              selectLabel="Выбрать"
+              deselectLabel="Убрать из списка"
+              @input = "onChangeSelect">
+            </multiselect>
+          </div>
         </div>
         <div class="col-6">
           <div class="heygen-c">
@@ -100,80 +108,35 @@
 
     <!-- Modal -->
     <!--Подтвердить генерацию нового ключа-->
-    <div class="modal fade warning-modal" id="confirmGenApiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle">
-              <div class="svg-c">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="23px" height="23px">
-                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                        d="M11.500,23.000 C5.149,23.000 0.000,17.851 0.000,11.500 C0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM11.500,5.000 C10.672,5.000 10.000,5.671 10.000,6.500 C10.000,7.328 10.672,8.000 11.500,8.000 C12.328,8.000 13.000,7.328 13.000,6.500 C13.000,5.671 12.328,5.000 11.500,5.000 ZM13.000,10.500 C13.000,9.671 12.328,9.000 11.500,9.000 C10.672,9.000 10.000,9.671 10.000,10.500 L10.000,16.500 C10.000,17.328 10.672,18.000 11.500,18.000 C12.328,18.000 13.000,17.328 13.000,16.500 L13.000,10.500 Z"/>
-                </svg>
-              </div>
-              <div class="txt">
-                Генерация нового ключа
-              </div>
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>
-              После генерации нового ключа, старый ключ станет недействительным, соответственно все приложения связанные с ним стануть недоступны. Вы действительно хотите сгенерировать новый ключ?
-            </p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-success" data-dismiss="modal" @click="genNewApiKey">
-              Сгенерировать новый ключ
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <appModal
+      headerText="Генерация нового ключа"
+      keyId="confirmGenApiModal"
+      :deleteIcon="true"
+      positiveActionText="Сгенерировать"
+      :textField="genTextLabel"
+      :isNotifyModal="true"
+      negativeActionText="Отмена"
+      :actionIndex="0"
+      :inputsArr="inputsArr"
+      buttonClass="btn-success"
+      :necessaryEvent="'pageChange'"
+      @pageChange="genNewApiKey">
+    </appModal>
     <!--Удаление приложения-->
-    <div class="modal fade warning-modal" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalCenterTitle1">
-              <div class="svg-c">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="23px" height="23px">
-                  <path fill-rule="evenodd"  fill="rgb(131, 147, 167)"
-                        d="M11.500,23.000 C5.149,23.000 0.000,17.851 0.000,11.500 C0.000,5.149 5.149,-0.000 11.500,-0.000 C17.851,-0.000 23.000,5.149 23.000,11.500 C23.000,17.851 17.851,23.000 11.500,23.000 ZM11.500,5.000 C10.672,5.000 10.000,5.671 10.000,6.500 C10.000,7.328 10.672,8.000 11.500,8.000 C12.328,8.000 13.000,7.328 13.000,6.500 C13.000,5.671 12.328,5.000 11.500,5.000 ZM13.000,10.500 C13.000,9.671 12.328,9.000 11.500,9.000 C10.672,9.000 10.000,9.671 10.000,10.500 L10.000,16.500 C10.000,17.328 10.672,18.000 11.500,18.000 C12.328,18.000 13.000,17.328 13.000,16.500 L13.000,10.500 Z"/>
-                </svg>
-              </div>
-              <div class="txt">
-                Подтвердите удаление приложения
-              </div>
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <appInput class=" "
-                      key="confirmDeleteApp"
-                      :input="confirmDeleteAppInput"
-                      @changedata="onChangeData('confirmDeleteAppInput', $event)"
-            >
-            </appInput>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="deleteApplication()">Удалить приложение</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <appModal
+      headerText="Подтвердите удаление приложения"
+      keyId="confirmDeleteModal"
+      :deleteIcon="true"
+      positiveActionText="Удалить приложение"
+      :textField="remoteTextLabel"
+      negativeActionText="Отмена"
+      :actionIndex="0"
+      :isNotifyModal="true"
+      :inputsArr="inputsArr"
+      buttonClass="btn-danger"
+      :necessaryEvent="'pageChange'"
+      @pageChange="deleteApplication">
+    </appModal>
 
 
   </div>
@@ -187,11 +150,17 @@
   import {mapActions} from 'vuex';
   import Multiselect from 'vue-multiselect'
   import appInput from './inputValid';
+  import appModal from './modalWindow';
 
   export default {
     name: 'singleApp',
     data () {
       return {
+        remoteTextLabel: 'Подтвердите удаление текущего приложения',
+        genTextLabel: 'После генерации нового ключа, старый ключ станет недействительным, соответственно все приложения связанные с ним стануть недоступны. Вы действительно хотите сгенерировать новый ключ?',
+        appData:{
+
+        },
         name: 'sitename.ru', // Имя приложения
         role: 'Ninja',//'права' пользователя
         avatar: 'src/assets/img/app.png',//аватарка
@@ -206,16 +175,28 @@
           placeholder: "Адрес",
           type: "text",
           required: "false",
-          pattern: /^[а-яА-Яa-zA-Z0-9_.\/#:]{5,100}$/,
-          value: 'sitename.ru',
+          pattern: /^[а-яА-Яa-zA-Z0-9_. \/#:]{5,100}$/,
+          value: 'Сайт приложения',
           isValid: false
         },
-        profitPercentInput: {
-          id: 'profit-percent',
+        profitPercentInputRoz: {
+          id: 'profit-roz',
           showError: false,
           validFeedback: "",
           invalidFeedback: "Наценка введена неверно",
-          placeholder: "Наценка, %",
+          placeholder: "Розничная наценка, %",
+          type: "text",
+          required: "false",
+          pattern: /^[0-9,.]{1,15}$/,
+          value: '',
+          isValid: false
+        },
+        profitPercentInputOpt: {
+          id: 'profit-opt',
+          showError: false,
+          validFeedback: "",
+          invalidFeedback: "Наценка введена неверно",
+          placeholder: "Оптовая наценка, %",
           type: "text",
           required: "false",
           pattern: /^[0-9,.]{1,15}$/,
@@ -236,20 +217,29 @@
         },
         appSaved: true, //Приложение сохранёно, флаг для того что бы не делать лишних запросов на сервер, при изменении полей, флаг менятся на false
         catalogList: [ // каталоги для селекта
-          {name: 'Машинки', id: '1234'},
-          {name: 'Посуда', id: '4453'},
-          {name: 'Подушки', id: '8489'}
         ],
-        selectedCatalogs: [ // выбранные каталоги в селекте
-          {name: 'Машинки', id: '1234'},
-        ]
-
+        selectedCatalogs: null,
+        inputsArr:{ // массив инпутов для всплывающего окна
+          id: 'confirmDelete',
+          showError: '',
+          validFeedback: "",
+          invalidFeedback: "Имя введено неверно",
+          placeholder: "Введите имя категории, которую хотите удалить",
+          type: "text",
+          required: "true",
+          pattern: /[^]*/,
+          value: '',
+          isValid: false
+        }
       }
     },
     computed:{
       // id приложения, передаётся в url в качестве параметра
       applicationId(){
         return this.$route.params.id || 1;
+      },
+      validInputs(){
+        return this.testValid(this.siteInput) && this.testValid(this.profitPercentInputRoz) && this.testValid(this.profitPercentInputOpt);
       }
     },
     methods:{
@@ -267,17 +257,15 @@
       openModalGenApi(){
         $('#confirmGenApiModal').modal();
       },
+      testValid(input){
+        return input.pattern.test(input.value);
+      },
       genNewApiKey(){
         let payload = {
-          name: this.name, // Имя приложения
-          role: this.role,//'права' пользователя
-          avatar: this.avatar,//аватарка
-          API: this.API,
-          id: this.id, // id
-          blocked: this.blocked, // приложение заблокированно
+          id: this.applicationId, // id
         };
         this.stepOneActive(); // прогрессбар
-        axios({url: API_URL + '/application/keygen', data: payload, method: 'POST' })
+        axios({url: API_URL + '/export/generate', data: payload, method: 'POST' })
           .then(resp => {
             const error = resp.data.error;
             this.stepLastActive(); // прогрессбар
@@ -285,7 +273,7 @@
               let errorTxt = resp.data.data.msgClient;
               this.setErrorAlertMsg('Ошибка при генерации ключа: ' + errorTxt);
             }else{
-              this.API = resp.data.data.api;//в зависимости от того, что вернёт api
+              this.API = resp.data.data.link;//в зависимости от того, что вернёт api
               this.setSuccessAlertMsg('Ключ сгенерирован');
             }
           })
@@ -307,7 +295,13 @@
         this[key].isValid = data.valid;
 
         if(key === 'siteInput' && data.valid === true){
-          this.name = data.value
+          this.appData.name = data.value
+        }
+        if(key === 'profitPercentInputRoz' && data.valid === true){
+          this.appData.roznPriceAdd = data.value
+        }
+        if(key === 'profitPercentInputOpt' && data.valid === true){
+          this.appData.optPriceAdd = data.value
         }
         this.falseAppSave();
       },
@@ -321,17 +315,9 @@
         $('#confirmDeleteModal').modal();
       },
       deleteApplication(){ // Удалить приложение
-        if(this.name === this.confirmDeleteAppInput.value){
-          let payload = {
-            name: this.name, // Имя приложения
-            role: this.role,//'права' пользователя
-            avatar: this.avatar,//аватарка
-            API: this.API,
-            id: this.id, // id
-            blocked: this.blocked, // приложение заблокированно
-          };
+          let payload = this.applicationId;
           this.stepOneActive(); // прогрессбар
-          axios({url: API_URL + '/application/remove', data: payload, method: 'POST' })
+          axios({url: API_URL + `/export/${payload}`, method: 'DELETE' })
             .then(resp => {
               const error = resp.data.error;
               this.stepLastActive(); // прогрессбар
@@ -340,32 +326,27 @@
                 this.setErrorAlertMsg('Ошибка при удалении приложения: ' + errorTxt);
               }else{
                 this.setSuccessAlertMsg('Приложение удалёно');
+                this.$router.push({name: 'applications'});
               }
             })
             .catch(err => {
               this.setErrorAlertMsg('Ошибка при удалении приложения ');
               this.stepLastActive(); // прогрессбар
-              console.log(err);
             });
-        }else{
-          this.setErrorAlertMsg('Ошибка при удалении приложения: имена не совпадают');
-        }
       },
       saveApplication(){
         if(this.appSaved){
           this.setSuccessAlertMsg('Приложение сохранёно');
         }else {
-          if(this.siteInput.isValid && this.profitPercentInput.isValid){
+          if(this.validInputs){
             let payload = {
-              name: this.name, // Имя приложения
-              role: this.role,//'права' пользователя
-              avatar: this.avatar,//аватарка
-              API: this.API,
-              id: this.id, // id
-              blocked: this.blocked, // приложение заблокированно
+              name: this.appData.name, // Имя приложения
+              optPriceAdd: this.appData.optPriceAdd,
+              roznPriceAdd: this.appData.roznPriceAdd,
+              catalog_id: this.selectedCatalogs.id
             };
             this.stepOneActive(); // прогрессбар
-            axios({url: API_URL + '/application/save', data: payload, method: 'POST' })
+            axios({url: API_URL + `/export/${this.applicationId}`, data: payload, method: 'PUT' })
               .then(resp => {
                 const error = resp.data.error;
                 this.stepLastActive(); // прогрессбар
@@ -373,17 +354,16 @@
                   let errorTxt = resp.data.data.msgClient;
                   this.setErrorAlertMsg('Ошибка при сохранении приложения: ' + errorTxt);
                 }else {
-                  this.catalogList[index].catalogSaved = true;
                   this.setSuccessAlertMsg('Приложение сохранёно');
                 }
               })
               .catch(err => {
-                this.setErrorAlertMsg('Ошибка при сохранении каталога');
+                this.setErrorAlertMsg('Ошибка при сохранении приложения');
                 this.stepLastActive(); // прогрессбар
                 console.log(err);
               });
           }else{
-            this.setErrorAlertMsg('Форма заполненна неправильно');
+            this.setErrorAlertMsg('Форма заполнена неправильно');
           }
         }
       },
@@ -399,10 +379,13 @@
             }else{
               let arrayList = resp.data.data;
               this.catalogList = [];
-              arrayList.forEach(value => {
-                this.catalogList.push(value);
-                //this.$set(this.catalogList, value.id, value);
-              })
+              for(let item of arrayList) {
+                this.catalogList.push({
+                    id: item.id,
+                    name: item.catalogName
+                });
+              }
+              console.log(this.catalogList);
             }
           })
           .catch(err => {
@@ -410,14 +393,40 @@
             this.stepLastActive(); // прогрессбар
             console.log(err);
           });
+      },
+      initMyExportView(){
+        let exportId = this.$route.params.id ;
+        axios({url: API_URL + `/export/view`, data: {id: exportId}, method: 'POST' })
+          .then(resp => {
+            const error = resp.data.error;
+            this.stepLastActive(); // прогрессбар
+            if(error){
+              let errorTxt = resp.data.data.msgClient;
+              this.setErrorAlertMsg('Ошибка при получении данных приложения: ' + errorTxt);
+            }else{
+              this.appData = resp.data.data;
+              this.profitPercentInputRoz.value = this.appData.roznPriceAdd;
+              this.profitPercentInputOpt.value = this.appData.optPriceAdd;
+              this.siteInput.value = this.appData.name;
+              this.selectedCatalogs = this.appData.catalog;
+              this.API = this.appData.link;
+            }
+          })
+          .catch(err => {
+            this.setErrorAlertMsg('Ошибка при получении данных приложения');
+            this.stepLastActive(); // прогрессбар
+            console.log(err);
+          });
       }
     },
     components:{
       appInput,
-      Multiselect
+      Multiselect,
+      appModal
     },
     mounted(){
       this.initMyCatalogs();
+      this.initMyExportView();
     }
   }
 </script>
