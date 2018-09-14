@@ -183,6 +183,9 @@
         setErrorAlertMsg: 'setErrorAlertMsg',
         setSuccessAlertMsg: 'setSuccessAlertMsg',
       }),
+      ...mapActions('user',{
+        userRequest: 'USER_REQUEST',
+      }),
       ...mapMutations('progress',{
         setProgStateWidth: 'setProgStateWidth',
         setProgShow: 'setProgShow',
@@ -414,7 +417,7 @@
                 value['catalogImg'] = API_URL + value['catalogImg'];
                 this.catalogList.push(value);
                 //this.$set(this.catalogList, value.id, value);
-              })
+              });
             }
           })
           .catch(err => {
@@ -426,9 +429,9 @@
       // подгрузка списка пользователей с сервера
       initUserList(){
         // если пользователь не суперадмин, то не запрашивать каталог
-        // if (USER_ADMIN !== this.userRole.id){
-        //   return
-        // }
+        if (USER_ADMIN != this.userRole.id){
+          return
+        }
         this.stepOneActive(); // прогрессбар
         axios({url: API_URL + '/user', method: 'GET' })
           .then(resp => {
@@ -457,7 +460,9 @@
     },
     mounted(){
       $('[data-toggle="tooltip"]').tooltip();
-      this.initUserList();
+      this.userRequest().then( result => {
+        this.initUserList();
+      });
       this.initMyCatalog();
     }
   }

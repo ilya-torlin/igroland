@@ -223,20 +223,20 @@
               e.preventDefault();
           },
           // запрос категории/каталога по ид, возвращает промис
-          requestCategory(idCategory, lvlFolder, parentFolderId, selectedProvider, hideNotAvl){
+          requestCategory(getParams){
             //после вызова в promise вызывать this.setFolders().. для перезаписи каталога в родительском компоненте
             return new Promise((resolve, reject) => {
               let payload = {
                 // lvlFolder: lvlFolder ? lvlFolder : '',
-                lvlFolder: lvlFolder, // уровень вложенности
-                id: idCategory || '', // ид папки
-                catalog_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
-                parentFolderId: parentFolderId || '0', // ид родительской папки, вроде не используется, надо сделать ревью
-                hideNotAvl: hideNotAvl || false
+                lvlFolder: getParams.lvlFolder, // уровень вложенности
+                id: getParams.id || '', // ид папки
+                catalog_id: getParams.catalog_id || '', // поставщик(если есть), если не указан, то приходят категории от всех поставщиков
+                parentFolderId: getParams.parentFolderId || '0', // ид родительской папки, вроде не используется, надо сделать ревью
+                hideNotAvl: getParams.hideNotAvl || false,
+                userCatalogId: getParams.userCatalogId || null
               };
               this.folderPending = true; // пока идёт запрос контейнер с папками блокируется
               this.stepOneActive(); // прогрессбар
-              // console.log('!!!!!!payload ---------', payload);
               axios.get( API_URL + '/category', {
                   params: {
                     ...payload
@@ -294,7 +294,14 @@
 
               this.setFolders();
             }else{
-              let categoryRequest = this.requestCategory(folderId, lvlFolder, parentFolderId, this.userCatalogId, this.hideNotAvl);
+              let paramsForGet = {
+                id: folderId,
+                lvlFolder: lvlFolder,
+                parentFolderId: parentFolderId,
+                catalog_id: this.userCatalogId,
+                hideNotAvl: this.hideNotAvl
+              };
+              let categoryRequest = this.requestCategory(paramsForGet);
               categoryRequest.then(
 
                 result => { // всё ок

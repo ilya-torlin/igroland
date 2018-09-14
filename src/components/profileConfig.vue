@@ -331,7 +331,6 @@
           }),
           ...mapActions('user',{
             userRequest: 'USER_REQUEST',
-            userInfo: 'USER_INFO',
           }),
           ...mapActions('alerts',{
             setErrorAlertMsg: 'setErrorAlertMsg',

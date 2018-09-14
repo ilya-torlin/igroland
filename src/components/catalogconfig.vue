@@ -733,6 +733,9 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
+          ...mapActions('user',{
+            userRequest: 'USER_REQUEST',
+          }),
           // изменение картинки при загрузке
           onChangeImage(event){
             this.paramsFolder.catalogImg = event;
@@ -1079,12 +1082,15 @@
               console.error('folderKey && componentRefKey - обязательные параметры');
             } else {
               let payload = {
-                lvlFolder: lvlFolder || null, // уровень вложенности
                 id: idCategory || '', // ид папки
-                supplier_id: selectedProvider || '', // поставщик(если есть), если не указан, то приходят категории от всех каталогов
-                parentFolderId: parentFolderId || '0' // ид родительской папки, вроде не используется, надо сделать ревью
+                lvlFolder: lvlFolder || null, // уровень вложенности
+                parentFolderId: parentFolderId,
+                catalog_id: +selectedProvider,
+                hideNotAvl: this.hideNotAvl,
+                userCatalogId: this.paramsFolder.id || null
               };
-              let categoryRequest = this.$refs[componentRefKey].requestCategory(+payload.id, payload.lvlFolder, payload.parentFolderId, +selectedProvider, this.hideNotAvl);
+              console.log('обновление payload', payload);
+              let categoryRequest = this.$refs[componentRefKey].requestCategory(payload);
               categoryRequest.then(
                 result => { // всё ок
                   // фильтр каталогов с нулевыми остатками
@@ -1402,7 +1408,6 @@
                 this.foldersCont.catalogFolder.folderH = this.paramsFolder.catalogName;
                 this.foldersCont.catalogFolder.lastUpdateTxt = 'Последнее изменение ' + this.paramsFolder.lastUpdate;
                 this.paramsFolder.catalogImg = API_URL + this.paramsFolder.catalogImg;
-                this.initUserList();
               }
               this.stepLastActive(); // прогрессбар
               })
@@ -1440,8 +1445,8 @@
           // подгрузка списка пользователей с сервера
           initUserList(){
             // если пользователь не суперадмин, то не запрашивать каталог
-            // if (this.userRole.id !== USER_ADMIN)
-            //   return ;
+            if (this.userRole.id !== USER_ADMIN)
+              return ;
             this.stepOneActive(); // прогрессбар
             axios({url: API_URL + '/user', method: 'GET' })
               .then(resp => {
@@ -1517,7 +1522,9 @@
           this.getProvider();
           this.allFoldersInit();
           this.getMyCatalogInfo();
-          //this.initUserList();
+          this.userRequest().then( result => {
+            this.initUserList();
+          });
         }
     }
 </script>
