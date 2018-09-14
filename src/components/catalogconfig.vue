@@ -1407,7 +1407,8 @@
                 this.paramsFolder = resp.data.data;
                 this.foldersCont.catalogFolder.folderH = this.paramsFolder.catalogName;
                 this.foldersCont.catalogFolder.lastUpdateTxt = 'Последнее изменение ' + this.paramsFolder.lastUpdate;
-                this.paramsFolder.catalogImg = API_URL + this.paramsFolder.catalogImg;
+                if (this.paramsFolder.catalogImg)
+                  this.paramsFolder.catalogImg = API_URL + this.paramsFolder.catalogImg;
               }
               this.stepLastActive(); // прогрессбар
               })

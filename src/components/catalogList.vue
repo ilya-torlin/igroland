@@ -414,7 +414,8 @@
               let arrayList = resp.data.data;
               this.catalogList = [];
               arrayList.forEach(value => {
-                value['catalogImg'] = API_URL + value['catalogImg'];
+                if (value['catalogImg'])
+                  value['catalogImg'] = API_URL + value['catalogImg'];
                 this.catalogList.push(value);
                 //this.$set(this.catalogList, value.id, value);
               });
