@@ -733,6 +733,10 @@
             stepTwoActive: 'stepTwoActive',
             stepLastActive: 'stepLastActive',
           }),
+          // изменение картинки при загрузке
+          onChangeImage(event){
+            this.paramsFolder.catalogImg = event;
+          },
           //Event handler: выбор параметров поиска, во вкладке поиск (где искать)
           onInputSelect(event, selectResKey){
             let selectedProvider = {
@@ -1397,6 +1401,8 @@
                 this.paramsFolder = resp.data.data;
                 this.foldersCont.catalogFolder.folderH = this.paramsFolder.catalogName;
                 this.foldersCont.catalogFolder.lastUpdateTxt = 'Последнее изменение ' + this.paramsFolder.lastUpdate;
+                this.paramsFolder.catalogImg = API_URL + this.paramsFolder.catalogImg;
+                this.initUserList();
               }
               this.stepLastActive(); // прогрессбар
               })
@@ -1434,8 +1440,8 @@
           // подгрузка списка пользователей с сервера
           initUserList(){
             // если пользователь не суперадмин, то не запрашивать каталог
-            if (this.userRole.id !== USER_ADMIN)
-              return ;
+            // if (this.userRole.id !== USER_ADMIN)
+            //   return ;
             this.stepOneActive(); // прогрессбар
             axios({url: API_URL + '/user', method: 'GET' })
               .then(resp => {
@@ -1511,7 +1517,7 @@
           this.getProvider();
           this.allFoldersInit();
           this.getMyCatalogInfo();
-          this.initUserList();
+          //this.initUserList();
         }
     }
 </script>

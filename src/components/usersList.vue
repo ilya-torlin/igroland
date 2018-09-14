@@ -278,6 +278,8 @@
               let arrayList = resp.data.data;
               this.usersList.init = [];
               for (let user of arrayList){
+                if (user.photo)
+                  user.photo = API_URL + user.photo;
                 this.usersList.init.push(user);
               }
               this.usersList.result = this.usersList.init;
@@ -392,6 +394,8 @@
               let arrayList = resp.data.data;
               this.usersList.init = this.usersList.result = [];
               for (let user of arrayList){
+                if (user.photo)
+                  user.photo = API_URL + user.photo;
                 this.usersList.init.push(user);
               }
               this.usersList.result = this.usersList.init;

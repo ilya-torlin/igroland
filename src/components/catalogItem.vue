@@ -201,8 +201,10 @@
         return `/catalog/${this.catalogId}/saveimage`;
       },
       imageUrl(){
-        return (this.catalogItem.catalogImg.length > 0) ? this.catalogItem.catalogImg : this.imageUrlDefault;
-      }
+        console.log(this.catalogItem.catalogImg);
+        console.log(this.imageUrlDefault);
+        return (this.catalogItem.catalogImg) ? this.catalogItem.catalogImg : this.imageUrlDefault;
+      },
     },
     methods:{
       onChangeImage(image){
