@@ -86,10 +86,13 @@
             </div>
           </div>
         </div>
-        <div class="col-12 ">
+        <div class="col-12 white-bl-btn">
           <button type="button" class="btn btn-success" @click="saveApplication">
             Сохранить
           </button>
+          <a class="btn btn-outline-secondary" @click="" :href="downloadLink" target="_blank" :download="downloadName">
+            Скачать каталог
+          </a>
         </div>
       </div>
     </div>
@@ -228,7 +231,13 @@
       },
       validInputs(){
         return this.testValid(this.siteInput) && this.testValid(this.profitPercentInputRoz) && this.testValid(this.profitPercentInputOpt);
-      }
+      },
+      downloadLink(){
+        return API_URL + '/export/'+ this.API;
+      },
+      downloadName(){
+        return this.appData.name + '.xml';
+      },
     },
     methods:{
       ...mapActions('alerts',{
@@ -424,4 +433,7 @@
 <style lang="sass">
   @import '../../node_modules/vue-multiselect/dist/vue-multiselect.min.css'
   /*@import 'assets/sass/main.sass';*/
+  .white-bl-btn
+    .btn
+      margin-right: 15px
 </style>
