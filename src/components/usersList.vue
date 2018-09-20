@@ -57,7 +57,7 @@
       >
       </appUserItem>
     </template>
-    <div class="row" v-if="isUserLoaded">
+    <div class="row" v-if="isUsersLoaded">
       <div class="col-12">
         <div class="white-block-r ">
           <h4 class="mb-0">
