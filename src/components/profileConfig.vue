@@ -388,19 +388,22 @@
           },
           //обновление пароля пользователя
           updateUserPwd(){
+            let oldpass = this.acountArr['oldpass-i'].value,
+              newpass = this.acountArr['newpass-i'].value,
+              newpassrepeat = this.acountArr['newpassrepeat-i'].value;
             let payload = {
-              oldpass: this.acountArr['oldpass-i'].value,
-              newpass: this.acountArr['newpass-i'].value,
-              newpassrepeat: this.acountArr['newpassrepeat-i'].value,
-            }, samePwd = false;//флаг совпадения паролей
+              password: oldpass,
+              newpassword: newpass,
+            },
+            samePwd = false;//флаг совпадения паролей
 
-            if(this.acountArr['newpass-i'].value === this.acountArr['newpassrepeat-i'].value){
+            if(newpass === newpassrepeat){
               samePwd = true;
             }
 
             this.stepOneActive(); // прогрессбар
             if(samePwd === true && this.acountFormValid === true){ // проверяем корректность заполнения полей
-              axios({url: API_URL + '/user/changepasss', data: payload, method: 'POST' })
+              axios({url: API_URL + `/user/${this.id}/password`, data: payload, method: 'PUT' })
                 .then(resp => {
                   const error = resp.data.error;
                   this.stepLastActive(); // прогрессбар
@@ -410,11 +413,11 @@
                     this.setErrorAlertMsg('Ошибка при обновлении профиля: ' + errorTxt);
                   }else {
                     this.stepLastActive();
-                    this.setSuccessAlertMsg('Профиль обновлён');
+                    this.setSuccessAlertMsg('Пароль обновлён');
                   }
                 })
                 .catch(err => {
-                  this.setErrorAlertMsg('Ошибка при обновлении профиля');
+                  this.setErrorAlertMsg('Ошибка при обновлении пароля');
                   console.log(err);
                   this.stepLastActive();
                 });
