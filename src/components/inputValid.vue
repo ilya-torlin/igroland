@@ -65,7 +65,15 @@
         }else {
           return 'pendingCheck';
         }
-      }
+      },
+      maskedValue(){
+        let value = this.input.value;
+        if (this.input.type === 'tel'){
+          let x = value.replace(/\D/g, '').match(/(\d)(\d{0,3})(\d{0,3})(\d{0,4})/);
+          return !x ? '' : x[1] + (!x[2] ? '' : '(' + x[2] + ')' + ( !x[3] ? '' : x[3] + ( !x[4] ? '' : '-' + x[4] ) ) ) ;
+        }
+        return value;
+      },
     },
     methods: {
       //вызывается при изменении инпата
@@ -87,11 +95,10 @@
           valid: this.input.pattern.test(event.name)
         });
       },
-
     }
   }
 </script>
 
 <style >
-  @import '../../node_modules/vue-multiselect/dist/vue-multiselect.min.css'
+  @import '../../node_modules/vue-multiselect/dist/vue-multiselect.min.css';
 </style>

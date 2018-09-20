@@ -10,7 +10,6 @@
           <div class="catalog-h">
             <div class="title-cat">
               <div class="photo-input-c ava-c" data-toggle="tooltip" data-placement="bottom" data-original-title="Загрузить фото категории">
-                <!--todo: Обновлять изображение после загрузки нового-->
                 <img :src="imageUrl" alt="">
                 <label :for="'file'+ index">
                   <appUpload

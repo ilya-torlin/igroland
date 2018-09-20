@@ -219,7 +219,7 @@
               placeholder: "Телефон",
               type: "tel",
               required: "false",
-              pattern: /^[0-9()\-+]{1,11}$/,
+              pattern: /^[0-9()\-+]{1,14}$/,
               value: '',
               isValid: false
               },

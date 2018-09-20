@@ -1075,7 +1075,6 @@
           },
           //изменение значения setRootCatalogFoldersComp(массив папок), у дочернего компонента по ссылке ref
           updateFolderCont(idCategory, lvlFolder, parentFolderId, selectedProvider, folderKey, componentRefKey){
-            // todo: переделать вызов параметров на объект
             //folderKey - ключ папки в foldersCont
             // componentRefKey - ссылка на компонент,
             if(!folderKey || !componentRefKey){
@@ -1137,7 +1136,7 @@
           },
           // фильтр поставщиков для алминистраторов
           providerFilter(providerList){
-            return providerList.filter( value => value.id < 6 );
+            return providerList.filter( value => value.id < 10 );
           },
           //запрос списка поставщиков
           getProvider(){
@@ -1157,7 +1156,6 @@
 
                   //this.providerList = resp.data.data;
                   this.providerList.push({catalogName: 'Все каталоги', id: ''});
-                  //todo: при изменении провайдера вызывать!!??
                   //this.selectedProvider = this.providerList[this.providerList.length-1]
                 }
                 this.stepLastActive(); // прогрессбар
