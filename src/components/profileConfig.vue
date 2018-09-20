@@ -3,8 +3,6 @@
     <!--profileConfig.vue-->
 
     <!--
-      todocomplete: API - обновить профиль
-      todo: API - заменить пароль на новый
       todo: API - включение/отключение уведомлений
     -->
     <div class="profileUser-c">
