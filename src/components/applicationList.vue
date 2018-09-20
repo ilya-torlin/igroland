@@ -99,7 +99,7 @@
         </div>
       </transition>
     </template>
-    <div class="row" v-if="applicationList.result.length === 0">
+    <div class="row" v-if="isAppLoaded">
       <div class="col-12">
         <div class="white-block-r ">
           <h4 class="mb-0">
@@ -206,12 +206,16 @@
           }
         ],
         addAppIndex: 0,
+        isLoaded: false,
       }
     },
     computed: {
       currentPage(){ // текущая страница, передаётся в url в качестве параметра
         return this.$route.params.page || 1;
-      }
+      },
+      isAppLoaded(){
+        return (this.applicationList.result.length === 0) && this.isLoaded;
+      },
     },
     components: {
       appSwitcher,
@@ -372,6 +376,7 @@
               this.applicationList.init = this.applicationList.result = [];
               this.applicationList.init = this.applicationList.result = arrayList;
               console.log(resp.data.data);
+              this.isLoaded = true;
             }
           })
           .catch(err => {

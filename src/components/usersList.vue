@@ -57,7 +57,7 @@
       >
       </appUserItem>
     </template>
-    <div class="row" v-if="usersList.result.length === 0">
+    <div class="row" v-if="isUserLoaded">
       <div class="col-12">
         <div class="white-block-r ">
           <h4 class="mb-0">
@@ -184,6 +184,7 @@
         ],
         regBtnTxt: 'Зарегистрировать нового пользователя',// текст кнопки регистрации
         showSignup: false, // показывать окно для регистрации нового пользователя
+        isLoaded:false,
       }
     },
     computed: {
@@ -196,6 +197,9 @@
           isValid = isValid && item.isValid;
         }
         return isValid;
+      },
+      isUsersLoaded(){
+        return (this.usersList.result.length === 0) && this.isLoaded;
       }
     },
     components: {
@@ -399,6 +403,7 @@
                 this.usersList.init.push(user);
               }
               this.usersList.result = this.usersList.init;
+              this.isLoaded = true;
             }
           })
           .catch(err => {

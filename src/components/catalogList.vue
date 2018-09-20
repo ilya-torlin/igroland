@@ -12,17 +12,7 @@
         <div class="col-12 mt-3">
         </div>
       </div>
-      <!--todocomplete: вынести в отдельный компонент-->
-
-        <!--<template v-for="(catalogItem, index) in catalogList">-->
-          <!--{{catalogItem.switcherActive}} {{index}} // <br>-->
-        <!--</template>-->
-
-        <!--
-            todo: Загрузка фото
-        -->
-
-        <div class="row" v-if="Object.keys(catalogList).length == 0">
+        <div class="row" v-if="isCatalogsLoaded">
           <div class="col-12">
             <div class="white-block-r ">
               <h4 class="mb-0">
@@ -171,12 +161,16 @@
           routerOn: true // // отключение роутера, если включить, то надо настроить роутер
         },
         userList:[],
+        isLoaded:false
       }
     },
     computed: {
       ...mapGetters('user', {
           userRole: 'role',
-        }),
+      }),
+      isCatalogsLoaded(){
+        return (Object.keys(this.catalogList).length == 0) && this.isLoaded;
+      }
     },
     methods: {
       ...mapActions('alerts',{
@@ -419,6 +413,7 @@
                 this.catalogList.push(value);
                 //this.$set(this.catalogList, value.id, value);
               });
+              this.isLoaded = true;
             }
           })
           .catch(err => {
