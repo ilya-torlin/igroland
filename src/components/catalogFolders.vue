@@ -298,8 +298,9 @@
                 id: folderId,
                 lvlFolder: lvlFolder,
                 parentFolderId: parentFolderId,
-                catalog_id: this.userCatalogId,
-                hideNotAvl: this.hideNotAvl
+                catalog_id: (this.selectedProvider) ? this.selectedProvider.id : this.userCatalogId,  // для пользовательского каталога, если он то отдаем пользовательский как id
+                hideNotAvl: this.hideNotAvl,
+                userCatalogId: this.userCatalogId
               };
               let categoryRequest = this.requestCategory(paramsForGet);
               categoryRequest.then(
@@ -388,7 +389,8 @@
           'selectedItemIndex', // выбранный каталог (по которому кликнули, выделяется желтым цветом объект index)
           'userCatalogId',  // Id каталога пользователя
           'hideNotAvl',  // скрывать не в наличии
-          'showButtons' // показывать кнопки в каталоге
+          'showButtons', // показывать кнопки в каталоге
+          'userCatalogId'
         ],
         mounted(){
             let varthis = this;

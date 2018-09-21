@@ -173,6 +173,7 @@
                               :rootCatalogFolders = 'foldersCont.providerFolder.rootCatalogFolders'
                               :selectedProvider = 'selectedProvider'
                               :hideNotAvl="hideNotAvl"
+                              :userCatalogId = 'currentCatalogId'
                               :showButtons="foldersCont.providerFolder.showButtons"
                               @setFolders = 'onSetFolders($event, "providerFolder")'
                               @setSelectedItem = 'onSetSelectItem($event, "providerFolder")'
@@ -235,7 +236,7 @@
                                 :lastUpdateTxt = 'foldersCont.findResFolder.lastUpdateTxt'
                                 :contextMenu = 'foldersCont.findResFolder.contextMenu'
                                 :rootCatalogFolders = 'foldersCont.findResFolder.rootCatalogFolders'
-                                :selectedProvider = 'selectedProvider'
+                                :selectedProvider = 'selectedFind'
                                 :hideNotAvl="hideNotAvl"
                                 :showButtons="foldersCont.findResFolder.showButtons"
                                 @setFolders = 'onSetFolders($event, "findResFolder")'
