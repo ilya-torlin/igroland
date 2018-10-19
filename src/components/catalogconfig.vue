@@ -1024,19 +1024,23 @@
                 }else{
                   if(this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].lvlFolder > 0) {
                     let indexLvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].lvlFolder - 1;
+                    let countOfDeletedChilds = 0;
                     for (let ind = categoryIndex; ind >= 0 || indexLvlFolder === 0; ind--) { // Пока не дошли до самой первой папки, или пока не проверили последнего родителя
-                      console.log(indexLvlFolder, this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder);
+                      //console.log(indexLvlFolder, this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder);
                       if (indexLvlFolder === this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder) {
-                        console.log('<<<----parent find ind for update', this.foldersCont.catalogFolder.rootCatalogFolders[ind]);
+                        console.log('<<<----parent find ind for update', this.foldersCont.catalogFolder.rootCatalogFolders[ind].name,this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount);
                         let countChild = this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].childCount;
                         if(countChild > 0) {
                           for (let deletedIndex = categoryIndex + 1; deletedIndex <= categoryIndex + countChild; deletedIndex++){
-                            this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, deletedIndex);
+                            console.log(this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex + 1], deletedIndex);
+                            this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex + 1);
+                            this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount--;
+                            countOfDeletedChilds++;
                           }
                         }
                         this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
-
-                        this.foldersCont.catalogFolder.catalogSelectedItemId = this.foldersCont.catalogFolder.rootCatalogFolders[ind];
+                        countOfDeletedChilds++;
+                        this.foldersCont.catalogFolder.catalogSelectedItemId = this.foldersCont.catalogFolder.rootCatalogFolders[ind].folderId;
                         this.foldersCont.catalogFolder.catalogSelectedItemIndex = ind;
                         this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount--;
                         if (this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount === 0)
@@ -1044,7 +1048,26 @@
                         break;
                       }
                     }
+                    console.log('catalogSelectedItemIndex',this.foldersCont.catalogFolder.catalogSelectedItemIndex);
+                    indexLvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont.catalogFolder.catalogSelectedItemIndex].lvlFolder - 1;
+                    for (let ind = this.foldersCont.catalogFolder.catalogSelectedItemIndex;  ind >= 0 || indexLvlFolder === 0; ind--) {
+                      if (indexLvlFolder === this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder) {
+                        console.log('<<<----parent find ind for update childCount', this.foldersCont.catalogFolder.rootCatalogFolders[ind].name, this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount, this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount - countOfDeletedChilds);
+                        //if(this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount !== 0)
+                        this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount -= countOfDeletedChilds;
+                        if (indexLvlFolder !== 0) { //т.к. нашли первого родителя, уменьшаем уровень вложенности для поиска следующего родителя
+                          indexLvlFolder--;
+                        }else{
+                          break;
+                        }
+                      }
+                    }
                   }else{
+                    let countChild = this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].childCount;
+                    for (let deletedIndex = categoryIndex + 1; deletedIndex <= categoryIndex + countChild; deletedIndex++){
+                      console.log(this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex + 1], deletedIndex);
+                      this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex + 1);
+                    }
                     this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
                   }
 
@@ -1073,7 +1096,7 @@
             let categoryRequest = this.$refs['catalogFolder'].requestCategory(paramsForGet);
             categoryRequest.then(
               result => { // всё ок
-                if(index != 0) {
+                if(index !== 0) {
                   this.foldersCont.catalogFolder.rootCatalogFolders.splice(index + 1, this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount);
                   this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount = 0;
                   // фильтр каталогов с нулевыми остатками
@@ -1090,17 +1113,17 @@
                         if (indexLvlFolder !== 0) { //т.к. нашли первого родителя, уменьшаем уровень вложенности для поиска следующего родителя
                           indexLvlFolder--;
                         }
-                        this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount += result.catalogFolders.length;
+                        console.log(this.foldersCont.catalogFolder.rootCatalogFolders[ind].name, this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount, result.catalogFolders.length);
+                        //this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount += result.catalogFolders.length;
+                        this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount++;
                         if (this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder === 0) {//Дошли до корня
                           break;
                         }
                       }
                     }
-                    //присваиваем значение потомков папке, которую открыли
-                    this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount = this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount + result.catalogFolders.length;
-                  } else {
-                    this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount = this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount + result.catalogFolders.length;
                   }
+                  //присваиваем значение потомков папке, которую открыли
+                  this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount = this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount + result.catalogFolders.length;
                   this.foldersCont.catalogFolder.rootCatalogFolders[index].isOpen = true; // открываем папку
                   this.foldersCont.catalogFolder.rootCatalogFolders[index].hasFolders = true;
                 }
