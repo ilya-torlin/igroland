@@ -1459,22 +1459,24 @@
                       this.setSuccessAlertMsg('Категории привязаны');
                       let currentFolder = activeTab.obj.rootCatalogFolders[activeTab.selectedIndex];
                       currentFolder.hideFolder = true;
+                      // скрываем подкатегории если привязали текущую
                       if(currentFolder.isOpen){
                         for (let ind = 1; ind <= currentFolder.childCount; ind++){
                           activeTab.obj.rootCatalogFolders[activeTab.selectedIndex+ind].hideFolder = true;
                         }
                       }
+                      // ищем родителя категории и если все подкатегории скрыты, то скрываем родителя
                       let indexLvlFolder = currentFolder.lvlFolder - 1;
                       for (let ind = activeTab.selectedIndex; ind >= 0 || indexLvlFolder === 0; ind--) {
                         if (indexLvlFolder === activeTab.obj.rootCatalogFolders[ind].lvlFolder) {
                           let hidedFolders = 0;
                           for (let inpInd = ind + 1; inpInd <= ind + activeTab.obj.rootCatalogFolders[ind].childCount; inpInd++) {
-                            console.log('hide folder ', activeTab.obj.rootCatalogFolders[inpInd].name, activeTab.obj.rootCatalogFolders[inpInd]);
+                            //console.log('hide folder ', activeTab.obj.rootCatalogFolders[inpInd].name, activeTab.obj.rootCatalogFolders[inpInd]);
                             if(activeTab.obj.rootCatalogFolders[inpInd].hideFolder){
                               hidedFolders++;
                             }
                           }
-                          console.log('hide folder ', hidedFolders, activeTab.obj.rootCatalogFolders[ind].childCount, activeTab.obj.rootCatalogFolders[ind].name);
+                          //console.log('hide folder ', hidedFolders, activeTab.obj.rootCatalogFolders[ind].childCount, activeTab.obj.rootCatalogFolders[ind].name);
                           if(activeTab.obj.rootCatalogFolders[ind].childCount === hidedFolders)
                             activeTab.obj.rootCatalogFolders[ind].hideFolder = true;
                           break;
@@ -1731,9 +1733,11 @@
           onToogleFixFrice(){
             this.selectedCategory.isFixPrice = !this.selectedCategory.isFixPrice;
           },
+          // меняем название категории при смене в инпуте
           onChangeCatalogName(e){
             this.selectedCategory.catalogName = e.target.value;
           },
+          // отправляем на сервер измененные данные для категории
           onUpdateSelectedCategory(){
             this.stepOneActive(); // прогрессбар
             let categoryIndex = this.foldersCont.catalogFolder.catalogSelectedItemIndex;
