@@ -147,6 +147,9 @@
                     <div class="tab-i" :class="{'active': tabValue === 'attachproduct'}" @click="tabChangeVal('attachproduct')" v-show="foldersCont.attachProducts.showAttachedTab">
                       Привязанные продукты
                     </div>
+                    <div class="tab-i" :class="{'active': tabValue === 'paramscategory'}" @click="tabChangeVal('paramscategory')" v-show="foldersCont.attachFolder.showAttachedTab">
+                      Параметры категории
+                    </div>
                     <div class="tab-i" :class="{'active': tabValue === 'params'}" @click="tabChangeVal('params')">
                       Параметры каталога
                     </div>
@@ -344,36 +347,81 @@
                             </appBasicCatalogFolders>
                           </div>
                         </div>
-                        <div key="params-tab" class="att-folders-i folders-wt" v-show="tabValue == 'params'">
-                        <div class="upper-s">
-                          <div class="find-folder-i">
+                        <div key="params-category-tab" class="att-folders-i folders-wt" v-show="tabValue == 'paramscategory'">
+                          <div class="upper-s">
+                            <div class="find-folder-i">
+                              <div class="txt-f">
+                                Выбранная категория: <span class="provider-txt">{{ foldersCont.attachFolder.folderH }}</span>
+                              </div>
+                            </div>
+                            <div class="catalog-b">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <div class="item-b">
+                                    <div class="user-txt">
+                                      Изменить имя категории:
+                                    </div>
+                                    <div class="input-group input-margin">
+                                      <input :value="selectedCategory.catalogName"
+                                             @change="onChangeCatalogName($event)"
+                                             type="text" class="form-control" placeholder="Название каталога">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="item-b">
+                                    <div class="user-txt">
+                                      Изменить формирование цены категории:
+                                    </div>
+                                    <div class="input-group input-margin">
+                                    <appSwitcher  txt="Фиксированная цена"
+                                                  :switcherActive="selectedCategory.isFixPrice"
+                                                  @switchToogle="onToogleFixFrice">
+                                    </appSwitcher>
+                                  </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-2">
+                                  <div class="item-b">
+                                    <div class=" upload-btn">
+                                      <button @click="onUpdateSelectedCategory" type="button" class="btn btn-success">Сохранить</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          <appCatalogItem :selected="paramsFolder.selected"
-                                          :switcherActive="paramsFolder.switcherActive"
-                                          :catalogItem="paramsFolder"
-                                          :showConfig="true"
-                                          :userList="userList"
-                                          :catalogName="paramsFolder.catalogName"
-                                          :catalogId="paramsFolder.id"
-                                          :isActive="paramsFolder.isActive"
-                                          :isOn="paramsFolder.isOn"
-                                          :description="paramsFolder.description"
-                                          :selectedUsers="paramsFolder.selectedUsers"
-                                          :userRole="userRole"
-                                          :useCatalogParams="true"
-                                          @configToogle = "onConfigToogle"
-                                          @switchToogle = "onSwitchToogle"
-                                          @isOnToogle = "onIsOnToogle"
-                                          @changeDescr = "onChangeDescr($event)"
-                                          @changeName="onChangeName($event)"
-                                          @copyCatalog = ""
-                                          @saveCatalog = "onSaveCatalog"
-                                          @changeSelect = "onChangeSelect($event)"
-                                          @removeCatalog = "onOpenRemoveCatalogWindow(index)"
-                                          @changeImage="onChangeImage($event)">
-                          </appCatalogItem>
                         </div>
-                      </div>
+                        <div key="params-tab" class="att-folders-i folders-wt" v-show="tabValue == 'params'">
+                          <div class="upper-s">
+                            <div class="find-folder-i">
+                            </div>
+                            <appCatalogItem :selected="paramsFolder.selected"
+                                            :switcherActive="paramsFolder.switcherActive"
+                                            :catalogItem="paramsFolder"
+                                            :showConfig="true"
+                                            :userList="userList"
+                                            :catalogName="paramsFolder.catalogName"
+                                            :catalogId="paramsFolder.id"
+                                            :isActive="paramsFolder.isActive"
+                                            :isOn="paramsFolder.isOn"
+                                            :description="paramsFolder.description"
+                                            :selectedUsers="paramsFolder.selectedUsers"
+                                            :userRole="userRole"
+                                            :useCatalogParams="true"
+                                            @configToogle = "onConfigToogle"
+                                            @switchToogle = "onSwitchToogle"
+                                            @isOnToogle = "onIsOnToogle"
+                                            @changeDescr = "onChangeDescr($event)"
+                                            @changeName="onChangeName($event)"
+                                            @copyCatalog = ""
+                                            @saveCatalog = "onSaveCatalog"
+                                            @changeSelect = "onChangeSelect($event)"
+                                            @removeCatalog = "onOpenRemoveCatalogWindow(index)"
+                                            @changeImage="onChangeImage($event)">
+                            </appCatalogItem>
+                          </div>
+                        </div>
                     </div>
                   </div>
                 </div>
@@ -649,6 +697,10 @@
               paramsFolder:{
 
               },
+              selectedCategory:{
+                isFixPrice: false,
+                catalogName: '',
+              },
               userList: [],
               //Goods categoryGoods.pagination.countItemsPage
               categoryGoods: { // товары выбранной категории
@@ -788,7 +840,8 @@
             this.foldersCont[keyFolder].catalogSelectedItemId = e.value.id;
             this.foldersCont[keyFolder].catalogSelectedItemIndex = e.value.index;
             if(keyFolder === 'catalogFolder'){
-
+              this.selectedCategory.catalogName = this.foldersCont[keyFolder].rootCatalogFolders[e.value.index].name;
+              this.selectedCategory.isFixPrice = this.foldersCont[keyFolder].rootCatalogFolders[e.value.index].isFixPrice || false;
               // для списка категорий
               let newBreadcrumbs = [];
               if(e.value.lvlFolder > 0 && e.value.id !== 0){
@@ -1575,7 +1628,7 @@
           },
           // показываем вкладку "параметры каталога"
           onShowParamFolder(){
-            this.tabValue = 'params';
+            this.tabValue = 'paramscategory';
           },
           // показываем товары отпределенной категориии
           onCatalogShowGoods(){
@@ -1674,6 +1727,39 @@
           falseCatalogSave(){
             this.paramsFolder.catalogSaved = false;
           },
+          // меняем в категории указатель фиксированной цены
+          onToogleFixFrice(){
+            this.selectedCategory.isFixPrice = !this.selectedCategory.isFixPrice;
+          },
+          onChangeCatalogName(e){
+            this.selectedCategory.catalogName = e.target.value;
+          },
+          onUpdateSelectedCategory(){
+            this.stepOneActive(); // прогрессбар
+            let categoryIndex = this.foldersCont.catalogFolder.catalogSelectedItemIndex;
+            let categoryId = this.foldersCont.catalogFolder.catalogSelectedItemId;
+            let payload = {
+              categoryName: this.selectedCategory.catalogName,
+              isFixPrice: this.selectedCategory.isFixPrice,
+            };
+            axios({url: API_URL + '/category/' +  categoryId, data: payload, method: 'PUT' })
+              .then(resp => {
+                const error = resp.data.error;
+                this.stepLastActive(); // прогрессбар
+                if(error){
+                  let errorTxt = resp.data.data.msgClient;
+                  this.setErrorAlertMsg('Ошибка при изменении категории: ' + errorTxt);
+                }else {
+                  this.setSuccessAlertMsg('Категория сохранёна');
+                  this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].name = payload.categoryName;
+                  this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].isFixPrice = payload.isFixPrice;
+                }
+              })
+              .catch(err => {
+                this.setErrorAlertMsg('Ошибка при сохранении категории');
+                this.stepLastActive(); // прогрессбар
+              });
+          }
         },
         mounted(){
           this.getProvider();
