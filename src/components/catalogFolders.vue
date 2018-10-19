@@ -190,6 +190,7 @@
             folderPending: false, // true, пока идёт запрос на подгрузку папок
             selectedItemObjectId: 0,
             selectedItemObjectIndex: 0, //
+            openFolderArray: [],
           }
         },
         computed: {

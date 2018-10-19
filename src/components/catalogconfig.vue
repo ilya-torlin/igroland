@@ -1022,8 +1022,33 @@
                   let errorTxt = resp.data.data.msgClient;
                   this.setErrorAlertMsg('Ошибка при удалении категории: ' + errorTxt);
                 }else{
-                  //this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
-                  this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                  if(this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].lvlFolder > 0) {
+                    let indexLvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].lvlFolder - 1;
+                    for (let ind = categoryIndex; ind >= 0 || indexLvlFolder === 0; ind--) { // Пока не дошли до самой первой папки, или пока не проверили последнего родителя
+                      console.log(indexLvlFolder, this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder);
+                      if (indexLvlFolder === this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder) {
+                        console.log('<<<----parent find ind for update', this.foldersCont.catalogFolder.rootCatalogFolders[ind]);
+                        let countChild = this.foldersCont.catalogFolder.rootCatalogFolders[categoryIndex].childCount;
+                        if(countChild > 0) {
+                          for (let deletedIndex = categoryIndex + 1; deletedIndex <= categoryIndex + countChild; deletedIndex++){
+                            this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, deletedIndex);
+                          }
+                        }
+                        this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
+
+                        this.foldersCont.catalogFolder.catalogSelectedItemId = this.foldersCont.catalogFolder.rootCatalogFolders[ind];
+                        this.foldersCont.catalogFolder.catalogSelectedItemIndex = ind;
+                        this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount--;
+                        if (this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount === 0)
+                          this.foldersCont.catalogFolder.rootCatalogFolders[ind].hasFolders = !this.foldersCont.catalogFolder.rootCatalogFolders[ind].hasFolders;
+                        break;
+                      }
+                    }
+                  }else{
+                    this.$delete(this.foldersCont.catalogFolder.rootCatalogFolders, categoryIndex);
+                  }
+
+                  //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                   this.setSuccessAlertMsg('Категория удалёна');
 
                 }
@@ -1032,6 +1057,76 @@
                 this.setErrorAlertMsg('Ошибка при удалении категории ');
                 this.stepLastActive(); // прогрессбар
               });
+          },
+          // обновляем дерево при добавлении категории
+          updateSubcategoriesByAddNewCategory(addedCategoryId) {
+            let index = this.foldersCont.catalogFolder.catalogSelectedItemIndex;
+            let paramsForGet = {
+              id: this.foldersCont.catalogFolder.catalogSelectedItemId,
+              lvlFolder: this.foldersCont.catalogFolder.rootCatalogFolders[index].lvlFolder,
+              parentFolderId: this.foldersCont.catalogFolder.catalogSelectedItemIndex,
+              catalog_id: this.currentCatalogId,  // для пользовательского каталога, если он то отдаем пользовательский как id
+              hideNotAvl: this.hideNotAvl,
+              userCatalogId: this.currentCatalogId
+            };
+            console.log(paramsForGet);
+            let categoryRequest = this.$refs['catalogFolder'].requestCategory(paramsForGet);
+            categoryRequest.then(
+              result => { // всё ок
+                if(index != 0) {
+                  this.foldersCont.catalogFolder.rootCatalogFolders.splice(index + 1, this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount);
+                  this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount = 0;
+                  // фильтр каталогов с нулевыми остатками
+                  let notNullArray = result.catalogFolders;
+                  if (this.hideNotAvl)
+                    notNullArray = result.catalogFolders.filter((element) => +element.goodsCount > 0);
+                  for (let item of notNullArray) {
+                    this.foldersCont.catalogFolder.rootCatalogFolders.splice(index + 1, 0, item);
+                  }
+                  if (this.foldersCont.catalogFolder.rootCatalogFolders[index].lvlFolder > 0) {
+                    let indexLvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[index].lvlFolder - 1;
+                    for (let ind = index; ind >= 0 || indexLvlFolder === 0; ind--) { // Пока не дошли до самой первой папки, или пока не проверили последнего родителя
+                      if (indexLvlFolder === this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder) {
+                        if (indexLvlFolder !== 0) { //т.к. нашли первого родителя, уменьшаем уровень вложенности для поиска следующего родителя
+                          indexLvlFolder--;
+                        }
+                        this.foldersCont.catalogFolder.rootCatalogFolders[ind].childCount += result.catalogFolders.length;
+                        if (this.foldersCont.catalogFolder.rootCatalogFolders[ind].lvlFolder === 0) {//Дошли до корня
+                          break;
+                        }
+                      }
+                    }
+                    //присваиваем значение потомков папке, которую открыли
+                    this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount = this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount + result.catalogFolders.length;
+                  } else {
+                    this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount = this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount + result.catalogFolders.length;
+                  }
+                  this.foldersCont.catalogFolder.rootCatalogFolders[index].isOpen = true; // открываем папку
+                  this.foldersCont.catalogFolder.rootCatalogFolders[index].hasFolders = true;
+                }
+                else{
+                  let notNullArray = result.catalogFolders;
+                  if (this.hideNotAvl)
+                    notNullArray = result.catalogFolders.filter((element) => +element.goodsCount > 0);
+                  console.log(notNullArray,this.foldersCont.catalogFolder['rootCatalogFolders']);
+                  let currentNewCategory = {};
+                  for (let newIndex of notNullArray) {
+                    if(+newIndex.folderId === addedCategoryId){
+                      currentNewCategory = newIndex;
+                      currentNewCategory.lvlFolder = 0;
+                    }
+                  }
+                  if (currentNewCategory) {
+                    let newLength = this.foldersCont.catalogFolder.rootCatalogFolders.length + 1;
+                    this.foldersCont.catalogFolder.rootCatalogFolders.splice(newLength);
+                    this.$set(this.foldersCont.catalogFolder.rootCatalogFolders, newLength - 1, currentNewCategory);
+                  }
+                }
+              },
+              error => { // всё не ок
+                console.log('error');
+              }
+            );
           },
           // создание нового каталога/папки
           createNewCatalog(catalogName){
@@ -1055,7 +1150,11 @@
                   this.setErrorAlertMsg('Ошибка при добавлении категории: ' + errorTxt);
                 }else{
                   this.setSuccessAlertMsg('Категория добавлена');
-                  this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                  let returnedId = resp.data.data.id;
+                  //console.log(returnedId);
+                  this.updateSubcategoriesByAddNewCategory(returnedId);
+
+                  //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                 }
               })
               .catch(err => {
