@@ -25,6 +25,7 @@ For detailed explanation on how things work, consult the [docs for vue-loader](h
 - запустить npm install (обновим все зависимости)
 
 npm run dev - запускает в режиме разработки на локальном севере
+
 npm run build - запускает билд (папку dist, которая создается при сборке, выгружаем на сервер).
 
 
