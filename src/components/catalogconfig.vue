@@ -1096,7 +1096,7 @@
             let categoryRequest = this.$refs['catalogFolder'].requestCategory(paramsForGet);
             categoryRequest.then(
               result => { // всё ок
-                if(index !== 0) {
+                if(this.foldersCont.catalogFolder.catalogSelectedItemId !== 0) {
                   this.foldersCont.catalogFolder.rootCatalogFolders.splice(index + 1, this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount);
                   this.foldersCont.catalogFolder.rootCatalogFolders[index].childCount = 0;
                   // фильтр каталогов с нулевыми остатками
