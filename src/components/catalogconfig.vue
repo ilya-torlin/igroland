@@ -871,6 +871,8 @@
                       result => { // всё ок
                         // сохраняем вложенность
                         result.lvlFolder = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].lvlFolder;
+                        result.isOpen = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].isOpen;
+                        result.childCount = this.foldersCont.catalogFolder.rootCatalogFolders[usedCategories[ind].index].childCount;
                         // обновляем текущую категорию
                         this.$set(this.foldersCont.catalogFolder.rootCatalogFolders, usedCategories[ind].index, result);
                         //this.foldersCont.catalogFolder.rootCatalogFolders[this.foldersCont['catalogFolder'].catalogSelectedItemIndex] = result;
@@ -888,8 +890,26 @@
                   for (let catInd = 0; catInd < catalogArray.length; catInd++) {
                     if(this.foldersCont[catalogArray[catInd]].rootCatalogFolders.length > 0){
                       let newIndex = this.findCategoryIndex(this.foldersCont[catalogArray[catInd]].rootCatalogFolders, this.foldersCont.attachFolder.catalogSelectedItemCategoryId);
-                      if(newIndex !== -1)
+                      if(newIndex !== -1) {
                         this.foldersCont[catalogArray[catInd]].rootCatalogFolders[newIndex].hideFolder = false;
+                        // скрываем/открываем родительскую категорию если все дети привязаны
+                        let indexLvlFolder = this.foldersCont[catalogArray[catInd]].rootCatalogFolders[newIndex].lvlFolder - 1;
+                        for (let ind = newIndex; ind >= 0 || indexLvlFolder === 0; ind--) {
+                          if (indexLvlFolder === this.foldersCont[catalogArray[catInd]].rootCatalogFolders[ind].lvlFolder) {
+                            let hidedFolders = 0;
+                            for (let inpInd = ind + 1; inpInd <= ind + this.foldersCont[catalogArray[catInd]].rootCatalogFolders[ind].childCount; inpInd++) {
+                              console.log('hide folder ', this.foldersCont[catalogArray[catInd]].rootCatalogFolders[inpInd].name, this.foldersCont[catalogArray[catInd]].rootCatalogFolders[inpInd]);
+                              if (this.foldersCont[catalogArray[catInd]].rootCatalogFolders[inpInd].hideFolder) {
+                                hidedFolders++;
+                              }
+                            }
+                            console.log('hide folder ', hidedFolders, this.foldersCont[catalogArray[catInd]].rootCatalogFolders[ind].childCount, this.foldersCont[catalogArray[catInd]].rootCatalogFolders[ind].name);
+                            if (this.foldersCont[catalogArray[catInd]].rootCatalogFolders[ind].childCount != hidedFolders)
+                              this.foldersCont[catalogArray[catInd]].rootCatalogFolders[ind].hideFolder = false;
+                            break;
+                          }
+                        }
+                      }
                     }
 
                   }
@@ -1391,7 +1411,24 @@
                           activeTab.obj.rootCatalogFolders[activeTab.selectedIndex+ind].hideFolder = true;
                         }
                       }
-                      //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
+                      let indexLvlFolder = currentFolder.lvlFolder - 1;
+                      for (let ind = activeTab.selectedIndex; ind >= 0 || indexLvlFolder === 0; ind--) {
+                        if (indexLvlFolder === activeTab.obj.rootCatalogFolders[ind].lvlFolder) {
+                          let hidedFolders = 0;
+                          for (let inpInd = ind + 1; inpInd <= ind + activeTab.obj.rootCatalogFolders[ind].childCount; inpInd++) {
+                            console.log('hide folder ', activeTab.obj.rootCatalogFolders[inpInd].name, activeTab.obj.rootCatalogFolders[inpInd]);
+                            if(activeTab.obj.rootCatalogFolders[inpInd].hideFolder){
+                              hidedFolders++;
+                            }
+                          }
+                          console.log('hide folder ', hidedFolders, activeTab.obj.rootCatalogFolders[ind].childCount, activeTab.obj.rootCatalogFolders[ind].name);
+                          if(activeTab.obj.rootCatalogFolders[ind].childCount === hidedFolders)
+                            activeTab.obj.rootCatalogFolders[ind].hideFolder = true;
+                          break;
+                        }
+                      }
+
+                        //this.updateFolderCont(null, null, null, this.currentCatalogId, 'catalogFolder', 'catalogFolder');
                       let usedCategories = this.getParentsCategoryId();
                       let updateCategory;
                       for(let ind = 0; ind<usedCategories.length; ind++){
@@ -1413,8 +1450,6 @@
                           }
                         );
                       }
-
-
                     }
                   })
                   .catch(err => {
